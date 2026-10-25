@@ -71,7 +71,7 @@ export interface SiteHeaderProps {
  */
 export function SiteHeader({ right, home = false }: SiteHeaderProps) {
   const mark = (
-    <span className="text-[15px] font-bold tracking-[-0.02em] whitespace-nowrap lg:text-[16px]">Alpie Pong</span>
+    <span className="font-display text-[15px] font-semibold tracking-[-0.02em] whitespace-nowrap lg:text-[16px]">Alpie Pong</span>
   );
   return (
     <header className="flex h-[52px] items-center justify-between gap-3 lg:h-[72px] lg:gap-6">

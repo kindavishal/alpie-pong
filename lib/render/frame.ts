@@ -209,7 +209,7 @@ function courtTheme(tokens: ClipTokens, model: string, layout?: ClipLayout): Cou
   };
 }
 
-/** "#FF5416" at an alpha, as an rgba() string. */
+/** "#4B95F3" at an alpha, as an rgba() string. */
 function withAlpha(hex: string, alpha: number): string {
   const n = Number.parseInt(hex.replace('#', ''), 16);
   return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;

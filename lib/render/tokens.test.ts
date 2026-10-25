@@ -19,16 +19,17 @@ const SURFACES = Object.keys(COURT_SIZES) as CourtSurface[];
 describe('CLIP_TOKENS', () => {
   it('is the dark set from design/tokens.css', () => {
     const c = CLIP_TOKENS.colors;
-    expect(c.bg).toBe('#0A0B0F');
-    expect(c.surface).toBe('#12141A');
-    expect(c.court).toBe('#12141A');
-    expect(c.fg).toBe('#F2F3F5');
-    expect(c.fgMuted).toBe('#8B909B');
-    expect(c.fgInflight).toBe('#6B7080');
-    expect(c.paddle).toBe('#E7E9EE');
-    expect(c.ball).toBe('#C8CCD4');
-    expect(c.hero).toBe('#FF5416');
-    expect(c.barMuted).toBe('#2A2D36');
+    expect(c.bg).toBe('#000000');
+    expect(c.surface).toBe('#161618');
+    expect(c.court).toBe('#161618');
+    expect(c.fg).toBe('#F5F5F7');
+    expect(c.fgMuted).toBe('#A1A1A6');
+    expect(c.fgInflight).toBe('#86868B');
+    expect(c.paddle).toBe('#F5F5F7');
+    expect(c.ball).toBe('#A1A1A6');
+    // 169Pi's Alpie Seed blue, the dark-theme value (the clip is always dark).
+    expect(c.hero).toBe('#4B95F3');
+    expect(c.barMuted).toBe('#2C2C2E');
   });
 
   it('gives the accent to the hero and to nobody else', () => {

@@ -65,7 +65,7 @@ function inkFraction(data: Uint8Array | Buffer, page: [number, number, number]):
   return total === 0 ? 0 : ink / total;
 }
 
-const GROUND: [number, number, number] = [0x0a, 0x0b, 0x0f];
+const GROUND: [number, number, number] = [0x00, 0x00, 0x00];
 
 describe('layoutFrame', () => {
   it.each(LAYOUTS)('keeps every box inside the frame (%s)', (layout) => {

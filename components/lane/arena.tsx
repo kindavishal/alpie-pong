@@ -74,7 +74,7 @@ export function Arena({ allowed, clean, token }: ArenaProps) {
     return (
       <main className="mx-auto w-full max-w-[1280px] px-4 pb-6 lg:px-20">
         <SiteHeader right={<span className="text-fg-muted text-[13px]">arena</span>} />
-        <h1 className="pt-8 text-[40px] leading-[1.05] font-bold tracking-[-0.03em] lg:text-[64px]">
+        <h1 className="font-display pt-8 text-[40px] leading-[1.05] font-medium tracking-[-0.028em] lg:text-[64px]">
           Arena
         </h1>
         <p className="text-fg-muted max-w-[680px] pt-4 text-[17px] leading-[1.45] lg:text-[22px]">
@@ -120,7 +120,7 @@ export function Arena({ allowed, clean, token }: ArenaProps) {
       />
 
       <div className="flex flex-col gap-2.5 pt-5 lg:gap-4 lg:pt-12">
-        <h1 className="text-[40px] leading-[1.05] font-bold tracking-[-0.03em] lg:text-[64px]">
+        <h1 className="font-display text-[40px] leading-[1.05] font-medium tracking-[-0.028em] lg:text-[64px]">
           Arena
         </h1>
         <p className="text-fg-muted max-w-[680px] text-[17px] leading-[1.45] lg:text-[22px] lg:leading-[1.4]">

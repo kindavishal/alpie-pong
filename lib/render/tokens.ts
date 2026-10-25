@@ -7,7 +7,7 @@
  * and the square cut without touching drawing code.
  *
  * The values are the DARK set from design/tokens.css, which is the only set
- * the clip uses: the clip ground is #0A0B0F and the court is #12141A whatever
+ * the clip uses: the clip ground is #000000 and the court is #161618 whatever
  * the viewer's system is doing. The site reads the same tokens as CSS custom
  * properties out of app/globals.css.
  *
@@ -215,7 +215,7 @@ export interface ClipCopy {
 export interface ClipLogo {
   darkBg: string;
   lightBg: string;
-  /** The clip ground is #0A0B0F, so the white wordmark is the correct one. */
+  /** The clip ground is #000000, so the white wordmark is the correct one. */
   variant: 'light-bg' | 'dark-bg';
 }
 
@@ -276,18 +276,18 @@ function mono(weight: number, file: string): ClipFontSource {
 
 export const CLIP_TOKENS: ClipTokens = {
   colors: {
-    bg: '#0A0B0F',
-    surface: '#12141A',
+    bg: '#000000',
+    surface: '#161618',
     hair: 'rgba(255, 255, 255, 0.08)',
-    fg: '#F2F3F5',
-    fgMuted: '#8B909B',
-    fgInflight: '#6B7080',
-    court: '#12141A',
+    fg: '#F5F5F7',
+    fgMuted: '#A1A1A6',
+    fgInflight: '#86868B',
+    court: '#161618',
     courtLine: 'rgba(255, 255, 255, 0.16)',
-    paddle: '#E7E9EE',
-    ball: '#C8CCD4',
-    hero: '#FF5416',
-    barMuted: '#2A2D36',
+    paddle: '#F5F5F7',
+    ball: '#A1A1A6',
+    hero: '#4B95F3',
+    barMuted: '#2C2C2E',
   },
 
   fonts: {

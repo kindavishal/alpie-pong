@@ -476,7 +476,7 @@ function Countdown({ count, title, hint }: { count: number; title: string; hint:
 function PointFlash({ title }: { title: string }) {
   return (
     <Overlay scrim={false} pop>
-      <p className="bg-court/92 border-hair rounded-card border px-5 py-2.5 text-[22px] font-bold tracking-[-0.02em] lg:text-[30px]">
+      <p className="bg-court/92 border-hair rounded-card border px-5 py-2.5 font-display text-[22px] font-semibold tracking-[-0.02em] lg:text-[30px]">
         {title}
       </p>
     </Overlay>
@@ -496,7 +496,7 @@ function EndCard({
 }) {
   return (
     <Overlay card>
-      <p className="text-[26px] font-bold tracking-[-0.02em] lg:text-[36px]">{title}</p>
+      <p className="font-display text-[26px] font-semibold tracking-[-0.02em] lg:text-[36px]">{title}</p>
       {detail !== null && (
         <p className="text-fg-muted max-w-[420px] text-[13px] leading-[1.5]">{detail}</p>
       )}

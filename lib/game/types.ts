@@ -305,18 +305,18 @@ export const HERO: ModelId = 'alpie';
 export const LANES: LaneConfig[] = [
   {
     id: 'alpie', label: 'Alpie Seed 9B', gateway: null, endpoint: 'alpie-seed', modelId: 'alpie_9b', provider: '169Pi',
-    kind: 'structured', color: '#FF5416', providerOptions: { alpie: { chat_template_kwargs: { enable_thinking: false } } },
+    kind: 'structured', color: '#1F72D8', providerOptions: { alpie: { chat_template_kwargs: { enable_thinking: false } } },
   },
   // Ministral 3 does not think, so there is nothing to switch off.
-  { id: 'ministral-8b', label: 'Ministral 3 8B', gateway: null, endpoint: 'mistral', modelId: 'ministral-8b-2512', provider: 'Mistral', kind: 'structured', color: '#C8CCD4' },
+  { id: 'ministral-8b', label: 'Ministral 3 8B', gateway: null, endpoint: 'mistral', modelId: 'ministral-8b-2512', provider: 'Mistral', kind: 'structured', color: '#A1A1A6' },
   {
     id: 'gemma-cf', label: 'Gemma 4 26B-A4B', gateway: null, endpoint: 'cloudflare', modelId: '@cf/google/gemma-4-26b-a4b-it', provider: 'Cloudflare',
-    kind: 'structured', color: '#C8CCD4', providerOptions: { cloudflare: { chat_template_kwargs: { enable_thinking: false } } },
+    kind: 'structured', color: '#A1A1A6', providerOptions: { cloudflare: { chat_template_kwargs: { enable_thinking: false } } },
   },
   {
     id: 'alpie-core', label: 'Alpie Core 32B', gateway: null, endpoint: 'alpie-core', modelId: 'alpie-32b', provider: '169Pi',
     // Probed at 13.7 to 18.9 s a decision, close to the default 20 s ceiling.
-    kind: 'structured', color: '#C8CCD4', answer: 'text', maxOutputTokens: 8192, timeoutMs: 45_000,
+    kind: 'structured', color: '#A1A1A6', answer: 'text', maxOutputTokens: 8192, timeoutMs: 45_000,
     providerOptions: { alpie: { chat_template_kwargs: { enable_thinking: false } } },
   },
 ];
@@ -328,10 +328,10 @@ export const LANES: LaneConfig[] = [
  * Gemini ~2.1s, Haiku ~2.0s, GPT ~4.1s).
  */
 export const GATEWAY_LANES: LaneConfig[] = [
-  { id: 'jev', label: 'Jev', gateway: 'typesafe-ai/jev', kind: 'evaluate', color: '#C8CCD4' },
-  { id: 'gemini', label: 'Gemini 3.8 Flash', gateway: 'google/gemini-3.8-flash', kind: 'structured', color: '#C8CCD4' },
-  { id: 'haiku', label: 'Claude Haiku 4.5', gateway: 'anthropic/claude-haiku-4.5', kind: 'structured', color: '#C8CCD4' },
-  { id: 'gpt', label: 'GPT-5.6 Sol', gateway: 'openai/gpt-5.6-sol', kind: 'structured', color: '#C8CCD4' },
+  { id: 'jev', label: 'Jev', gateway: 'typesafe-ai/jev', kind: 'evaluate', color: '#A1A1A6' },
+  { id: 'gemini', label: 'Gemini 3.8 Flash', gateway: 'google/gemini-3.8-flash', kind: 'structured', color: '#A1A1A6' },
+  { id: 'haiku', label: 'Claude Haiku 4.5', gateway: 'anthropic/claude-haiku-4.5', kind: 'structured', color: '#A1A1A6' },
+  { id: 'gpt', label: 'GPT-5.6 Sol', gateway: 'openai/gpt-5.6-sol', kind: 'structured', color: '#A1A1A6' },
 ];
 
 /** Every lane that has a model behind it, race first. */

@@ -44,7 +44,7 @@ export function How() {
     <main className="mx-auto w-full max-w-[1280px] px-4 pb-6 lg:px-20">
       <SiteHeader right={<HeaderNav />} />
 
-      <h1 className="max-w-[760px] pt-5 text-[28px] leading-[1.1] font-bold tracking-[-0.03em] lg:pt-10 lg:text-[44px]">
+      <h1 className="font-display max-w-[760px] pt-5 text-[28px] leading-[1.1] font-medium tracking-[-0.028em] lg:pt-10 lg:text-[44px]">
         How it works
       </h1>
       <p className="text-fg-muted max-w-[700px] pt-2.5 text-[16px] leading-[1.45] text-pretty lg:pt-4 lg:text-[20px]">

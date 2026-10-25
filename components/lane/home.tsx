@@ -145,7 +145,7 @@ function Headline() {
   const [value, unit] = HEADLINE.heroMs.split(' ');
   return (
     <div className="flex flex-col gap-2 pt-5 lg:gap-2.5 lg:pt-9">
-      <h1 className="max-w-[980px] text-[21px] leading-[1.22] font-bold tracking-[-0.025em] text-pretty lg:text-[33px] lg:leading-[1.14]">
+      <h1 className="font-display max-w-[980px] text-[21px] leading-[1.22] font-medium tracking-[-0.028em] text-pretty lg:text-[33px] lg:leading-[1.14]">
         {HEADLINE.hero}{' '}
         <span className="text-hero-ink whitespace-nowrap">
           <span className="mono tracking-[-0.04em]">{value}</span>

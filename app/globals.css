@@ -11,42 +11,42 @@
 --------------------------------------------------------------------------- */
 
 :root {
-  --bg: #F5F6F8;          /* page ground */
+  --bg: #F5F5F7;          /* page ground */
   --surface: #FFFFFF;     /* cards, court, inputs */
-  --hair: #E3E5EA;        /* hairlines, card borders */
-  --fg: #111318;          /* text, primary button fill */
-  --fg-muted: #5B606B;    /* captions, tags, units */
-  --fg-inflight: #7C828C; /* counting-up latency only */
+  --hair: #E0E0E5;        /* hairlines, card borders */
+  --fg: #1D1D1F;          /* text, primary button fill */
+  --fg-muted: #6E6E73;    /* captions, tags, units */
+  --fg-inflight: #86868B; /* counting-up latency only */
   --court: #FFFFFF;       /* court fill, 1px --hair stroke */
-  --court-line: #D5D8DE;  /* centre line, dashed 3/7 */
-  --paddle: #14161C;      /* both paddles, every lane */
-  --ball: #5B606B;        /* non-hero ball and trail */
-  --hero: #FF5416;         /* hero ball, trail, bar, number >= 24px */
-  --hero-ink: #CC3D0A;     /* orange text under 24px */
-  --bar-muted: #D5D8DE;   /* non-hero bars on the end card */
+  --court-line: #D2D2D7;  /* centre line, dashed 3/7 */
+  --paddle: #1D1D1F;      /* both paddles, every lane */
+  --ball: #86868B;        /* non-hero ball and trail */
+  --hero: #1F72D8;        /* hero ball, trail, bar, number >= 24px (169Pi's Alpie Seed blue) */
+  --hero-ink: #1A6BD0;    /* hero text under 24px */
+  --bar-muted: #D2D2D7;   /* non-hero bars on the end card */
   --btn-fg: #FFFFFF;      /* text on the primary button (fill is --fg) */
-  --btn-border: #C9CDD4;  /* secondary button, input border */
+  --btn-border: #D2D2D7;  /* secondary button, input border */
   /* 04 — the number flashes to the page's own extreme for 120ms on landing. */
   --flash: #000000;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0A0B0F;
-    --surface: #12141A;
-    --hair: #1B1D24;
-    --fg: #F2F3F5;
-    --fg-muted: #8B909B;
-    --fg-inflight: #6B7080;
-    --court: #12141A;
-    --court-line: #2D3038;
-    --paddle: #E7E9EE;
-    --ball: #C8CCD4;
-    --hero: #FF5416;
-    --hero-ink: #FF5416;
-    --bar-muted: #2A2D36;
-    --btn-fg: #0A0B0F;
-    --btn-border: #33363E;
+    --bg: #000000;
+    --surface: #161618;
+    --hair: #2A2A2E;
+    --fg: #F5F5F7;
+    --fg-muted: #A1A1A6;
+    --fg-inflight: #86868B;
+    --court: #161618;
+    --court-line: #2C2C2E;
+    --paddle: #F5F5F7;
+    --ball: #A1A1A6;
+    --hero: #4B95F3;
+    --hero-ink: #6AA9F6;
+    --bar-muted: #2C2C2E;
+    --btn-fg: #111111;
+    --btn-border: #3A3A3C;
     --flash: #FFFFFF;
   }
 }
@@ -68,13 +68,15 @@
   --color-btn-fg: var(--btn-fg);
   --color-btn-border: var(--btn-border);
 
-  --font-sans: var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, Menlo, monospace;
+  /* Headings: Satoshi from Fontshare (app/layout.tsx), falling back to Inter. */
+  --font-display: "Satoshi", var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  /* Radii: court 6 (8 on play), card 10, button/input 8, bar 4, badge 4. */
+  /* Radii: court 6 (8 on play), card 10, buttons and inputs as pills (169Pi's site), bar 4, badge 4. */
   --radius-court: 6px;
   --radius-card: 10px;
-  --radius-control: 8px;
+  --radius-control: 9999px;
   --radius-bar: 4px;
   --radius-badge: 4px;
 }

@@ -16,12 +16,12 @@ import { HERO } from '@/lib/game/types';
 /** Fallbacks only matter before the stylesheet has applied. */
 const FALLBACK: Record<string, string> = {
   '--court': '#FFFFFF',
-  '--hair': '#E3E5EA',
-  '--court-line': '#D5D8DE',
-  '--paddle': '#14161C',
-  '--ball': '#5B606B',
-  '--hero': '#FF5416',
-  '--fg-muted': '#5B606B',
+  '--hair': '#E0E0E5',
+  '--court-line': '#D2D2D7',
+  '--paddle': '#1D1D1F',
+  '--ball': '#86868B',
+  '--hero': '#1F72D8',
+  '--fg-muted': '#6E6E73',
 };
 
 function token(style: CSSStyleDeclaration, name: string): string {
