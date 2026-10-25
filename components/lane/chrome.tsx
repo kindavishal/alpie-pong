@@ -57,7 +57,8 @@ export function AblyLockup({ className }: { className?: string }) {
 /* ------------------------------------------------------------ the 169Pi mark */
 
 /**
- * 169Pi's wordmark (public/brand/169pi-wordmark.svg, from 169Pi's own site).
+ * 169Pi's wordmark (public/brand/169pi-wordmark.svg, from 169Pi's own site), used
+ * only in the footer credit, where it credits the Alpie models.
  * It is drawn as a mask over `currentColor`, the way 169Pi's site draws it, so
  * it takes the colour of the text it sits in, in either theme. The aspect
  * ratio is the file's cropped viewBox.
@@ -108,9 +109,6 @@ export function SiteHeader({ right, home = false }: SiteHeaderProps) {
     <header className="flex h-[52px] items-center justify-between gap-3 lg:h-[72px] lg:gap-6">
       <div className="flex min-w-0 items-center gap-2.5 lg:gap-3">
         {home ? mark : <Link href="/">{mark}</Link>}
-        <span className="text-fg-muted hidden items-center gap-1.5 text-[12px] sm:flex lg:text-[13px]">
-          by <Mark169Pi height={12} className="lg:h-[13px]" />
-        </span>
       </div>
       {right}
     </header>

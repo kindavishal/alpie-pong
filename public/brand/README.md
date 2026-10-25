@@ -11,6 +11,6 @@ The site footer carries both variants and swaps them on `prefers-color-scheme`; 
 
 ## 169Pi
 
-`169pi-wordmark.svg` is 169Pi's wordmark, taken unchanged from 169Pi's website. It appears in the header ("Alpie Pong by 169Pi") and in the footer credit, drawn as a mask over the text colour (`Mark169Pi` in `components/lane/chrome.tsx`), so it is one solid colour that follows the theme. Never recolour it into more than one colour, stretch it, or redraw it.
+`169pi-wordmark.svg` is 169Pi's wordmark, taken unchanged from 169Pi's website. It appears only in the footer credit ("Alpie by 169Pi"), drawn as a mask over the text colour (`Mark169Pi` in `components/lane/chrome.tsx`), so it is one solid colour that follows the theme. Never recolour it into more than one colour, stretch it, or redraw it.
 
 The model providers are credited as text, not logos.
