@@ -102,6 +102,19 @@ describe('isAdminRequest — in production', () => {
     expect(isAdminRequest(req)).toBe(true);
   });
 
+  it('ignores whitespace pasted around the configured token', () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('ADMIN_TOKEN', '  sekrit\n');
+    expect(isAdminRequest(request(URL_BASE, { [ADMIN_TOKEN_HEADER]: 'sekrit' }))).toBe(true);
+    expect(isAdminRequest(request(URL_BASE, { [ADMIN_TOKEN_HEADER]: 'sekri' }))).toBe(false);
+  });
+
+  it('still refuses a configured token that is only whitespace', () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('ADMIN_TOKEN', '   ');
+    expect(isAdminRequest(request(URL_BASE, { [ADMIN_TOKEN_HEADER]: '' }))).toBe(false);
+  });
+
   it('accepts the matching ?token= query parameter', () => {
     vi.stubEnv('NODE_ENV', 'production');
     vi.stubEnv('ADMIN_TOKEN', 'sekrit');

@@ -44,9 +44,13 @@ function secretEquals(a: string, b: string): boolean {
   return diff === 0;
 }
 
-/** The configured token, or null when there is none to check against. */
+/**
+ * The configured token, or null when there is none to check against. Edge
+ * whitespace is dropped: a value pasted into a hosting dashboard easily picks
+ * up a trailing space or newline, and no generated token has one.
+ */
 function configuredToken(): string | null {
-  const token = process.env.ADMIN_TOKEN;
+  const token = process.env.ADMIN_TOKEN?.trim();
   return token === undefined || token === '' ? null : token;
 }
 
@@ -73,11 +77,11 @@ export function isAdminRequest(request: Request): boolean {
   const expected = configuredToken();
   if (expected === null) return false;
 
-  const header = request.headers.get(ADMIN_TOKEN_HEADER);
-  if (header !== null && secretEquals(header, expected)) return true;
+  const header = request.headers.get(ADMIN_TOKEN_HEADER)?.trim();
+  if (header !== undefined && secretEquals(header, expected)) return true;
 
-  const query = tokenFromUrl(request.url);
-  return query !== null && secretEquals(query, expected);
+  const query = tokenFromUrl(request.url)?.trim();
+  return query !== undefined && secretEquals(query, expected);
 }
 
 /* ----------------------------------------------------------------- browser */
