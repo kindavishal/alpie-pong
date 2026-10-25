@@ -87,7 +87,12 @@ describe('headlineSentences', () => {
     const line = headlineSentences(ROWS);
     expect(line.hero).toBe('Alpie Seed 9B returns a decision in');
     expect(line.heroMs).toBe('227 ms');
-    expect(line.chat).toBe('The other models take 2.5 to 3.2 seconds.');
+    expect(line.chat).toBe('Its rivals take 2.5 to 3.2 seconds.');
+  });
+
+  it("leaves the hero's own provider out of the rivals", () => {
+    const core = { ...ROWS[1], model: 'alpie-core', label: 'Alpie Core', provider: '169Pi', avgMs: 14902 };
+    expect(headlineSentences([...ROWS, core]).chat).toBe('Its rivals take 2.5 to 3.2 seconds.');
   });
 
   it('names the rival when the recording has only one', () => {

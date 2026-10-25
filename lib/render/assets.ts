@@ -23,10 +23,10 @@ export interface FontReport {
 /**
  * Register whatever font files `tokens.fonts.sources` points at.
  *
- * The clip sets type in Geist and Geist Mono, the same faces the site loads
- * through next/font. The `geist` npm package ships static TTFs for every
- * weight, which @napi-rs/canvas registers directly, so nothing is vendored —
- * `public/fonts/` is only the second candidate in each entry.
+ * The clip sets type in Inter and Geist Mono, the same faces the site loads
+ * through next/font. `@fontsource/inter` and `geist` ship static files for
+ * every weight, which @napi-rs/canvas registers directly, so nothing is
+ * vendored — `public/fonts/` is only the second candidate in each entry.
  *
  * Nothing here is fatal. A family with no file on disk simply falls through to
  * the next entry in the family stack, which ends in a system font — so the

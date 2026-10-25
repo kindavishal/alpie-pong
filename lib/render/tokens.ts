@@ -31,10 +31,11 @@ export type { ClipFontRole };
  * A font file the headless renderer registers before drawing.
  *
  * `paths` are repo-relative candidates tried in order; the first that exists
- * is registered under `family`. The `geist` npm package ships static TTFs for
- * every weight, which @napi-rs/canvas registers directly, so nothing has to be
- * vendored — `public/fonts/` is listed second as an escape hatch for a machine
- * without node_modules.
+ * is registered under `family`. Inter comes from the `@fontsource/inter`
+ * package and Geist Mono from `geist`, as static files for every weight, which
+ * @napi-rs/canvas registers directly, so nothing has to be vendored —
+ * `public/fonts/` is listed second as an escape hatch for a machine without
+ * node_modules.
  */
 export interface ClipFontSource {
   family: string;
@@ -250,18 +251,20 @@ export type ClipLayout = 'wide' | 'square' | 'social' | 'duel';
 // The defaults
 // ---------------------------------------------------------------------------
 
-const SANS = '"Geist", system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif';
+const SANS = '"Inter", system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif';
 const MONO = '"Geist Mono", ui-monospace, Menlo, "DejaVu Sans Mono", monospace';
 
-const GEIST_SANS = 'node_modules/geist/dist/fonts/geist-sans';
+const INTER = 'node_modules/@fontsource/inter/files';
 const GEIST_MONO = 'node_modules/geist/dist/fonts/geist-mono';
 
-function sans(weight: number, file: string): ClipFontSource {
+/** Inter, the face 169Pi's site and this one use, as the latin subset at one weight. */
+function sans(weight: number): ClipFontSource {
+  const file = `inter-latin-${weight}-normal.woff`;
   return {
-    family: 'Geist',
+    family: 'Inter',
     weight,
     style: 'normal',
-    paths: [GEIST_SANS + '/' + file, 'public/fonts/' + file],
+    paths: [INTER + '/' + file, 'public/fonts/' + file],
   };
 }
 
@@ -292,17 +295,17 @@ export const CLIP_TOKENS: ClipTokens = {
 
   fonts: {
     sources: [
-      sans(400, 'Geist-Regular.ttf'),
-      sans(500, 'Geist-Medium.ttf'),
-      sans(600, 'Geist-SemiBold.ttf'),
-      sans(700, 'Geist-Bold.ttf'),
+      sans(400),
+      sans(500),
+      sans(600),
+      sans(700),
       mono(400, 'GeistMono-Regular.ttf'),
       mono(500, 'GeistMono-Medium.ttf'),
     ],
     stacks: { sans: SANS, mono: MONO },
     title: { family: SANS, weight: 700, tracking: -0.02 },
     name: { family: SANS, weight: 600 },
-    headline: { family: SANS, weight: 700, tracking: -0.03 },
+    headline: { family: SANS, weight: 500, tracking: -0.028 },
     body: { family: SANS, weight: 400 },
     tag: { family: SANS, weight: 400, tracking: 0.04, uppercase: true },
     number: { family: MONO, weight: 500, tracking: -0.02 },

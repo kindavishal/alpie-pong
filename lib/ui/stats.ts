@@ -64,11 +64,18 @@ export function heroAvgMs(rows: LaneStat[] = LANE_STATS): number {
 }
 
 /**
- * What the chat models took, as a range in seconds to one decimal. Every lane
- * that is not the hero is a rival asked the identical question.
+ * The rivals: every lane that is neither the hero nor another model from the
+ * hero's own provider. Alpie Core races to show what thinking costs, not as a
+ * rival, so the headline does not count it against Alpie Seed.
  */
+export function rivalRows(rows: LaneStat[] = LANE_STATS): LaneStat[] {
+  const hero = rows.find((row) => row.model === HERO);
+  return rows.filter((row) => row.model !== HERO && row.provider !== hero?.provider);
+}
+
+/** What the rivals took, as a range in seconds to one decimal. */
 export function chatRangeSec(rows: LaneStat[] = LANE_STATS): { low: string; high: string } {
-  const others = rows.filter((row) => row.model !== HERO).map((row) => row.avgMs);
+  const others = rivalRows(rows).map((row) => row.avgMs);
   if (others.length === 0) return { low: '0.0', high: '0.0' };
   const low = Math.min(...others) / 1000;
   const high = Math.max(...others) / 1000;
@@ -89,13 +96,13 @@ export function headlineSentences(rows: LaneStat[] = LANE_STATS): {
 } {
   const { low, high } = chatRangeSec(rows);
   // Until every rival has a key, the recording may hold only one of them: name it.
-  const others = rows.filter((row) => row.model !== HERO);
+  const rivals = rivalRows(rows);
   const chat =
-    others.length === 1
-      ? `${others[0].label} takes ${low} seconds.`
+    rivals.length === 1
+      ? `${rivals[0].label} takes ${low} seconds.`
       : low === high
-        ? `The other models take ${low} seconds.`
-        : `The other models take ${low} to ${high} seconds.`;
+        ? `Its rivals take ${low} seconds.`
+        : `Its rivals take ${low} to ${high} seconds.`;
   return {
     hero: `${heroLane().label} returns a decision in`,
     heroMs: `${heroAvgMs(rows)} ms`,

@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { ALL_LANES, HERO } from '../game/types';
 import { contrastRatio, mixHex, parseHex, relativeLuminance, withAlpha } from './color';
@@ -68,15 +69,15 @@ describe('CLIP_TOKENS', () => {
     expect(f.number.weight).toBe(500);
   });
 
-  it('declares Geist font sources with at least one candidate path each', () => {
+  it('declares Inter and Geist Mono sources, each with a file that exists', () => {
     expect(CLIP_TOKENS.fonts.sources.length).toBeGreaterThan(0);
     for (const source of CLIP_TOKENS.fonts.sources) {
       expect(source.paths.length).toBeGreaterThan(0);
-      expect(source.family).toMatch(/^Geist/);
+      expect(source.paths.some((p) => existsSync(p)), source.paths[0]).toBe(true);
       expect(['normal', 'italic']).toContain(source.style);
     }
     const families = new Set(CLIP_TOKENS.fonts.sources.map((s) => s.family));
-    expect([...families].sort()).toEqual(['Geist', 'Geist Mono']);
+    expect([...families].sort()).toEqual(['Geist Mono', 'Inter']);
   });
 
   it('sizes both layouts to the brief, with room for four lanes', () => {

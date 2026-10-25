@@ -2,6 +2,8 @@
 
 Pong where the ball moves one step per model decision. Slow model, slow ball.
 
+![Four Pong lanes, one per model. Alpie Seed's blue ball crosses the court again and again while Alpie Core's has barely left the centre line.](public/media/clip-wide.gif)
+
 Alpie Pong races **Alpie Seed**, 169Pi's 9B model, against other models in a game that will not wait. Every lane plays the same game, asked the same question, and every ball moves only when its model answers. The time beside each court is the round trip of that one model call and nothing else.
 
 Inspired by [Jev Pong](https://github.com/ably-labs/jev-pong) from Ably Labs.
@@ -25,6 +27,8 @@ Recorded on 25 October 2026 from a local machine, each model through its own API
 | Ministral 3 8B | 76 | 1.67 | 600 ms | 1,111 ms | 9 |
 | Gemma 4 26B-A4B | 62 | 1.37 | 732 ms | 1,851 ms | 8 |
 | Alpie Core 32B | 4 | 0.07 | 14.9 s | 17.4 s | 0 |
+
+![Decisions in 12 seconds: Alpie Seed 9B 27, Ministral 3 8B 18, Gemma 4 26B-A4B 18, Alpie Core 32B 0.](public/media/clip-endcard-wide.png)
 
 These figures include the recording machine's network, so treat them as a local run, not a benchmark. Every number on the site is read from `public/replay-stats.json`; nothing is typed in by hand. Re-record from a deployment before quoting them (see [Re-recording](#re-recording)).
 
@@ -101,7 +105,7 @@ pnpm lint
 
 ## Re-recording
 
-`POST /api/record` records the race and returns the replay and its stats; drop them into `public/`. `scripts/compare-models.ts` puts the question to more models, one call at a time, and writes `public/model-comparison.json`, which the how-it-works page renders. Run both from a deployment, so the latencies are measured from a server rather than from somebody's broadband. `pnpm render:clip` renders the recording as a video clip (it needs `ffmpeg`).
+`POST /api/record` records the race and returns the replay and its stats; drop them into `public/`. `scripts/compare-models.ts` puts the question to more models, one call at a time, and writes `public/model-comparison.json`, which the how-it-works page renders. Run both from a deployment, so the latencies are measured from a server rather than from somebody's broadband. `pnpm render:clip` renders the recording as a video clip (it needs `ffmpeg`); the GIF and end card at the top of this file come from the same frame renderer.
 
 ## Credits
 

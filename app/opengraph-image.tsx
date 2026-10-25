@@ -51,8 +51,8 @@ const GAP_PX = 12;
 const URL = process.env.CLIP_URL ?? CLIP_TOKENS.copy.url;
 
 /**
- * The same Geist files the clip renderer registers, read from the `geist`
- * package. The card is generated at build time, so this runs where
+ * The same font files the clip renderer registers: Inter from
+ * `@fontsource/inter` and Geist Mono from `geist`. The card is generated at build time, so this runs where
  * node_modules is; if a file is ever missing the card still renders in
  * next/og's own default face.
  *
@@ -60,10 +60,19 @@ const URL = process.env.CLIP_URL ?? CLIP_TOKENS.copy.url;
  * font folder rather than the whole project.
  */
 const FONT_DIR = 'node_modules/geist/dist/fonts';
+const INTER_DIR = 'node_modules/@fontsource/inter/files';
 
 function geist(file: string): Buffer | null {
   try {
     return readFileSync(join(process.cwd(), FONT_DIR, file));
+  } catch {
+    return null;
+  }
+}
+
+function inter(file: string): Buffer | null {
+  try {
+    return readFileSync(join(process.cwd(), INTER_DIR, file));
   } catch {
     return null;
   }
@@ -109,15 +118,16 @@ function logo(): string | null {
 }
 
 function faces(): Face[] {
-  const wanted: Array<[string, string, Face['weight']]> = [
-    ['Geist', 'geist-sans/Geist-Regular.ttf', 400],
-    ['Geist', 'geist-sans/Geist-SemiBold.ttf', 600],
-    ['Geist', 'geist-sans/Geist-Bold.ttf', 700],
-    ['Geist Mono', 'geist-mono/GeistMono-Medium.ttf', 500],
+  // Inter as .woff: the card renderer reads TTF, OTF and WOFF, not WOFF2.
+  const wanted: Array<[string, Buffer | null, Face['weight']]> = [
+    ['Inter', inter('inter-latin-400-normal.woff'), 400],
+    ['Inter', inter('inter-latin-500-normal.woff'), 500],
+    ['Inter', inter('inter-latin-600-normal.woff'), 600],
+    ['Inter', inter('inter-latin-700-normal.woff'), 700],
+    ['Geist Mono', geist('geist-mono/GeistMono-Medium.ttf'), 500],
   ];
   const out: Face[] = [];
-  for (const [name, file, weight] of wanted) {
-    const data = geist(file);
+  for (const [name, data, weight] of wanted) {
     if (data) out.push({ name, data, weight, style: 'normal' });
   }
   return out;
@@ -139,7 +149,7 @@ export default function Image() {
           backgroundColor: C.bg,
           color: C.fg,
           padding: '40px 64px 30px',
-          fontFamily: 'Geist',
+          fontFamily: 'Inter',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -151,8 +161,8 @@ export default function Image() {
             style={{
               display: 'flex',
               fontSize: 50,
-              fontWeight: 700,
-              letterSpacing: '-0.03em',
+              fontWeight: 500,
+              letterSpacing: '-0.028em',
               lineHeight: 1.1,
             }}
           >
@@ -177,8 +187,8 @@ export default function Image() {
           <div
             style={{
               fontSize: 50,
-              fontWeight: 700,
-              letterSpacing: '-0.03em',
+              fontWeight: 500,
+              letterSpacing: '-0.028em',
               lineHeight: 1.1,
               color: C.fgMuted,
               marginTop: 4,
