@@ -17,12 +17,11 @@ export const TAGLINE =
   'Pong where the ball moves one step per model decision. Slow model, slow ball.';
 
 /**
- * Where the recorded run was measured from, via POST /api/record. The race was
- * recorded from a local `pnpm dev`, each lane through its own model's API, so
- * the latencies include that machine's network. Change this in one place when
- * the run is re-recorded from a deployment.
+ * Where the recorded run was measured from: POST /api/record on the deployed
+ * site, whose functions run in Vercel's iad1 region, each lane through its own
+ * model's API. Change this in one place if the run is re-recorded elsewhere.
  */
-export const MEASUREMENT = "a local machine, via each model's own API";
+export const MEASUREMENT = "Vercel (iad1), via each model's own API";
 
 /** The credit line under every surface. */
 export const CREDIT_PARTS = ['AI SDK', 'Alpie by 169Pi'] as const;

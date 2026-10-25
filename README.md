@@ -2,7 +2,7 @@
 
 Pong where the ball moves one step per model decision. Slow model, slow ball.
 
-![Four Pong lanes, one per model. Alpie Seed's blue ball crosses the court again and again while Alpie Core's has barely left the centre line.](public/media/clip-wide.gif)
+![Six Pong lanes, one per model. Alpie Seed's blue ball crosses the court again and again while Alpie Core's has barely left the centre line.](public/media/clip-wide.gif)
 
 Alpie Pong races **Alpie Seed**, 169Pi's 9B model, against other models in a game that will not wait. Every lane plays the same game, asked the same question, and every ball moves only when its model answers. The time beside each court is the round trip of that one model call and nothing else.
 
@@ -23,18 +23,20 @@ Created by Vishal Das. Inspired by [Jev Pong](https://github.com/ably-labs/jev-p
 
 The rivals are chosen to be fair to Alpie Seed: about its size or larger, answering without thinking first, and free to start on with no credit card, as Alpie is.
 
-Recorded on 25 October 2026 from a local machine, each model through its own API, 45 seconds per lane:
+Recorded on 25 October 2026 from the deployed site, in a Vercel function in iad1 (Washington, D.C.), each model through its own API, 45 seconds per lane:
 
 | Lane | Decisions | Per second | Average | p95 | Returns |
 |---|---|---|---|---|---|
-| **Alpie Seed 9B** | **110** | **2.44** | **410 ms** | 404 ms | 14 |
-| Ministral 3 8B | 76 | 1.67 | 600 ms | 1,111 ms | 9 |
-| Gemma 4 26B-A4B | 62 | 1.37 | 732 ms | 1,851 ms | 8 |
-| Alpie Core 32B | 4 | 0.07 | 14.9 s | 17.4 s | 0 |
+| **Alpie Seed 9B** | **173** | **3.84** | **261 ms** | 260 ms | 22 |
+| Sarvam 105B | 116 | 2.57 | 389 ms | 514 ms | 14 |
+| Ministral 3 8B | 78 | 1.72 | 580 ms | 1,090 ms | 10 |
+| Qwen 3.8 27B | 75 | 1.65 | 607 ms | 1,617 ms | 9 |
+| Gemma 4 26B-A4B | 38 | 1.01 | 989 ms | 2,344 ms | 5 |
+| Alpie Core 32B | 4 | 0.07 | 14.5 s | 15.2 s | 0 |
 
-![Decisions in 12 seconds: Alpie Seed 9B 27, Ministral 3 8B 18, Gemma 4 26B-A4B 18, Alpie Core 32B 0.](public/media/clip-endcard-wide.png)
+![Decisions in 12 seconds: Alpie Seed 9B 45, Sarvam 105B 27, Ministral 3 8B 19, Qwen 3.8 27B 25, Gemma 4 26B-A4B 23, Alpie Core 32B 0.](public/media/clip-endcard-wide.png)
 
-These figures include the recording machine's network, so treat them as a local run, not a benchmark. Every number on the site is read from `public/replay-stats.json`; nothing is typed in by hand. Re-record from a deployment before quoting them (see [Re-recording](#re-recording)).
+Each latency is the round trip from that server to the model's own API, so it includes the network distance to wherever the provider serves the model. From iad1, Alpie's endpoint in San Jose is nearer than Sarvam's API in Mumbai, while Mistral and Cloudflare answer from their nearest edge; from a server in India the order between Alpie Seed and Sarvam could change. Every number on the site is read from `public/replay-stats.json`; nothing is typed in by hand.
 
 ### Models we tried and left out
 

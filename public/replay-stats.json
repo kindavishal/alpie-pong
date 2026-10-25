@@ -1,16 +1,31 @@
 {
   "version": 1,
-  "recordedAt": "2026-10-25T18:19:58.057Z",
+  "recordedAt": "2026-10-25T19:52:14.761Z",
   "seed": 20260917,
   "seconds": 45,
   "lanes": [
     {
       "model": "alpie",
       "label": "Alpie Seed 9B",
-      "ticks": 110,
-      "decisionsPerSec": 2.44,
-      "avgMs": 410,
-      "p95Ms": 404,
+      "ticks": 173,
+      "decisionsPerSec": 3.84,
+      "avgMs": 261,
+      "p95Ms": 260,
+      "returns": 22,
+      "misses": 0,
+      "finalScore": [
+        0,
+        0
+      ],
+      "status": "playing"
+    },
+    {
+      "model": "sarvam",
+      "label": "Sarvam 105B",
+      "ticks": 116,
+      "decisionsPerSec": 2.57,
+      "avgMs": 389,
+      "p95Ms": 514,
       "returns": 14,
       "misses": 0,
       "finalScore": [
@@ -22,10 +37,25 @@
     {
       "model": "ministral-8b",
       "label": "Ministral 3 8B",
-      "ticks": 76,
-      "decisionsPerSec": 1.67,
-      "avgMs": 600,
-      "p95Ms": 1111,
+      "ticks": 78,
+      "decisionsPerSec": 1.72,
+      "avgMs": 580,
+      "p95Ms": 1090,
+      "returns": 10,
+      "misses": 0,
+      "finalScore": [
+        0,
+        0
+      ],
+      "status": "playing"
+    },
+    {
+      "model": "qwen-cf",
+      "label": "Qwen 3.8 27B",
+      "ticks": 75,
+      "decisionsPerSec": 1.65,
+      "avgMs": 607,
+      "p95Ms": 1617,
       "returns": 9,
       "misses": 0,
       "finalScore": [
@@ -37,11 +67,11 @@
     {
       "model": "gemma-cf",
       "label": "Gemma 4 26B-A4B",
-      "ticks": 62,
-      "decisionsPerSec": 1.37,
-      "avgMs": 732,
-      "p95Ms": 1851,
-      "returns": 8,
+      "ticks": 38,
+      "decisionsPerSec": 1.01,
+      "avgMs": 989,
+      "p95Ms": 2344,
+      "returns": 5,
       "misses": 0,
       "finalScore": [
         0,
@@ -54,8 +84,8 @@
       "label": "Alpie Core 32B",
       "ticks": 4,
       "decisionsPerSec": 0.07,
-      "avgMs": 14902,
-      "p95Ms": 17409,
+      "avgMs": 14469,
+      "p95Ms": 15245,
       "returns": 0,
       "misses": 0,
       "finalScore": [
