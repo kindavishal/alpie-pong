@@ -11,7 +11,7 @@
 
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { ABLY_CREDIT, ABLY_URL, CREDITS, REPO_URL } from '@/lib/config/site';
+import { ABLY_CREDIT, ABLY_URL, COMPANY_URL, CREDIT_PARTS, REPO_URL } from '@/lib/config/site';
 
 /* --------------------------------------------------------------- the logo */
 
@@ -54,6 +54,37 @@ export function AblyLockup({ className }: { className?: string }) {
   );
 }
 
+/* ------------------------------------------------------------ the 169Pi mark */
+
+/**
+ * 169Pi's wordmark (public/brand/169pi-wordmark.svg, from 169Pi's own site).
+ * It is drawn as a mask over `currentColor`, the way 169Pi's site draws it, so
+ * it takes the colour of the text it sits in, in either theme. The aspect
+ * ratio is the file's cropped viewBox.
+ */
+export function Mark169Pi({ height, className }: { height: number; className?: string }) {
+  const mask = 'url(/brand/169pi-wordmark.svg)';
+  return (
+    <span
+      role="img"
+      aria-label="169Pi"
+      className={`inline-block shrink-0 bg-current ${className ?? ''}`}
+      style={{
+        height,
+        aspectRatio: '790 / 268',
+        maskImage: mask,
+        WebkitMaskImage: mask,
+        maskSize: 'contain',
+        WebkitMaskSize: 'contain',
+        maskRepeat: 'no-repeat',
+        WebkitMaskRepeat: 'no-repeat',
+        maskPosition: 'center',
+        WebkitMaskPosition: 'center',
+      }}
+    />
+  );
+}
+
 /* ------------------------------------------------------------- the header */
 
 export interface SiteHeaderProps {
@@ -77,6 +108,9 @@ export function SiteHeader({ right, home = false }: SiteHeaderProps) {
     <header className="flex h-[52px] items-center justify-between gap-3 lg:h-[72px] lg:gap-6">
       <div className="flex min-w-0 items-center gap-2.5 lg:gap-3">
         {home ? mark : <Link href="/">{mark}</Link>}
+        <span className="text-fg-muted hidden items-center gap-1.5 text-[12px] sm:flex lg:text-[13px]">
+          by <Mark169Pi height={12} className="lg:h-[13px]" />
+        </span>
       </div>
       {right}
     </header>
@@ -141,7 +175,13 @@ export function SiteFooter({ stacked = false }: { stacked?: boolean }) {
       }`}
     >
       <HowLink />
-      <p className="text-fg-muted">{CREDITS}</p>
+      <p className={`text-fg-muted flex flex-wrap items-center gap-x-1 ${stacked ? '' : 'sm:justify-end'}`}>
+        {/* The credits, with the last one ("Alpie by 169Pi") ending in 169Pi's mark. */}
+        <span>{CREDIT_PARTS.slice(0, -1).join(' · ')} · Alpie by</span>
+        <a href={COMPANY_URL} className="hover:text-fg inline-flex items-center" aria-label="169Pi">
+          <Mark169Pi height={11} className="sm:h-[12px]" />
+        </a>
+      </p>
     </div>
   );
 

@@ -52,3 +52,6 @@ export const ATARI_PAPER_URL = 'https://arxiv.org/html/2408.15950v2';
 
 /** The open-source project Alpie Pong is inspired by and builds on (see NOTICE). */
 export const INSPIRED_BY_URL = 'https://github.com/ably-labs/jev-pong';
+
+/** 169Pi, linked from the wordmark in the footer credit. */
+export const COMPANY_URL = 'https://169pi.ai';
