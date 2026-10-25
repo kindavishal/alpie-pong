@@ -101,7 +101,7 @@ describe('POST /api/record', () => {
     });
   });
 
-  it('declares the Vercel Pro duration ceiling', () => {
-    expect(maxDuration).toBe(800);
+  it('declares a duration every Vercel plan allows (Hobby caps it at 300 s)', () => {
+    expect(maxDuration).toBe(300);
   });
 });

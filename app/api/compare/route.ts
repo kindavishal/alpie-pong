@@ -20,8 +20,8 @@ import { isAdminRequest } from '../../../lib/config/admin';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-/** Vercel Pro ceiling. */
-export const maxDuration = 800;
+/** 300 s: the Vercel Hobby ceiling, which every plan allows. The slowest lane takes about three minutes. */
+export const maxDuration = 300;
 
 const bodySchema = z.object({
   lane: z.enum(COMPARE_LANE_KEYS as [string, ...string[]]),

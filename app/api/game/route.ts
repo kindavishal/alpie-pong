@@ -36,8 +36,12 @@ import type { GameMode } from '../../../lib/worker/referee';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-/** Vercel Pro ceiling. The worker stops 15s before the deadline this implies. */
-export const maxDuration = 800;
+/**
+ * 300 s: the Vercel Hobby ceiling, which every plan allows. The worker stops 15s
+ * before the deadline this implies, so a game can last up to 4m45s; a game to
+ * five points usually takes one to two minutes.
+ */
+export const maxDuration = 300;
 
 /** Games that may run at once, counted from the lobby presence set. */
 export const DEFAULT_MAX_LIVE_GAMES = 20;

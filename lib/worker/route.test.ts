@@ -70,7 +70,7 @@ afterEach(() => {
 
 describe('POST /api/game', () => {
   it('is configured to outlive the response', () => {
-    expect(maxDuration).toBe(800);
+    expect(maxDuration).toBe(300);
   });
 
   it('returns 503 when there is no Ably key', async () => {

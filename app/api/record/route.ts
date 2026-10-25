@@ -12,8 +12,8 @@
  * NEEDS  Gateway auth (`AI_GATEWAY_API_KEY`, or Vercel OIDC on a linked
  *        project) and `ADMIN_TOKEN`.
  * REFUSES a request without the admin token, and a recording longer than
- *        MAX_SECONDS. Two ceilings bound it: `maxDuration` is 800 s (Vercel
- *        Pro) and a response body must stay under 4.5 MB — at ~80 KB per lane
+ *        MAX_SECONDS. Two ceilings bound it: `maxDuration` is 300 s (the Vercel
+ *        Hobby ceiling) and a response body must stay under 4.5 MB — at ~80 KB per lane
  *        for 45 s, the clock binds long before the payload does.
  */
 import { z } from 'zod';
@@ -23,11 +23,11 @@ import { recordLanes } from '../../../lib/record/record-lanes';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-/** Vercel Pro ceiling. A recording longer than this cannot finish in-request. */
-export const maxDuration = 800;
+/** 300 s: the Vercel Hobby ceiling, which every plan allows. A recording longer than this cannot finish in-request. */
+export const maxDuration = 300;
 
 /** Leaves headroom under maxDuration for cold start and serialisation. */
-const MAX_SECONDS = 600;
+const MAX_SECONDS = 240;
 const DEFAULT_SECONDS = 45;
 const DEFAULT_SEED = 20260917;
 

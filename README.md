@@ -97,6 +97,8 @@ Every model in the race starts free, with no credit card:
 
 `.env.example` lists them all. No key reaches a browser.
 
+It deploys to Vercel's free Hobby plan. Functions there run for at most 300 seconds, so a live game lasts up to 4 minutes 45 seconds (a game to five points usually takes one to two), and `/api/record` records at most 240 seconds.
+
 ```bash
 pnpm test
 pnpm typecheck
