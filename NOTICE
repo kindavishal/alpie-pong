@@ -1,0 +1,18 @@
+Alpie Pong
+Copyright 2026 169Pi
+
+Inspired by Jev Pong from Ably Labs: https://github.com/ably-labs/jev-pong
+
+This product is a modified version of Jev Pong
+(https://github.com/ably-labs/jev-pong), copyright 2026 Ably Real-time Ltd,
+licensed under the Apache License, Version 2.0. See LICENSE.
+
+169Pi changed it to race Alpie Seed against other models a developer can use
+without a credit card, to call models through their own APIs as well as the
+Vercel AI Gateway, to add a watch-only Alpie Core lane, and to rebrand the site
+as Alpie Pong. The modifications are also licensed under the Apache License,
+Version 2.0.
+
+Realtime transport is provided by Ably (https://ably.com). Ably and the Ably
+logo are trademarks of Ably Real-time Ltd and are used here only to credit the
+service the game runs on.

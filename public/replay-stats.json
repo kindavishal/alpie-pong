@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "recordedAt": "2026-10-25T18:19:58.057Z",
+  "seed": 20260917,
+  "seconds": 45,
+  "lanes": [
+    {
+      "model": "alpie",
+      "label": "Alpie Seed 9B",
+      "ticks": 110,
+      "decisionsPerSec": 2.44,
+      "avgMs": 410,
+      "p95Ms": 404,
+      "returns": 14,
+      "misses": 0,
+      "finalScore": [
+        0,
+        0
+      ],
+      "status": "playing"
+    },
+    {
+      "model": "ministral-8b",
+      "label": "Ministral 3 8B",
+      "ticks": 76,
+      "decisionsPerSec": 1.67,
+      "avgMs": 600,
+      "p95Ms": 1111,
+      "returns": 9,
+      "misses": 0,
+      "finalScore": [
+        0,
+        0
+      ],
+      "status": "playing"
+    },
+    {
+      "model": "gemma-cf",
+      "label": "Gemma 4 26B-A4B",
+      "ticks": 62,
+      "decisionsPerSec": 1.37,
+      "avgMs": 732,
+      "p95Ms": 1851,
+      "returns": 8,
+      "misses": 0,
+      "finalScore": [
+        0,
+        0
+      ],
+      "status": "playing"
+    },
+    {
+      "model": "alpie-core",
+      "label": "Alpie Core 32B",
+      "ticks": 4,
+      "decisionsPerSec": 0.07,
+      "avgMs": 14902,
+      "p95Ms": 17409,
+      "returns": 0,
+      "misses": 0,
+      "finalScore": [
+        0,
+        0
+      ],
+      "status": "playing"
+    }
+  ]
+}
