@@ -6,7 +6,7 @@ Pong where the ball moves one step per model decision. Slow model, slow ball.
 
 Alpie Pong races **Alpie Seed**, 169Pi's 9B model, against other models in a game that will not wait. Every lane plays the same game, asked the same question, and every ball moves only when its model answers. The time beside each court is the round trip of that one model call and nothing else.
 
-Inspired by [Jev Pong](https://github.com/ably-labs/jev-pong) from Ably Labs.
+Created by Vishal Das. Inspired by [Jev Pong](https://github.com/ably-labs/jev-pong) from Ably Labs.
 
 ## The race
 
@@ -109,4 +109,4 @@ pnpm lint
 
 ## Credits
 
-Alpie Pong is built by [169Pi](https://169pi.ai), inspired by [Jev Pong](https://github.com/ably-labs/jev-pong), an open-source demo by Ably Labs, and builds on its code under the Apache License 2.0. See `LICENSE` and `NOTICE`. Realtime transport by [Ably](https://ably.com). Next.js on Vercel, the AI SDK, Tailwind, and canvas courts with no game engine.
+Alpie Pong is created by Vishal Das, inspired by [Jev Pong](https://github.com/ably-labs/jev-pong), an open-source demo by Ably Labs, and builds on its code under the Apache License 2.0. See `LICENSE` and `NOTICE`. Alpie Seed and Alpie Core are made by [169Pi](https://169pi.ai). Realtime transport by [Ably](https://ably.com). Next.js on Vercel, the AI SDK, Tailwind, and canvas courts with no game engine.
