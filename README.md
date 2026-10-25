@@ -6,6 +6,8 @@ Pong where the ball moves one step per model decision. Slow model, slow ball.
 
 Alpie Pong races **Alpie Seed**, 169Pi's 9B model, against other models in a game that will not wait. Every lane plays the same game, asked the same question, and every ball moves only when its model answers. The time beside each court is the round trip of that one model call and nothing else.
 
+**Play it: [alpie-pong.vercel.app](https://alpie-pong.vercel.app)**. Arrow keys or W/S, or drag on a phone.
+
 Created by Vishal Das. Inspired by [Jev Pong](https://github.com/ably-labs/jev-pong) from Ably Labs.
 
 ## The race
@@ -13,11 +15,13 @@ Created by Vishal Das. Inspired by [Jev Pong](https://github.com/ably-labs/jev-p
 | Lane | Model | Served by | Why it is here |
 |---|---|---|---|
 | **Alpie Seed 9B** | `alpie_9b`, thinking off | 169Pi | the model this site is about |
+| Sarvam 105B | `sarvam-105b`, thinking off | Sarvam | the other Indian model family; about 10.3B parameters active per answer |
 | Ministral 3 8B | `ministral-8b-2512` | Mistral | the Ministral 3 size closest to Seed's 9B; does not think |
+| Qwen 3.8 27B | `@cf/qwen/qwen3.8-27b`, thinking off | Cloudflare Workers AI | three times Seed's size, a bigger rival |
 | Gemma 4 26B-A4B | `@cf/google/gemma-4-26b-a4b-it`, thinking off | Cloudflare Workers AI | a mixture of experts with about 4B parameters active per answer |
 | Alpie Core 32B | `alpie-32b` | 169Pi | 169Pi's reasoning model, which thinks before every answer; watch-only, to show what that costs |
 
-The rivals are chosen to be fair to Alpie Seed: about its size, answering without thinking first, and free to start on with no credit card, as Alpie is.
+The rivals are chosen to be fair to Alpie Seed: about its size or larger, answering without thinking first, and free to start on with no credit card, as Alpie is.
 
 Recorded on 25 October 2026 from a local machine, each model through its own API, 45 seconds per lane:
 
@@ -36,7 +40,8 @@ These figures include the recording machine's network, so treat them as a local 
 
 - **Gemini 3.5 Flash-Lite** (Google AI Studio): the free tier allows 15 requests a minute, and a lane makes about 60, so a free lane stops within seconds.
 - **Gemma 4 on Google AI Studio**: failed about one call in six. The same model on Cloudflare is reliable, so it races there.
-- **Sarvam 105B** and **gpt-oss-20b**: their APIs cannot switch reasoning off, which would make the lane a test of thinking rather than of the model. Sarvam 105B is in the wider comparison on the how-it-works page.
+- **gpt-oss-20b**: its API cannot switch reasoning off, which would make the lane a test of thinking rather than of the model.
+- **Sarvam 105B** was left out at first for the same reason, wrongly: its documented `reasoning_effort` setting never goes below "low", but the API also accepts the chat template's `enable_thinking` switch, which turns thinking off. It now races.
 - **Llama 3.1 8B, Qwen 3 30B-A3B and Granite 4.0 Micro** on Cloudflare: Llama cannot return a JSON schema and took 3.5 to 4.6 s, Qwen returned empty replies, and Granite got half its moves wrong.
 
 ## What counts as one decision
@@ -90,10 +95,11 @@ Every model in the race starts free, with no credit card:
 |---|---|
 | `ABLY_API_KEY` | Realtime transport. Ably's free plan is enough; the key needs **publish**, **subscribe** and **presence**. |
 | `ALPIE_SEED_BASE_URL`, `ALPIE_CORE_BASE_URL`, `ALPIE_API_KEY` | Alpie Seed and Alpie Core on 169Pi's API (OpenAI-compatible, ending in `/v1`). |
+| `SARVAM_API_KEY` | Sarvam 105B, on Sarvam's free sign-up credits. |
 | `MISTRAL_API_KEY` | Ministral 3 8B, on Mistral's free Experiment plan. |
-| `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` | Gemma 4 on Cloudflare Workers AI's free plan (a token from the "Workers AI" template). |
+| `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` | Qwen 3.8 and Gemma 4 on Cloudflare Workers AI's free plan (a token from the "Workers AI" template). |
 | `ADMIN_TOKEN` | Guards anything that spends model credit with nobody playing: `/arena`, demo games, `/api/record`, `/api/compare`. |
-| `SARVAM_API_KEY`, `AI_GATEWAY_API_KEY` | Optional, for the comparison tool's Sarvam lane and the original Vercel AI Gateway lanes. |
+| `AI_GATEWAY_API_KEY` | Optional, for the original Vercel AI Gateway lanes in the comparison tool. |
 
 `.env.example` lists them all. No key reaches a browser.
 

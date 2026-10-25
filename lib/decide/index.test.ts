@@ -102,7 +102,7 @@ describe('decide — rejections', () => {
     expect(llm).not.toHaveBeenCalled();
   });
 
-  it.each(['jev', 'haiku', 'gpt', 'gemini', 'ministral-8b', 'gemma-cf', 'alpie-core'] as const)('refuses to let you play "%s"', async (model) => {
+  it.each(['jev', 'haiku', 'gpt', 'gemini', 'sarvam', 'ministral-8b', 'qwen-cf', 'gemma-cf', 'alpie-core'] as const)('refuses to let you play "%s"', async (model) => {
     const result = await decide(request({ model, mode: 'play' }));
     expect(result).toMatchObject({ ok: false, error: 'model_not_allowed' });
     expect(llm).not.toHaveBeenCalled();

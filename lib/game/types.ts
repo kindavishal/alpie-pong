@@ -84,7 +84,9 @@ export type Move = 'up' | 'down' | 'stay';
 
 export type ModelId =
   | 'alpie'
+  | 'sarvam'
   | 'ministral-8b'
+  | 'qwen-cf'
   | 'gemma-cf'
   | 'alpie-core'
   | 'jev'
@@ -279,9 +281,15 @@ export const HERO: ModelId = 'alpie';
  * rivals of about its size that also answer without thinking first and run on
  * free keys with no credit card, then Alpie Core to show what thinking costs.
  *
- *   Ministral 3 8B   the most competitive of the Ministral 3 sizes: in the
- *                    2026-10-25 recording 3B was faster but lost 4 points to
- *                    wrong moves, and 14B was the slowest.
+ *   Sarvam 105B      the other Indian model family, a mixture of experts with
+ *                    about 10.3B parameters active per answer (Seed is 9B).
+ *                    Its API takes the same chat_template_kwargs thinking switch
+ *                    as Alpie: with thinking off it answered in about 300 ms with
+ *                    7 tokens, 9 of 12 right, when probed on 2026-10-26.
+ *   Ministral 3 8B   the Ministral 3 size closest to Seed's 9B; it does not think.
+ *   Qwen 3.8 27B     on Cloudflare Workers AI, thinking off: 12 of 12 right at a
+ *                    632 ms median when probed on 2026-10-26. Three times Seed's
+ *                    size, so a bigger rival rather than a same-size one.
  *   Gemma 4 26B-A4B  on Cloudflare Workers AI, which allows 300 requests a minute
  *                    per text model on the free plan, enough for a live lane.
  *                    A mixture of experts with about 4B active per token, thinking
@@ -298,8 +306,8 @@ export const HERO: ModelId = 'alpie';
  *
  * Google's lanes were tried and dropped: AI Studio's free tier allows Gemini 3.5
  * Flash-Lite 15 requests a minute and a lane makes about 60, and Gemma failed one
- * call in six. Sarvam 105B and gpt-oss cannot switch reasoning off. Those stay in
- * the comparison table (lib/compare), where that is said.
+ * call in six. gpt-oss cannot switch reasoning off. Those stay in the comparison
+ * table (lib/compare), where that is said.
  * Only the hero carries an accent; the others use the neutral ball colour (design tokens --ball).
  */
 export const LANES: LaneConfig[] = [
@@ -307,8 +315,16 @@ export const LANES: LaneConfig[] = [
     id: 'alpie', label: 'Alpie Seed 9B', gateway: null, endpoint: 'alpie-seed', modelId: 'alpie_9b', provider: '169Pi',
     kind: 'structured', color: '#1F72D8', providerOptions: { alpie: { chat_template_kwargs: { enable_thinking: false } } },
   },
+  {
+    id: 'sarvam', label: 'Sarvam 105B', gateway: null, endpoint: 'sarvam', modelId: 'sarvam-105b', provider: 'Sarvam',
+    kind: 'structured', color: '#A1A1A6', providerOptions: { sarvam: { chat_template_kwargs: { enable_thinking: false } } },
+  },
   // Ministral 3 does not think, so there is nothing to switch off.
   { id: 'ministral-8b', label: 'Ministral 3 8B', gateway: null, endpoint: 'mistral', modelId: 'ministral-8b-2512', provider: 'Mistral', kind: 'structured', color: '#A1A1A6' },
+  {
+    id: 'qwen-cf', label: 'Qwen 3.8 27B', gateway: null, endpoint: 'cloudflare', modelId: '@cf/qwen/qwen3.8-27b', provider: 'Cloudflare',
+    kind: 'structured', color: '#A1A1A6', providerOptions: { cloudflare: { chat_template_kwargs: { enable_thinking: false } } },
+  },
   {
     id: 'gemma-cf', label: 'Gemma 4 26B-A4B', gateway: null, endpoint: 'cloudflare', modelId: '@cf/google/gemma-4-26b-a4b-it', provider: 'Cloudflare',
     kind: 'structured', color: '#A1A1A6', providerOptions: { cloudflare: { chat_template_kwargs: { enable_thinking: false } } },

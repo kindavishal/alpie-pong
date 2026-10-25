@@ -47,6 +47,31 @@ afterEach(() => {
 });
 
 describe('POST /api/decide', () => {
+  it('refuses a production request without the admin token, before any model call', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('ADMIN_TOKEN', 'sesame');
+    const result = await call({ model: 'jev', state: STATE, mode: 'demo' });
+    expect(result.status).toBe(403);
+    expect(jev).not.toHaveBeenCalled();
+    expect(llm).not.toHaveBeenCalled();
+    vi.unstubAllEnvs();
+  });
+
+  it('answers in production when the admin token is presented', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('ADMIN_TOKEN', 'sesame');
+    jev.mockResolvedValue({ move: 'up', latencyMs: 300 });
+    const response = await POST(
+      new Request('http://localhost/api/decide', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-admin-token': 'sesame' },
+        body: JSON.stringify({ model: 'jev', state: STATE, mode: 'demo' }),
+      }),
+    );
+    expect(response.status).toBe(200);
+    vi.unstubAllEnvs();
+  });
+
   it('returns 200 and the move when the model answers', async () => {
     jev.mockResolvedValue({ move: 'down', latencyMs: 402.4 });
     const result = await call({ model: 'jev', state: STATE, mode: 'demo' });

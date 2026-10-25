@@ -4,7 +4,7 @@
  * The lanes on the home page are a recording. This is the wider check: the
  * same 125-byte state, the same instruction and three answers, put to more
  * models one call at a time (lib/compare), including Alpie Seed and Alpie Core
- * with thinking on, and Sarvam 105B, which cannot switch reasoning off. The run
+ * and Sarvam 105B with thinking on as well as off. The run
  * lives in `public/model-comparison.json`, written by
  * `scripts/compare-models.ts`, with where and when it was measured recorded
  * beside the numbers. This file derives the columns a reader wants. Nothing

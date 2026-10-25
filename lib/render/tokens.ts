@@ -573,9 +573,10 @@ export const CLIP_TOKENS: ClipTokens = {
     ].join(' · '),
     endHeadline: 'Decisions in {n} seconds',
     endSubtitle: 'Same serve, same rules. The ball moves one step per model decision.',
-    // No deployed domain yet: the end card points at the code. CLIP_URL overrides it.
-    endUrlLabel: 'Get the code at',
-    url: 'github.com/kindavishal/alpie-pong',
+    // The deployed site. It is also the site's base URL for the social card
+    // (app/layout.tsx), unless NEXT_PUBLIC_SITE_URL says otherwise. CLIP_URL overrides it on the clip.
+    endUrlLabel: 'Play against Alpie at',
+    url: 'alpie-pong.vercel.app',
     providers: {
       'typesafe-ai': 'TypeSafe AI',
       anthropic: 'Anthropic',

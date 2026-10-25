@@ -1,7 +1,7 @@
 /**
  * Re-measures public/model-comparison.json by asking the deployed app to run
  * each comparison lane from its own Vercel function (POST /api/compare), so
- * every latency is function-to-Gateway, the same footing as the lanes.
+ * every latency is measured from a server, on the same footing as the race.
  *
  * Run (against a deployment, needs ADMIN_TOKEN in .env.local, the deployment's token):
  *   pnpm dlx tsx --env-file=.env.local scripts/compare-models.ts
@@ -23,7 +23,7 @@ const BASE = (process.env.COMPARE_URL ?? 'http://localhost:3000').replace(/\/$/,
  */
 const PUBLISHED = [
   'alpie-seed',
-  'ministral-3b-free', 'ministral-8b-free', 'ministral-14b-free', 'gemma-4-cf',
+  'sarvam-105b-free', 'ministral-3b-free', 'ministral-8b-free', 'ministral-14b-free', 'qwen-3.8-cf', 'gemma-4-cf',
   'sarvam-105b', 'alpie-seed-thinking', 'alpie-core', 'alpie-core-thinking',
 ];
 const LANES = process.env.LANES?.split(',').map((s) => s.trim()).filter(Boolean) ?? PUBLISHED;
@@ -66,7 +66,7 @@ async function main() {
     states: N,
     floorMs: 0,
     // No region means the route ran off Vercel, and the latencies include this machine's network.
-    from: region === null ? `a local machine via ${BASE}, not Vercel` : `a Vercel function in ${region}, next to the Gateway`,
+    from: region === null ? `a local machine via ${BASE}, not Vercel` : `a Vercel function in ${region}, each model through its own API`,
     region,
     // A thinking lane runs fewer states than N, so every row says how many it ran.
     rows: ordered.map(({ key, model, provider, setting, states, answered, correct, p50Ms, p95Ms, latenciesMs, warning, error }) => ({

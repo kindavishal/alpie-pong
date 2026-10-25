@@ -132,16 +132,19 @@ export const COMPARE_LANES: readonly CompareLane[] = [
   { key: 'lfm-24b', id: 'liquid/lfm2.5-24b-a2b', model: 'LFM2.5 24B-A2B', provider: 'Liquid AI', setting: 'default' },
   { key: 'qwen-30b-a3b', id: 'alibaba/qwen-3-30b', model: 'Qwen 3 30B-A3B', provider: 'Alibaba', setting: 'thinking off', providerOptions: { alibaba: { enableThinking: false } } },
   { key: 'nemotron-3-nano', id: 'nvidia/nemotron-3-nano-30b-a3b', model: 'Nemotron 3 Nano 30B-A3B', provider: 'NVIDIA', setting: 'default' },
-  // The other Indian open model, on Sarvam's own API. Leaving reasoning_effort out
-  // means "max", so the lane asks for the lowest Sarvam offers; it still reasons
-  // first and ran out of 50 tokens on "Say ok", so it gets the thinking budget.
+  // The other Indian open model, on Sarvam's own API, both ways. Its documented
+  // switch is reasoning_effort (leaving it out means "max"; "low" still reasons
+  // for about 230 tokens). The chat template's enable_thinking switch, which the
+  // API also accepts, turns thinking off: about 300 ms and 7 tokens (2026-10-26).
   // sarvam-30b is retired from the API (deprecated on v1, not found on v2, 2026-10-25).
+  { key: 'sarvam-105b-free', id: 'sarvam-105b', endpoint: 'sarvam', model: 'Sarvam 105B', provider: 'Sarvam', setting: 'thinking off', providerOptions: { sarvam: { chat_template_kwargs: { enable_thinking: false } } } },
   { key: 'sarvam-105b', id: 'sarvam-105b', endpoint: 'sarvam', model: 'Sarvam 105B', provider: 'Sarvam', setting: 'reasoning effort low', providerOptions: { sarvam: { reasoning_effort: 'low' } }, maxOutputTokens: THINKING_OUTPUT_TOKENS, maxStates: THINKING_STATES },
   // The race rivals on their own free APIs, as the race asks them (lib/game/types.ts).
   // Ministral 3 does not think, so it has no switch to send.
   { key: 'ministral-3b-free', id: 'ministral-3b-2512', endpoint: 'mistral', model: 'Ministral 3 3B', provider: 'Mistral', setting: 'does not think' },
   { key: 'ministral-8b-free', id: 'ministral-8b-2512', endpoint: 'mistral', model: 'Ministral 3 8B', provider: 'Mistral', setting: 'does not think' },
   { key: 'ministral-14b-free', id: 'ministral-14b-2512', endpoint: 'mistral', model: 'Ministral 3 14B', provider: 'Mistral', setting: 'does not think' },
+  { key: 'qwen-3.8-cf', id: '@cf/qwen/qwen3.8-27b', endpoint: 'cloudflare', model: 'Qwen 3.8 27B', provider: 'Cloudflare', setting: 'thinking off', providerOptions: { cloudflare: { chat_template_kwargs: { enable_thinking: false } } } },
   { key: 'gemma-4-cf', id: '@cf/google/gemma-4-26b-a4b-it', endpoint: 'cloudflare', model: 'Gemma 4 26B-A4B', provider: 'Cloudflare', setting: 'thinking off', providerOptions: { cloudflare: { chat_template_kwargs: { enable_thinking: false } } } },
 ];
 

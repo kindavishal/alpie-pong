@@ -60,6 +60,6 @@ a Ball speed is data; ease nothing inside a step. b Lanes never re-sort. c Orang
 ## Copy
 - Tagline: "Pong where the ball moves one step per model decision. Slow model, slow ball."
 - Clip header: "Alpie Pong" + "One step per model decision" + elapsed timer.
-- End card: "Decisions in 12 seconds" + "Same serve, same rules. The ball moves one step per model decision." + "Get the code at [URL]" until the site is deployed, then "Play against Alpie at [URL]".
+- End card: "Decisions in 12 seconds" + "Same serve, same rules. The ball moves one step per model decision." + "Play against Alpie at [URL]".
 - Credits: "Powered by" + Ably logo · "AI SDK · Alpie by 169Pi"; the clip adds the measurement line, one string in `lib/config/site.ts`.
 - Ids: anon-XXXX from the last 4 chars of the Ably clientId; channel label "game:XXXX".

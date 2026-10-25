@@ -11,12 +11,15 @@
  *        which calls `lib/decide` in-process. This endpoint is here so one
  *        decision can be exercised on its own — with curl, or from a test —
  *        against the real Gateway.
- * NEEDS  Gateway auth (`AI_GATEWAY_API_KEY`, or Vercel OIDC on a linked
- *        project).
- * REFUSES a body that is not `{ model, state, mode }` with a finite-number
- *        state (400), and a watch-only lane asked for in `play` mode (403).
+ * NEEDS  the keys of the lane it is asked about (lib/decide/endpoints.ts, or
+ *        Gateway auth for a Gateway lane) and, in production, `ADMIN_TOKEN`:
+ *        it spends model credit with nobody playing, like /api/record.
+ * REFUSES a request without the admin token in production (403), a body
+ *        that is not `{ model, state, mode }` with a finite-number state
+ *        (400), and a watch-only lane asked for in `play` mode (403).
  */
 import { z } from 'zod';
+import { isAdminRequest } from '../../../lib/config/admin';
 import { decide, REMOTE_MODELS } from '../../../lib/decide';
 import type { DecideErrorCode, DecideResponse, DecideMode } from '../../../lib/game/types';
 
@@ -57,6 +60,13 @@ function send(body: DecideResponse): Response {
 }
 
 export async function POST(request: Request): Promise<Response> {
+  if (!isAdminRequest(request)) {
+    return Response.json(
+      { ok: false, error: 'forbidden', message: 'This endpoint needs an admin token.' },
+      { status: 403, headers: { 'cache-control': 'no-store' } },
+    );
+  }
+
   let payload: unknown;
   try {
     payload = await request.json();

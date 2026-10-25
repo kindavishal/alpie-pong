@@ -133,7 +133,8 @@ describe('CLIP_TOKENS', () => {
     expect(copy.poweredBy).toBe('Powered by');
     expect(copy.measurement).toContain("each model's own API");
     expect(copy.measurement).toContain('Alpie by 169Pi');
-    expect(copy.endUrlLabel).toBe('Get the code at');
+    expect(copy.endUrlLabel).toBe('Play against Alpie at');
+    expect(copy.url).toBe('alpie-pong.vercel.app');
   });
 
   it('uses the dark-background Ably logo, because the clip ground is dark', () => {

@@ -35,7 +35,7 @@ export const DEFAULT_TIMEOUT_MS = 20_000;
  * decided locally.
  */
 export const REMOTE_MODELS = [
-  'alpie', 'ministral-8b', 'gemma-cf', 'alpie-core',
+  'alpie', 'sarvam', 'ministral-8b', 'qwen-cf', 'gemma-cf', 'alpie-core',
   'jev', 'haiku', 'gpt', 'gemini',
 ] as const satisfies readonly ModelId[];
 
