@@ -17,11 +17,18 @@ export const TAGLINE =
   'Pong where the ball moves one step per model decision. Slow model, slow ball.';
 
 /**
- * Where the recorded run was measured from: POST /api/record on the deployed
- * site, whose functions run in Vercel's iad1 region, each lane through its own
- * model's API. Change this in one place if the run is re-recorded elsewhere.
+ * Where a recorded run was measured from, from the region its stats saved:
+ * POST /api/record on the deployed site runs in a Vercel region, and anywhere
+ * else (a laptop) saves null. A recording from before the region was saved is
+ * the 25 October 2026 one, made in iad1.
  */
-export const MEASUREMENT = "Vercel (iad1), via each model's own API";
+export function measurementFor(region?: string | null): string {
+  if (region === null) return "a local machine, not Vercel, via each model's own API";
+  return `Vercel (${region ?? 'iad1'}), via each model's own API`;
+}
+
+/** The published recording's measurement line, for the rendered clip. */
+export const MEASUREMENT = measurementFor();
 
 /** The credit line under every surface. */
 export const CREDIT_PARTS = ['AI SDK', 'Alpie by 169Pi'] as const;

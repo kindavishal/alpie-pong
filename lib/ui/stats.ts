@@ -15,6 +15,7 @@
  */
 
 import stats from '../../public/replay-stats.json';
+import { measurementFor } from '../config/site';
 import { HERO, LANES, heroLane, laneSource } from '../game/types';
 import { CLIP_TOKENS, providerFor } from '../render/tokens';
 
@@ -23,6 +24,9 @@ export const RECORDED_SECONDS: number = stats.seconds;
 
 /** When it was recorded, ISO-8601. */
 export const RECORDED_AT: string = stats.recordedAt;
+
+/** Where the recording on the home page was made, from the region it saved. */
+export const RECORDED_FROM: string = measurementFor((stats as { region?: string | null }).region);
 
 export interface LaneStat {
   model: string;

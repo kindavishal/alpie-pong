@@ -38,11 +38,11 @@ import {
   type ReactNode,
 } from 'react';
 import { hasAdminAccess } from '@/lib/config/admin';
-import { ATARI_PAPER_URL, CLIP_SECONDS, INSPIRED_BY_URL, MEASUREMENT } from '@/lib/config/site';
+import { ATARI_PAPER_URL, CLIP_SECONDS, INSPIRED_BY_URL } from '@/lib/config/site';
 import { createReplayRunner } from '@/lib/game/replay';
 import { HERO, LANES } from '@/lib/game/types';
 import { replayPeriodMs } from '@/lib/ui/replay-loop';
-import { headlineSentences, type ResultRow } from '@/lib/ui/stats';
+import { RECORDED_FROM, headlineSentences, type ResultRow } from '@/lib/ui/stats';
 import { HeaderNav, PrimaryLink, SiteFooter, SiteHeader } from './chrome';
 import { Lanes } from './lanes';
 import { ReplayTimer, useReplayClock } from './replay-timer';
@@ -114,7 +114,7 @@ export function Home({ clean, rows }: HomeProps) {
 
       <div className="flex items-baseline justify-between gap-4 pt-4 lg:pt-6">
         <p className="text-fg-muted text-[11.5px] lg:text-[13px]">
-          Recorded run · {MEASUREMENT}
+          Recorded run · {RECORDED_FROM}
         </p>
         <ReplayTimer clock={clock} />
       </div>

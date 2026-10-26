@@ -61,6 +61,11 @@ export interface ReplayStats {
   seed: number;
   /** The window that was asked for, in seconds. */
   seconds: number;
+  /**
+   * The Vercel region the recording ran in, or null when it ran anywhere else,
+   * such as a laptop. Absent from recordings made before it was saved.
+   */
+  region?: string | null;
   lanes: LaneRecordStats[];
 }
 
@@ -181,6 +186,7 @@ export async function recordLanes(
     recordedAt: replay.recordedAt,
     seed,
     seconds,
+    region: process.env.VERCEL_REGION ?? null,
     lanes: recorded.map((lane) => statsFor(lane.model, lane.label, lane.snapshots, seconds)),
   };
 
