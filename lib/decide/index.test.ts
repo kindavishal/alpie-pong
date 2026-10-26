@@ -1,7 +1,8 @@
 import { APICallError } from 'ai';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { DecideRequest, DecisionState } from '../game/types';
-import { DEFAULT_TIMEOUT_MS, decide, mapDecideError } from './index';
+import { ALL_LANES } from '../game/types';
+import { DEFAULT_TIMEOUT_MS, REMOTE_MODELS, decide, mapDecideError } from './index';
 
 vi.mock('./jev', async (importOriginal) => ({
   ...(await importOriginal<typeof import('./jev')>()),
@@ -65,6 +66,28 @@ describe('decide — routing', () => {
       expect.objectContaining({
         model: expect.objectContaining({ modelId: 'alpie_9b' }),
         providerOptions: { alpie: { chat_template_kwargs: { enable_thinking: false } } },
+      }),
+    );
+    vi.unstubAllEnvs();
+  });
+
+  it('accepts every lane with a model behind it, so the game and record routes take it', () => {
+    const remote: readonly string[] = REMOTE_MODELS;
+    for (const lane of ALL_LANES) expect(remote).toContain(lane.id);
+  });
+
+  it('races Gemini 3.5 Flash-Lite on Google\'s own API at its lowest reasoning effort', async () => {
+    vi.stubEnv('GEMINI_API_KEY', 'test-key');
+    llm.mockResolvedValue({ move: 'stay', latencyMs: 1184 });
+    const result = await decide(request({ model: 'gemini-flash-lite' }));
+
+    expect(result).toEqual({ ok: true, move: 'stay', latencyMs: 1184, model: 'gemini-flash-lite' });
+    expect(llm).toHaveBeenCalledWith(
+      'gemini-3.5-flash-lite',
+      STATE,
+      expect.objectContaining({
+        model: expect.objectContaining({ modelId: 'gemini-3.5-flash-lite' }),
+        providerOptions: { gemini: { reasoningEffort: 'minimal' } },
       }),
     );
     vi.unstubAllEnvs();

@@ -88,6 +88,7 @@ export type ModelId =
   | 'ministral-8b'
   | 'qwen-cf'
   | 'gemma-cf'
+  | 'gemini-flash-lite'
   | 'alpie-core'
   | 'jev'
   | 'haiku'
@@ -102,8 +103,8 @@ export type DecideKind = 'evaluate' | 'structured' | 'local';
 /**
  * An OpenAI-style API outside the Gateway, configured from the environment in
  * lib/decide/endpoints.ts. None of them needs a credit card to start, except the
- * Hugging Face router and Google's Gemini API, which bill per call and serve
- * comparison lanes only.
+ * Hugging Face router, which bills per call and serves comparison lanes only, and
+ * Google's Gemini API, which bills per call for a billed race lane.
  */
 export type EndpointKey = 'alpie-seed' | 'alpie-core' | 'mistral' | 'cloudflare' | 'sarvam' | 'gemini' | 'huggingface';
 
@@ -280,8 +281,10 @@ export const HERO: ModelId = 'alpie';
 
 /**
  * The race, in display order, never re-sorted live: Alpie Seed first, then
- * rivals of about its size that also answer without thinking first and run on
- * free keys with no credit card, then Alpie Core to show what thinking costs.
+ * rivals of about its size that also answer without thinking first, then Alpie
+ * Core to show what thinking costs. The first rivals run on free keys with no
+ * credit card; the frontier labs' small models that follow are billed per call,
+ * and their lanes say so.
  *
  *   Sarvam 105B      the other Indian model family, a mixture of experts with
  *                    about 10.3B parameters active per answer (Seed is 9B).
@@ -309,10 +312,15 @@ export const HERO: ModelId = 'alpie';
  *                    schema and the thinking switch and writes about 400 tokens
  *                    before answering (~12 s), so it reads the move from its
  *                    final answer. Watch-only: nobody can play a 12 s paddle.
+ *   Gemini 3.5 Flash-Lite  Google's newest small Gemini (2026-07-21) on Google's own
+ *                    Gemini API, billed per call. It rejects every way of turning
+ *                    thinking off, so it runs at reasoning effort "minimal", its
+ *                    lowest, at which Google reported no thinking tokens; 30 of 30
+ *                    right at a 1,184 ms median when compared on 2026-10-26.
  *
- * Google's lanes were tried and dropped: AI Studio's free tier allows Gemini 3.5
- * Flash-Lite 15 requests a minute and a lane makes about 60, and Gemma failed one
- * call in six. gpt-oss cannot switch reasoning off. Those stay in the comparison
+ * Google's free tier was tried and dropped: it allows Gemini 3.5 Flash-Lite 15
+ * requests a minute and a lane makes about 60, which billing lifts; Gemma failed one
+ * call in six on AI Studio and races on Cloudflare instead. gpt-oss cannot switch reasoning off. Those stay in the comparison
  * table (lib/compare), where that is said.
  * Only the hero carries an accent; the others use the neutral ball colour (design tokens --ball).
  */
@@ -334,6 +342,10 @@ export const LANES: LaneConfig[] = [
   {
     id: 'gemma-cf', label: 'Gemma 4 26B-A4B', gateway: null, endpoint: 'cloudflare', modelId: '@cf/google/gemma-4-26b-a4b-it', provider: 'Cloudflare',
     kind: 'structured', color: '#A1A1A6', providerOptions: { cloudflare: { chat_template_kwargs: { enable_thinking: false } } },
+  },
+  {
+    id: 'gemini-flash-lite', label: 'Gemini 3.5 Flash-Lite', gateway: null, endpoint: 'gemini', modelId: 'gemini-3.5-flash-lite', provider: 'Google',
+    kind: 'structured', color: '#A1A1A6', providerOptions: { gemini: { reasoningEffort: 'minimal' } },
   },
   {
     id: 'alpie-core', label: 'Alpie Core 32B', gateway: null, endpoint: 'alpie-core', modelId: 'alpie-32b', provider: '169Pi',

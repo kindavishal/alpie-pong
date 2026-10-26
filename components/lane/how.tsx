@@ -180,6 +180,7 @@ const WHY: Partial<Record<string, string>> = {
   'qwen-cf': 'three times Seed\'s size, thinking off',
   'ministral-8b': "the Ministral 3 size closest to Seed's 9B; does not think",
   'gemma-cf': 'a mixture of experts with about 4B parameters active per answer, thinking off',
+  'gemini-flash-lite': "Google's newest small Gemini, at its lowest reasoning setting; billed per call",
   'alpie-core': "169Pi's reasoning model, which thinks before every answer; watch-only",
 };
 
@@ -210,10 +211,11 @@ function Lineup() {
         on a lane is the round trip of that one call, timed on the server, and nothing else.
       </Body>
       <Body>
-        The rivals are chosen to be fair to Alpie Seed: about its size or larger, answering without thinking
-        first, and free to start on with no credit card, as Alpie is. Gemini 3.5 Flash-Lite was tried
-        and dropped: Google&apos;s free tier allows it 15 requests a minute and a lane makes about 60.
-        gpt-oss was dropped from the race because its API cannot switch reasoning off. Sarvam 105B
+        The rivals are chosen to be fair to Alpie Seed: about its size or larger, and answering without
+        thinking first, or at the lowest reasoning setting their API accepts. The first rivals are free
+        to start on with no credit card, as Alpie is; the frontier labs&apos; small models that follow
+        are billed per call, beginning with Gemini 3.5 Flash-Lite, which Google&apos;s free tier held to
+        15 requests a minute when a lane makes about 60. gpt-oss was dropped from the race because its API cannot switch reasoning off. Sarvam 105B
         and both Alpie models also appear in the table below with thinking on.
       </Body>
       <Body>

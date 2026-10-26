@@ -19,13 +19,14 @@ Created by Vishal Das. Inspired by [Jev Pong](https://github.com/ably-labs/jev-p
 | Ministral 3 8B | `ministral-8b-2512` | Mistral | the Ministral 3 size closest to Seed's 9B; does not think |
 | Qwen 3.8 27B | `@cf/qwen/qwen3.8-27b`, thinking off | Cloudflare Workers AI | three times Seed's size, a bigger rival |
 | Gemma 4 26B-A4B | `@cf/google/gemma-4-26b-a4b-it`, thinking off | Cloudflare Workers AI | a mixture of experts with about 4B parameters active per answer |
+| Gemini 3.5 Flash-Lite | `gemini-3.5-flash-lite`, reasoning effort minimal (its lowest) | Google, billed per call | Google's newest small Gemini; it cannot turn thinking off, and at "minimal" Google reported no thinking tokens |
 | Alpie Core 32B | `alpie-32b` | 169Pi | 169Pi's reasoning model, which thinks before every answer; watch-only, to show what that costs |
 
-The rivals are chosen to be fair to Alpie Seed: about its size or larger, answering without thinking first, and free to start on with no credit card, as Alpie is.
+The rivals are chosen to be fair to Alpie Seed: about its size or larger, and answering without thinking first, or at the lowest reasoning setting their API accepts. The first rivals are free to start on with no credit card, as Alpie is. The frontier labs' small models that follow are billed per call, and their lanes say so; Gemini 3.5 Flash-Lite is the first.
 
 Every lane that can think races with thinking off through the same switch, the chat template's `enable_thinking: false`, sent to Alpie Seed, Sarvam, Qwen and Gemma alike. Sarvam's `reasoning_effort` does not turn thinking off: "low" is its lowest named level, and its docs say setting it to null disables reasoning, but on 26 October 2026 null, "low", "medium", "high" and leaving it out all thought for about 160 to 540 tokens per answer, so the race does not use it. The comparison on the how-it-works page shows it as Sarvam's thinking-on row, over the same 30 states as every other row. Alpie Core ignores the switch and thinks anyway, which is what its watch-only lane is there to show.
 
-Alpie Seed and Alpie Core are called on 169Pi's test endpoint; the rivals are called on their providers' public free-tier APIs. The two are not necessarily provisioned the same way, and the numbers here do not separate the model from the service in front of it.
+Alpie Seed and Alpie Core are called on 169Pi's test endpoint; the rivals are called on their providers' public APIs, free tiers for all but the billed lanes. The two are not necessarily provisioned the same way, and the numbers here do not separate the model from the service in front of it.
 
 Recorded on 25 October 2026 from the deployed site, in a Vercel function in iad1 (Washington, D.C.), each model through its own API, 45 seconds per lane:
 
@@ -44,7 +45,7 @@ Each latency is the round trip from that server to the model's own API, so it in
 
 ### Models we tried and left out
 
-- **Gemini 3.5 Flash-Lite** (Google AI Studio): the free tier allows 15 requests a minute, and a lane makes about 60, so a free lane stops within seconds.
+- **Gemini 3.5 Flash-Lite on Google's free tier**: it allows 15 requests a minute, and a lane makes about 60, so a free lane stops within seconds. With billing on, the limit lifts, and it now races as a billed lane.
 - **Gemma 4 on Google AI Studio**: failed about one call in six. The same model on Cloudflare is reliable, so it races there.
 - **gpt-oss-20b**: its API cannot switch reasoning off, which would make the lane a test of thinking rather than of the model.
 - **Sarvam 105B** was left out at first for the same reason, wrongly: its documented `reasoning_effort` setting never goes below "low", but the API also accepts the chat template's `enable_thinking` switch, which turns thinking off. It now races.
@@ -116,12 +117,13 @@ cp .env.example .env.local   # then fill in the keys
 pnpm dev
 ```
 
-Every model in the race starts free, with no credit card:
+Every model in the race but the billed lanes starts free, with no credit card:
 
 | Variable | What it is for |
 |---|---|
 | `ABLY_API_KEY` | Realtime transport. Ably's free plan is enough; the key needs **publish**, **subscribe** and **presence**. |
 | `ALPIE_SEED_BASE_URL`, `ALPIE_CORE_BASE_URL`, `ALPIE_API_KEY` | Alpie Seed and Alpie Core on 169Pi's API (OpenAI-compatible, ending in `/v1`). |
+| `GEMINI_API_KEY` | Gemini 3.5 Flash-Lite on Google's Gemini API, a billed lane: a key from Google AI Studio, with billing on for its project. |
 | `SARVAM_API_KEY` | Sarvam 105B, on Sarvam's free sign-up credits. |
 | `MISTRAL_API_KEY` | Ministral 3 8B, on Mistral's free Experiment plan. |
 | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` | Qwen 3.8 and Gemma 4 on Cloudflare Workers AI's free plan (a token from the "Workers AI" template). |

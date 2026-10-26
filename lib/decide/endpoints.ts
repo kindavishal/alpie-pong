@@ -16,7 +16,7 @@
  * its lanes are in the comparison only, not the race. `HF_BILL_TO` names the
  * organisation a call is billed to, when it is not the token's owner. Google's
  * Gemini API is paid too once billing is on, which is what lifts the free tier's
- * 15 requests a minute, so its lane is also in the comparison only.
+ * 15 requests a minute; Gemini 3.5 Flash-Lite races as a billed lane.
  *
  * Where these models live is never written in the repo. Base URLs, keys and
  * model ids are read from the environment when a lane runs, so a private test
