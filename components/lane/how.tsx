@@ -27,7 +27,9 @@ import {
   COMPARISON_MEASURED_AT,
   COMPARISON_STATES,
   comparisonRows,
+  type ComparisonRow,
 } from '@/lib/ui/comparison';
+import { INDIAN_FROM, INDIAN_MEASURED_AT, INDIAN_STATES, UNMEASURED, indianRows } from '@/lib/ui/indian-models';
 import {
   LANES,
   MODEL_PADDLE_STEP,
@@ -57,6 +59,7 @@ export function How() {
         <WhatTheModelSees />
         <Lineup />
         <OtherModels />
+        <IndianModels />
         <OverAbly />
         <ReadTheCode />
       </div>
@@ -245,34 +248,7 @@ function OtherModels() {
         {COMPARISON_STATES}. The first row is the baseline.
       </Body>
 
-      <div className="max-w-[700px] overflow-x-auto">
-        <table className="w-full min-w-[520px] text-[12px] lg:text-[13px]">
-          <thead>
-            <tr className="text-fg-muted border-hair border-b text-left">
-              <th className="py-1.5 pr-3 font-medium">Model</th>
-              <th className="py-1.5 pr-3 font-medium">Setting</th>
-              <th className="py-1.5 pr-3 text-right font-medium">Correct</th>
-              <th className="py-1.5 pr-3 text-right font-medium">Median</th>
-              <th className="py-1.5 pr-3 text-right font-medium">p95</th>
-              <th className="py-1.5 text-right font-medium">vs {rows[0]?.model ?? HERO_LABEL}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, i) => (
-              <tr key={`${row.model} ${row.setting}`} className="border-hair border-b">
-                <td className={`py-1.5 pr-3 font-semibold ${i === 0 ? 'text-hero-ink' : 'text-fg'}`}>{row.model}</td>
-                <td className="text-fg-muted py-1.5 pr-3">{row.setting}</td>
-                <td className="mono py-1.5 pr-3 text-right">
-                  {row.correct}/{row.answered}
-                </td>
-                <td className="mono py-1.5 pr-3 text-right">{row.adjustedP50Ms} ms</td>
-                <td className="mono py-1.5 pr-3 text-right">{row.adjustedP95Ms} ms</td>
-                <td className="mono py-1.5 text-right">{row.timesHero}x</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <ComparisonTable rows={rows} />
 
       <Body>
         Measured from {COMPARISON_FROM}, so every latency includes that machine&apos;s network.
@@ -281,6 +257,93 @@ function OtherModels() {
           : ''}{' '}
         {accuracySentence(rows)}
       </Body>
+    </Section>
+  );
+}
+
+/** The comparison columns, shared by both tables. The first row is the baseline. */
+function ComparisonTable({ rows, showProvider = false }: { rows: readonly ComparisonRow[]; showProvider?: boolean }) {
+  return (
+    <div className="max-w-[700px] overflow-x-auto">
+      <table className="w-full min-w-[520px] text-[12px] lg:text-[13px]">
+        <thead>
+          <tr className="text-fg-muted border-hair border-b text-left">
+            <th className="py-1.5 pr-3 font-medium">Model</th>
+            {showProvider ? <th className="py-1.5 pr-3 font-medium">Served by</th> : null}
+            <th className="py-1.5 pr-3 font-medium">Setting</th>
+            <th className="py-1.5 pr-3 text-right font-medium">Correct</th>
+            <th className="py-1.5 pr-3 text-right font-medium">Median</th>
+            <th className="py-1.5 pr-3 text-right font-medium">p95</th>
+            <th className="py-1.5 text-right font-medium">vs {rows[0]?.model ?? HERO_LABEL}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, i) => (
+            <tr key={`${row.model} ${row.setting}`} className="border-hair border-b">
+              <td className={`py-1.5 pr-3 font-semibold ${i === 0 ? 'text-hero-ink' : 'text-fg'}`}>{row.model}</td>
+              {showProvider ? <td className="text-fg-muted py-1.5 pr-3">{row.provider}</td> : null}
+              <td className="text-fg-muted py-1.5 pr-3">{row.setting}</td>
+              <td className="mono py-1.5 pr-3 text-right">
+                {row.correct}/{row.answered}
+              </td>
+              <td className="mono py-1.5 pr-3 text-right">{row.adjustedP50Ms} ms</td>
+              <td className="mono py-1.5 pr-3 text-right">{row.adjustedP95Ms} ms</td>
+              <td className="mono py-1.5 text-right">{row.timesHero}x</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/* -------------------------------------------------- the other Indian models */
+
+function IndianModels() {
+  const rows = indianRows();
+  return (
+    <Section id="indian-models" title="Other Indian models">
+      <Body>
+        Sarvam 105B is the only other Indian model in the race, because it is the only one we found
+        served free on a provider&apos;s own API. Two more are still served, both by Featherless through
+        the Hugging Face router, which bills for every call, so they are measured here rather than
+        raced. On {INDIAN_MEASURED_AT} they were asked the same question as every lane, with the same
+        schema, at temperature 0 and with no retries, over {INDIAN_STATES} game states, beside Alpie
+        Seed and Sarvam 105B.
+      </Body>
+      <Body>
+        Sarvam-M is Sarvam&apos;s post-training of Mistral Small. Featherless rejects the{' '}
+        <Mono>enable_thinking</Mono> switch the race sends, so it runs with no switch; it answered
+        without thinking first. Fathom-R1-14B is Fractal&apos;s reasoning model, which always thinks
+        unless something stops it: here the schema does. Allowed to think, it ran out of tokens before
+        it answered, so it has no thinking row. Featherless files both models&apos; replies under{' '}
+        <Mono>reasoning</Mono> instead of <Mono>content</Mono>; a finished reply there is read as the
+        answer, for every lane alike.
+      </Body>
+
+      <ComparisonTable rows={rows} showProvider />
+
+      <Body>
+        Measured from {INDIAN_FROM}, so every latency includes that machine&apos;s network, and the
+        rows are comparable with each other rather than with the race. {accuracySentence(rows, INDIAN_STATES)}
+      </Body>
+
+      <p className="text-fg-muted max-w-[700px] pt-1 text-[13px] leading-[1.6] lg:text-[14px]">
+        Not in the table, because they could not be put the question:
+      </p>
+      <ul className="flex max-w-[700px] flex-col gap-2">
+        {UNMEASURED.map((m) => (
+          <li key={m.model} className="text-fg-muted flex gap-3 text-[13px] leading-[1.55] text-pretty lg:text-[14px]">
+            <span aria-hidden className="text-fg-muted pt-[7px]">
+              <Bullet />
+            </span>
+            <span className="min-w-0">
+              <span className="text-fg font-semibold">{m.model}</span>
+              {m.maker ? ` (${m.maker})` : ''}: {m.reason}.
+            </span>
+          </li>
+        ))}
+      </ul>
     </Section>
   );
 }

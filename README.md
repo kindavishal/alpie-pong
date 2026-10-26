@@ -58,22 +58,18 @@ Alpie Seed's rivals were also searched for among Indian models (26 October 2026)
 - **Sarvam-M (24B)** and **Fractal's Fathom-R1-14B** are still served by Featherless through the Hugging Face router, which bills per call. Both are in the comparison tool, not the race. Featherless rejects the `enable_thinking` switch, so Sarvam-M runs with no switch; it answered the schema in 5 or 6 tokens, so it did not think first. Fathom always thinks unless the schema stops it: with the schema it answered in 8 or 9 tokens, and allowed to think it ran to the 8,192-token limit with no answer after about 81 s, twice.
 - **Krutrim-2 (12B)** is no longer served: Krutrim Cloud's catalogue now holds only other companies' models.
 - **BharatGen Param2 17B-A2.4B** and **Sarvam 30B** are open weights with no hosted API that we could find. Hosting them ourselves would time our own hardware rather than a provider's service, so they are not in either table.
-- **Zoho Zia LLM, Soket, Tech Mahindra (Indus), Genloop, CoRover (BharatGPT), Hanooman and Gnani**: no public chat API found.
+- **Zoho Zia LLM** is available only inside Zoho's own products, and is at most 7B. **Soket, Tech Mahindra (Indus), Genloop, CoRover (BharatGPT) and Hanooman**: no public chat API found. **Gnani**'s released models are for speech, not chat.
 
-The same 30 states went to the free race lanes and the two Featherless models in one run, one call at a time. This run was made from a Mac on home broadband through `pnpm dev`, not from Vercel like every other number on this page, so the latencies include that connection and are not comparable with the race table above; they are comparable with each other.
+The same 30 states went to Alpie Seed, Sarvam 105B and the two Featherless models in one run, one call at a time, recorded in `public/indian-comparison.json` and shown on the how-it-works page. This run was made from a Mac on home broadband through `pnpm dev`, as was the comparison on the how-it-works page, so the latencies include that connection. The race table above was recorded from Vercel, so the two are not comparable; the rows within each are.
 
-| Model | Served by | Answered | Correct | Median | p95 |
+| Model | Served by | Setting | Correct | Median | p95 |
 |---|---|---|---|---|---|
-| Alpie Seed 9B | 169Pi | 30 | 30 | 399 ms | 403 ms |
-| Sarvam 105B | Sarvam | 30 | 20 | 235 ms | 566 ms |
-| Ministral 3 8B | Mistral | 30 | 26 | 484 ms | 730 ms |
-| Qwen 3.8 27B | Cloudflare | 30 | 30 | 828 ms | 36,241 ms |
-| Gemma 4 26B-A4B | Cloudflare | 30 | 30 | 583 ms | 2,288 ms |
-| Qwen 3 30B-A3B | Cloudflare | 30 | 22 | 435 ms | 882 ms |
-| Sarvam-M 24B | Featherless | 30 | 24 | 1,717 ms | 3,262 ms |
-| Fathom-R1-14B, schema | Featherless | 29 | 6 | 1,682 ms | 4,335 ms |
+| Alpie Seed 9B | 169Pi | thinking off | 30 / 30 | 401 ms | 403 ms |
+| Sarvam 105B | Sarvam | thinking off | 21 / 30 | 226 ms | 317 ms |
+| Fathom-R1-14B | Featherless | schema enforced, so no room to think | 7 / 30 | 1,605 ms | 3,649 ms |
+| Sarvam-M 24B | Featherless | default, no thinking switch accepted | 24 / 30 | 1,624 ms | 3,240 ms |
 
-Qwen 3.8's p95 comes from at least two calls that stalled for 36 s or more: its 30 calls took 203 s in all, against about 25 s at its median. Fathom's one unanswered state returned no response at all. Neither Featherless model is in the race: both are billed per call, and Sarvam-M's median is about four times Alpie Seed's.
+Neither Featherless model is in the race: both are billed per call, and their medians are about four times Alpie Seed's. An earlier run the same day, with the free race lanes alongside, gave similar figures (Sarvam-M 24 right at 1,717 ms, Fathom 6 of 29 answered right at 1,682 ms, Sarvam 105B 20 right at 235 ms); its Qwen 3 30B-A3B result is the one quoted above. That run was not saved to a file.
 
 ## What counts as one decision
 
