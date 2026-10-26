@@ -134,10 +134,12 @@ export const COMPARE_LANES: readonly CompareLane[] = [
   { key: 'qwen-30b-a3b', id: 'alibaba/qwen-3-30b', model: 'Qwen 3 30B-A3B', provider: 'Alibaba', setting: 'thinking off', providerOptions: { alibaba: { enableThinking: false } } },
   { key: 'nemotron-3-nano', id: 'nvidia/nemotron-3-nano-30b-a3b', model: 'Nemotron 3 Nano 30B-A3B', provider: 'NVIDIA', setting: 'default' },
   // The other Indian open model, on Sarvam's own API, both ways. Its documented
-  // switch is reasoning_effort, and "low" is the lowest it accepts (leaving it
-  // out means "max"; "low" still reasons for about 230 tokens). The chat
-  // template's enable_thinking switch, which the API also accepts, turns thinking
-  // off: about 300 ms and 7 tokens (2026-10-26). The race uses that switch, as it
+  // switch is reasoning_effort, with "low" its lowest named level. Its docs
+  // disagree on the default ("medium" in the API reference, "low" on the model
+  // page) and say null turns reasoning off; on 2026-10-26 null, "low", "medium",
+  // "high" and leaving it out all thought for about 160 to 540 tokens on the same
+  // five states. The chat template's enable_thinking switch, which the API also
+  // accepts, turns thinking off: about 200 ms and 6 tokens (2026-10-26). The race uses that switch, as it
   // does for Alpie, Qwen and Gemma; the "low" lane is Sarvam's thinking-on row.
   // sarvam-30b is retired from the API (deprecated on v1, not found on v2, 2026-10-25).
   { key: 'sarvam-105b-free', id: 'sarvam-105b', endpoint: 'sarvam', model: 'Sarvam 105B', provider: 'Sarvam', setting: 'thinking off', providerOptions: { sarvam: { chat_template_kwargs: { enable_thinking: false } } } },

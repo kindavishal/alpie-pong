@@ -34,6 +34,8 @@ export interface ComparisonSourceRow {
   latenciesMs?: number[];
   warning?: string;
   error?: string;
+  /** Said under the table when a row was not measured with the rest, and why. */
+  note?: string;
 }
 
 export interface ComparisonRow extends ComparisonSourceRow {

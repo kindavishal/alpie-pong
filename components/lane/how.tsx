@@ -219,9 +219,10 @@ function Lineup() {
       <Body>
         Every lane that can think races with thinking off through the same switch: the chat
         template&apos;s <Mono>enable_thinking: false</Mono>, sent to Alpie Seed, Sarvam, Qwen and Gemma
-        alike. Sarvam&apos;s documented <Mono>reasoning_effort</Mono> setting cannot do that, since
-        &ldquo;low&rdquo; is the lowest it accepts and still reasons first, so the race does not use it;
-        the table shows it as Sarvam&apos;s thinking-on row. Alpie Core is the one exception: its API
+        alike. Sarvam&apos;s <Mono>reasoning_effort</Mono> setting cannot do that: its docs say null
+        turns reasoning off, but null, &ldquo;low&rdquo; (its lowest named level) and leaving it out
+        all thought before answering when tried, so the race does not use it; the table shows
+        &ldquo;low&rdquo; as Sarvam&apos;s thinking-on row. Alpie Core is the one exception: its API
         ignores the switch and thinks anyway, which is what its watch-only lane is there to show.
       </Body>
       <Body>
@@ -256,6 +257,10 @@ function OtherModels() {
           ? ` Every row carries the same ${COMPARISON_FLOOR_MS} ms of request overhead from there, removed before the columns are shown.`
           : ''}{' '}
         {accuracySentence(rows)}
+        {rows
+          .filter((r) => r.note !== undefined)
+          .map((r) => ` The ${r.model} row with ${r.setting} was ${r.note}.`)
+          .join('')}
       </Body>
     </Section>
   );

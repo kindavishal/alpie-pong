@@ -23,7 +23,7 @@ Created by Vishal Das. Inspired by [Jev Pong](https://github.com/ably-labs/jev-p
 
 The rivals are chosen to be fair to Alpie Seed: about its size or larger, answering without thinking first, and free to start on with no credit card, as Alpie is.
 
-Every lane that can think races with thinking off through the same switch, the chat template's `enable_thinking: false`, sent to Alpie Seed, Sarvam, Qwen and Gemma alike. Sarvam's documented `reasoning_effort` cannot turn thinking off ("low" is its lowest and still reasons first), so the race does not use it; the comparison on the how-it-works page shows it as Sarvam's thinking-on row, over the same 30 states as every other row. Alpie Core ignores the switch and thinks anyway, which is what its watch-only lane is there to show.
+Every lane that can think races with thinking off through the same switch, the chat template's `enable_thinking: false`, sent to Alpie Seed, Sarvam, Qwen and Gemma alike. Sarvam's `reasoning_effort` does not turn thinking off: "low" is its lowest named level, and its docs say setting it to null disables reasoning, but on 26 October 2026 null, "low", "medium", "high" and leaving it out all thought for about 160 to 540 tokens per answer, so the race does not use it. The comparison on the how-it-works page shows it as Sarvam's thinking-on row, over the same 30 states as every other row. Alpie Core ignores the switch and thinks anyway, which is what its watch-only lane is there to show.
 
 Alpie Seed and Alpie Core are called on 169Pi's test endpoint; the rivals are called on their providers' public free-tier APIs. The two are not necessarily provisioned the same way, and the numbers here do not separate the model from the service in front of it.
 
