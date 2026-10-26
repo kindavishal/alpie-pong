@@ -54,11 +54,11 @@ Each latency is the round trip from that server to the model's own API, so it in
 
 Alpie Seed's rivals were also searched for among Indian models (26 October 2026). Sarvam 105B is the only one served free on a provider's own API. What else exists:
 
-- **Sarvam 30B and Sarvam-M** are retired from Sarvam's API, which now serves Sarvam 105B as its only Sarvam chat model.
-- **Sarvam-M (24B)** and **Fractal's Fathom-R1-14B** are still served by Featherless through the Hugging Face router, which bills per call. Both are in the comparison tool, not the race. Featherless rejects the `enable_thinking` switch, so Sarvam-M runs with no switch; it answered the schema in 5 or 6 tokens, so it did not think first. Fathom always thinks unless the schema stops it: with the schema it answered in 8 or 9 tokens, and allowed to think it ran to the 8,192-token limit with no answer after about 81 s, twice.
+- **Sarvam 30B and Sarvam-M** are retired from Sarvam's API, which answers both with "has been deprecated". Of Sarvam's own models it now serves only Sarvam 105B and a conversational variant of it.
+- **Sarvam-M (24B, built on Mistral Small 3.1)** and **Fractal's Fathom-R1-14B (built on DeepSeek-R1-Distill-Qwen-14B)** are still served by Featherless through the Hugging Face router, which charges for every call (a free Hugging Face account gets no monthly credits). Both are in the comparison tool, not the race. Featherless rejects the `enable_thinking` switch, so Sarvam-M runs with no switch; it answered the schema in 5 or 6 tokens, so it did not think first. Fathom always thinks unless the schema stops it: with the schema it answered in 8 or 9 tokens, and allowed to think it ran to the 8,192-token limit with no answer after about 81 s, twice.
 - **Krutrim-2 (12B)** is no longer served: Krutrim Cloud's catalogue now holds only other companies' models.
-- **BharatGen Param2 17B-A2.4B** and **Sarvam 30B** are open weights with no hosted API that we could find. Hosting them ourselves would time our own hardware rather than a provider's service, so they are not in either table.
-- **Zoho Zia LLM** is available only inside Zoho's own products, and is at most 7B. **Soket, Tech Mahindra (Indus), Genloop, CoRover (BharatGPT) and Hanooman**: no public chat API found. **Gnani**'s released models are for speech, not chat.
+- **BharatGen Param2 17B-A2.4B** (under BharatGen's non-commercial licence) and **Sarvam 30B** are open weights with no hosted API that we could find. Hosting them ourselves would time our own hardware rather than a provider's service, so they are not in either table.
+- **Zoho Zia LLM** was announced in July 2025 at 1.3B, 2.6B and 7B; we found no public API for it. **Soket, Tech Mahindra (Indus), Genloop, CoRover (BharatGPT) and Hanooman**: no public chat API or hosted model found. **Gnani**'s Inya VoiceOS is a 5B voice-to-voice research preview, and its other released models are for speech, not text chat.
 
 The same 30 states went to Alpie Seed, Sarvam 105B and the two Featherless models in one run, one call at a time, recorded in `public/indian-comparison.json` and shown on the how-it-works page. This run was made from a Mac on home broadband through `pnpm dev`, as was the comparison on the how-it-works page, so the latencies include that connection. The race table above was recorded from Vercel, so the two are not comparable; the rows within each are.
 
@@ -127,6 +127,7 @@ Every model in the race starts free, with no credit card:
 | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` | Qwen 3.8 and Gemma 4 on Cloudflare Workers AI's free plan (a token from the "Workers AI" template). |
 | `ADMIN_TOKEN` | Guards anything that spends model credit with nobody playing: `/arena`, demo games, `/api/record`, `/api/compare`. |
 | `AI_GATEWAY_API_KEY` | Optional, for the original Vercel AI Gateway lanes in the comparison tool. |
+| `HF_TOKEN`, `HF_BILL_TO` | Optional, for the Sarvam-M and Fathom-R1-14B comparison lanes on the Hugging Face router, which charges for every call. A fine-grained token with "Make calls to Inference Providers"; `HF_BILL_TO` names an organisation to bill instead of the token's owner. |
 
 `.env.example` lists them all. No key reaches a browser.
 

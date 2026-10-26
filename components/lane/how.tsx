@@ -306,17 +306,18 @@ function IndianModels() {
       <Body>
         Sarvam 105B is the only other Indian model in the race, because it is the only one we found
         served free on a provider&apos;s own API. Two more are still served, both by Featherless through
-        the Hugging Face router, which bills for every call, so they are measured here rather than
+        the Hugging Face router, which charges for every call, so they are measured here rather than
         raced. On {INDIAN_MEASURED_AT} they were asked the same question as every lane, with the same
         schema, at temperature 0 and with no retries, over {INDIAN_STATES} game states, beside Alpie
         Seed and Sarvam 105B.
       </Body>
       <Body>
-        Sarvam-M is Sarvam&apos;s post-training of Mistral Small. Featherless rejects the{' '}
+        Sarvam-M is Sarvam&apos;s post-training of Mistral Small 3.1 24B. Featherless rejects the{' '}
         <Mono>enable_thinking</Mono> switch the race sends, so it runs with no switch; it answered
-        without thinking first. Fathom-R1-14B is Fractal&apos;s reasoning model, which always thinks
-        unless something stops it: here the schema does. Allowed to think, it ran out of tokens before
-        it answered, so it has no thinking row. Featherless files both models&apos; replies under{' '}
+        without thinking first. Fathom-R1-14B is Fractal&apos;s reasoning model, built on
+        DeepSeek-R1-Distill-Qwen-14B, which always thinks unless something stops it: here the schema
+        does. Allowed to think, it ran out of tokens before it answered on both states tried, so it has
+        no thinking row. Featherless files both models&apos; replies under{' '}
         <Mono>reasoning</Mono> instead of <Mono>content</Mono>; a finished reply there is read as the
         answer, for every lane alike.
       </Body>

@@ -11,9 +11,10 @@
  *
  * None of them needs a credit card to start: Alpie's test endpoint takes no
  * key at all, and the others hand out free keys on sign-up. The Hugging Face
- * router is the exception: it bills per call once a small monthly allowance is
- * spent, so its lanes are in the comparison only, not the race. `HF_BILL_TO`
- * names the organisation a call is billed to, when it is not the token's owner.
+ * router is the exception: every call is charged, against prepaid credits or
+ * a PRO or organisation plan's monthly credits (a free account has none), so
+ * its lanes are in the comparison only, not the race. `HF_BILL_TO` names the
+ * organisation a call is billed to, when it is not the token's owner.
  *
  * Where these models live is never written in the repo. Base URLs, keys and
  * model ids are read from the environment when a lane runs, so a private test

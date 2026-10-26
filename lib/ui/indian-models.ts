@@ -35,8 +35,8 @@ export interface UnmeasuredModel {
 export const UNMEASURED: readonly UnmeasuredModel[] = [
   { model: 'Sarvam 30B', maker: 'Sarvam', reason: "retired from Sarvam's API; open weights with no other host found" },
   { model: 'Krutrim-2 12B', maker: 'Ola Krutrim', reason: "no longer served, as Krutrim Cloud's catalogue now holds only other companies' models" },
-  { model: 'Param2 17B-A2.4B', maker: 'BharatGen', reason: 'open weights with no hosted API found, and a non-commercial licence' },
-  { model: 'Zia LLM', maker: 'Zoho', reason: "available only inside Zoho's own products, and at most 7B" },
-  { model: 'Soket, Tech Mahindra (Indus), Genloop, CoRover (BharatGPT) and Hanooman', reason: 'no public chat API found' },
-  { model: 'Gnani', reason: 'its released models are for speech, not chat' },
+  { model: 'Param2 17B-A2.4B', maker: 'BharatGen', reason: "open weights with no hosted API found, under BharatGen's non-commercial licence" },
+  { model: 'Zia LLM', maker: 'Zoho', reason: 'announced at 1.3B, 2.6B and 7B, with no public API found' },
+  { model: 'Soket, Tech Mahindra (Indus), Genloop, CoRover (BharatGPT) and Hanooman', reason: 'no public chat API or hosted model found' },
+  { model: 'Inya VoiceOS', maker: 'Gnani', reason: "a 5B voice-to-voice research preview; Gnani's released models work on speech, not text chat" },
 ];
