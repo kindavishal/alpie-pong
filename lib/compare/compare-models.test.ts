@@ -8,6 +8,7 @@ import {
   callLane,
   compareLane,
   compareStates,
+  mergeRows,
   moveFromText,
   percentile,
   runLane,
@@ -87,6 +88,29 @@ describe('runLane', () => {
       expect(thinking.maxOutputTokens).toBeGreaterThanOrEqual(4096);
       expect(thinking.maxStates).toBeLessThan(DEFAULT_STATES);
     }
+  });
+});
+
+describe('mergeRows', () => {
+  const base = { key: 'k', model: 'M', provider: 'P', setting: 's' };
+  it('adds up the chunks of one lane and takes the percentiles over every latency', () => {
+    const row = mergeRows([
+      { ...base, states: 10, answered: 10, correct: 9, p50Ms: 0, p95Ms: 0, latenciesMs: [100, 300] },
+      { ...base, states: 10, answered: 9, correct: 9, p50Ms: 0, p95Ms: 0, latenciesMs: [200, 400], error: 'boom' },
+    ]);
+    expect(row).toMatchObject({ key: 'k', states: 20, answered: 19, correct: 18, latenciesMs: [100, 300, 200, 400], p50Ms: 300, p95Ms: 400, error: 'boom' });
+  });
+});
+
+describe('the Sarvam lanes', () => {
+  it('runs thinking off the way the race does, and names "low" as its lowest effort with thinking on', () => {
+    const lanes = COMPARE_LANES.filter((l) => l.model === 'Sarvam 105B');
+    const off = lanes.find((l) => l.setting === 'thinking off')!;
+    expect(off.providerOptions).toEqual({ sarvam: { chat_template_kwargs: { enable_thinking: false } } });
+    expect(off.maxStates).toBeUndefined();
+    const on = lanes.find((l) => l.setting.startsWith('thinking on'))!;
+    expect(on.providerOptions).toEqual({ sarvam: { reasoning_effort: 'low' } });
+    expect(on.setting).toContain('lowest');
   });
 });
 

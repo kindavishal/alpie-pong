@@ -39,7 +39,11 @@ export interface LaneRecordStats {
   label: string;
   /** Snapshots recorded, including the serve. */
   ticks: number;
-  /** Model decisions per second of wall clock. The headline number. */
+  /**
+   * Model decisions per second of the recording window. The headline number.
+   * Every lane divides by the same window, so a lane whose last call was still
+   * in flight when the window closed is not credited with a shorter clock.
+   */
   decisionsPerSec: number;
   avgMs: number;
   p95Ms: number;
@@ -94,6 +98,7 @@ function statsFor(
   model: ModelId,
   label: string,
   snapshots: Snapshot[],
+  seconds: number,
 ): LaneRecordStats {
   const base = laneStats(model, label, snapshots);
   const last = snapshots[snapshots.length - 1];
@@ -101,7 +106,7 @@ function statsFor(
     model,
     label,
     ticks: snapshots.length,
-    decisionsPerSec: base.decisionsPerSecond,
+    decisionsPerSec: seconds > 0 ? Math.round((base.decisions / seconds) * 100) / 100 : 0,
     avgMs: base.avgMs,
     p95Ms: base.p95Ms,
     returns: base.returns,
@@ -176,7 +181,7 @@ export async function recordLanes(
     recordedAt: replay.recordedAt,
     seed,
     seconds,
-    lanes: recorded.map((lane) => statsFor(lane.model, lane.label, lane.snapshots)),
+    lanes: recorded.map((lane) => statsFor(lane.model, lane.label, lane.snapshots, seconds)),
   };
 
   return { replay, stats };

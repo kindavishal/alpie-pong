@@ -55,9 +55,10 @@ export interface CompareLane {
    */
   maxOutputTokens?: number;
   /**
-   * A cap on the states this lane runs. Thinking lanes take about 20 s a call,
-   * so they run fewer states to finish inside the function's clock. The row
-   * records how many it ran.
+   * A cap on the states this lane runs in one request. Thinking lanes take
+   * about 15 s a call, so one function can only fit a few; the script runs
+   * them in chunks (`offset` on /api/compare) and merges the chunks with
+   * `mergeRows`, so every row in the table covers the same states.
    */
   maxStates?: number;
   /**
@@ -133,12 +134,14 @@ export const COMPARE_LANES: readonly CompareLane[] = [
   { key: 'qwen-30b-a3b', id: 'alibaba/qwen-3-30b', model: 'Qwen 3 30B-A3B', provider: 'Alibaba', setting: 'thinking off', providerOptions: { alibaba: { enableThinking: false } } },
   { key: 'nemotron-3-nano', id: 'nvidia/nemotron-3-nano-30b-a3b', model: 'Nemotron 3 Nano 30B-A3B', provider: 'NVIDIA', setting: 'default' },
   // The other Indian open model, on Sarvam's own API, both ways. Its documented
-  // switch is reasoning_effort (leaving it out means "max"; "low" still reasons
-  // for about 230 tokens). The chat template's enable_thinking switch, which the
-  // API also accepts, turns thinking off: about 300 ms and 7 tokens (2026-10-26).
+  // switch is reasoning_effort, and "low" is the lowest it accepts (leaving it
+  // out means "max"; "low" still reasons for about 230 tokens). The chat
+  // template's enable_thinking switch, which the API also accepts, turns thinking
+  // off: about 300 ms and 7 tokens (2026-10-26). The race uses that switch, as it
+  // does for Alpie, Qwen and Gemma; the "low" lane is Sarvam's thinking-on row.
   // sarvam-30b is retired from the API (deprecated on v1, not found on v2, 2026-10-25).
   { key: 'sarvam-105b-free', id: 'sarvam-105b', endpoint: 'sarvam', model: 'Sarvam 105B', provider: 'Sarvam', setting: 'thinking off', providerOptions: { sarvam: { chat_template_kwargs: { enable_thinking: false } } } },
-  { key: 'sarvam-105b', id: 'sarvam-105b', endpoint: 'sarvam', model: 'Sarvam 105B', provider: 'Sarvam', setting: 'reasoning effort low', providerOptions: { sarvam: { reasoning_effort: 'low' } }, maxOutputTokens: THINKING_OUTPUT_TOKENS, maxStates: THINKING_STATES },
+  { key: 'sarvam-105b', id: 'sarvam-105b', endpoint: 'sarvam', model: 'Sarvam 105B', provider: 'Sarvam', setting: 'thinking on, reasoning effort low (its lowest)', providerOptions: { sarvam: { reasoning_effort: 'low' } }, maxOutputTokens: THINKING_OUTPUT_TOKENS, maxStates: THINKING_STATES },
   // The race rivals on their own free APIs, as the race asks them (lib/game/types.ts).
   // Ministral 3 does not think, so it has no switch to send.
   { key: 'ministral-3b-free', id: 'ministral-3b-2512', endpoint: 'mistral', model: 'Ministral 3 3B', provider: 'Mistral', setting: 'does not think' },
@@ -261,6 +264,32 @@ export function percentile(values: readonly number[], q: number): number {
   if (values.length === 0) return NaN;
   const sorted = [...values].sort((a, b) => a - b);
   return sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * q))];
+}
+
+/**
+ * One row from the chunks of a lane run in several requests (see `maxStates`):
+ * counts add up and the percentiles are taken again over every counted latency.
+ */
+export function mergeRows(chunks: readonly CompareRow[]): CompareRow {
+  const [first] = chunks;
+  if (first === undefined) throw new Error('mergeRows needs at least one chunk');
+  const latencies = chunks.flatMap((c) => c.latenciesMs);
+  const warning = chunks.find((c) => c.warning !== undefined)?.warning;
+  const error = chunks.find((c) => c.error !== undefined)?.error;
+  return {
+    key: first.key,
+    model: first.model,
+    provider: first.provider,
+    setting: first.setting,
+    states: chunks.reduce((n, c) => n + c.states, 0),
+    answered: chunks.reduce((n, c) => n + c.answered, 0),
+    correct: chunks.reduce((n, c) => n + c.correct, 0),
+    p50Ms: Math.round(percentile(latencies, 0.5)),
+    p95Ms: Math.round(percentile(latencies, 0.95)),
+    latenciesMs: latencies,
+    ...(warning !== undefined ? { warning } : {}),
+    ...(error !== undefined ? { error } : {}),
+  };
 }
 
 export interface RunLaneOptions {

@@ -12,7 +12,9 @@
  *        Sarvam lanes also need their endpoint's environment variables (see
  *        lib/compare/endpoints.ts and .env.example).
  * REFUSES a request without the admin token, an unknown lane, or more than
- *        MAX_STATES states. A lane with `maxStates` runs at most that many.
+ *        MAX_STATES states. A lane with `maxStates` runs at most that many
+ *        per request, starting at `offset` into the same list of states, so
+ *        the script can run it in chunks and every row covers the same states.
  */
 import { z } from 'zod';
 import { COMPARE_LANE_KEYS, DEFAULT_STATES, MAX_STATES, compareLane, compareStates, runLane } from '../../../lib/compare/compare-models';
@@ -26,6 +28,7 @@ export const maxDuration = 300;
 const bodySchema = z.object({
   lane: z.enum(COMPARE_LANE_KEYS as [string, ...string[]]),
   states: z.number().int().positive().max(MAX_STATES).optional(),
+  offset: z.number().int().nonnegative().optional(),
 });
 
 const NO_STORE = { 'cache-control': 'no-store' } as const;
@@ -54,7 +57,10 @@ export async function POST(request: Request): Promise<Response> {
   if (lane === undefined) return json({ error: 'bad_request', message: 'Unknown lane.' }, 400);
 
   const startedAt = new Date().toISOString();
-  const states = Math.min(parsed.data.states ?? DEFAULT_STATES, lane.maxStates ?? MAX_STATES);
-  const row = await runLane(lane, { states: compareStates(states) });
+  const total = parsed.data.states ?? DEFAULT_STATES;
+  const offset = parsed.data.offset ?? 0;
+  if (offset >= total) return json({ error: 'bad_request', message: 'offset must be below states.' }, 400);
+  const chunk = Math.min(total - offset, lane.maxStates ?? MAX_STATES);
+  const row = await runLane(lane, { states: compareStates(total).slice(offset, offset + chunk) });
   return json({ row, startedAt, region: process.env.VERCEL_REGION ?? null }, 200);
 }

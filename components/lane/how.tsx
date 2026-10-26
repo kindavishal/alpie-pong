@@ -213,6 +213,19 @@ function Lineup() {
         gpt-oss was dropped from the race because its API cannot switch reasoning off. Sarvam 105B
         and both Alpie models also appear in the table below with thinking on.
       </Body>
+      <Body>
+        Every lane that can think races with thinking off through the same switch: the chat
+        template&apos;s <Mono>enable_thinking: false</Mono>, sent to Alpie Seed, Sarvam, Qwen and Gemma
+        alike. Sarvam&apos;s documented <Mono>reasoning_effort</Mono> setting cannot do that, since
+        &ldquo;low&rdquo; is the lowest it accepts and still reasons first, so the race does not use it;
+        the table shows it as Sarvam&apos;s thinking-on row. Alpie Core is the one exception: its API
+        ignores the switch and thinks anyway, which is what its watch-only lane is there to show.
+      </Body>
+      <Body>
+        Alpie Seed and Alpie Core are called on 169Pi&apos;s test endpoint; the rivals are called on
+        their providers&apos; public free-tier APIs. The two are not necessarily provisioned the same
+        way, and the numbers here do not separate the model from the service in front of it.
+      </Body>
     </Section>
   );
 }
@@ -226,8 +239,10 @@ function OtherModels() {
       <Body>
         The race shows a few models at once. This is the wider check: on {COMPARISON_MEASURED_AT} the
         same question went to more models, one call per decision, sequential, {COMPARISON_STATES} real
-        game states each (models that reason first ran fewer, and the table says how many), including
-        both Alpie models with thinking on. The first row is the baseline.
+        game states each, the same states in the same order for every row, including Sarvam 105B and
+        both Alpie models with thinking on as well as off. Models that reason first take about 15 s a
+        call, so they are run in several requests and the parts added up; they still answer the same{' '}
+        {COMPARISON_STATES}. The first row is the baseline.
       </Body>
 
       <div className="max-w-[700px] overflow-x-auto">

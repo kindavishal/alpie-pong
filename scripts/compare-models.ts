@@ -12,7 +12,7 @@
  */
 import { writeFile } from 'node:fs/promises';
 import { ADMIN_TOKEN_HEADER } from '../lib/config/admin';
-import { COMPARE_LANE_KEYS, DEFAULT_STATES, type CompareRow } from '../lib/compare/compare-models';
+import { COMPARE_LANE_KEYS, DEFAULT_STATES, mergeRows, type CompareRow } from '../lib/compare/compare-models';
 
 const BASE = (process.env.COMPARE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
 /**
@@ -40,16 +40,22 @@ async function main() {
   let region: string | null = null;
   for (const lane of LANES) {
     const t = Date.now();
-    const res = await fetch(`${BASE}/api/compare`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', ...(token ? { [ADMIN_TOKEN_HEADER]: token } : {}) },
-      body: JSON.stringify({ lane, states: N }),
-    });
-    if (!res.ok) throw new Error(`${lane}: HTTP ${res.status} ${await res.text()}`);
-    const body = (await res.json()) as { row: CompareRow; region: string | null };
-    region ??= body.region;
-    rows.push(body.row);
-    const r = body.row;
+    // A thinking lane fits only a few states in one function, so it runs in
+    // chunks until it has covered all N, the same states as every other lane.
+    const chunks: CompareRow[] = [];
+    for (let offset = 0; offset < N; offset += chunks[chunks.length - 1].states) {
+      const res = await fetch(`${BASE}/api/compare`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', ...(token ? { [ADMIN_TOKEN_HEADER]: token } : {}) },
+        body: JSON.stringify({ lane, states: N, offset }),
+      });
+      if (!res.ok) throw new Error(`${lane}: HTTP ${res.status} ${await res.text()}`);
+      const body = (await res.json()) as { row: CompareRow; region: string | null };
+      region ??= body.region;
+      chunks.push(body.row);
+    }
+    const r = mergeRows(chunks);
+    rows.push(r);
     console.log(
       `${lane.padEnd(16)} answered ${r.answered}/${r.states}  correct ${r.correct}/${r.answered}  p50 ${r.p50Ms} ms  p95 ${r.p95Ms} ms  (${Math.round((Date.now() - t) / 1000)} s)${r.warning ? '  WARN ' + r.warning : ''}${r.error ? '  ERR ' + r.error : ''}`,
     );
@@ -68,7 +74,7 @@ async function main() {
     // No region means the route ran off Vercel, and the latencies include this machine's network.
     from: region === null ? `a local machine via ${BASE}, not Vercel` : `a Vercel function in ${region}, each model through its own API`,
     region,
-    // A thinking lane runs fewer states than N, so every row says how many it ran.
+    // Every row says how many states it ran, which is N for all of them.
     rows: ordered.map(({ key, model, provider, setting, states, answered, correct, p50Ms, p95Ms, latenciesMs, warning, error }) => ({
       key, model, provider, setting, states, answered, correct, p50Ms, p95Ms, latenciesMs,
       ...(warning ? { warning } : {}),

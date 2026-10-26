@@ -23,15 +23,19 @@ Created by Vishal Das. Inspired by [Jev Pong](https://github.com/ably-labs/jev-p
 
 The rivals are chosen to be fair to Alpie Seed: about its size or larger, answering without thinking first, and free to start on with no credit card, as Alpie is.
 
+Every lane that can think races with thinking off through the same switch, the chat template's `enable_thinking: false`, sent to Alpie Seed, Sarvam, Qwen and Gemma alike. Sarvam's documented `reasoning_effort` cannot turn thinking off ("low" is its lowest and still reasons first), so the race does not use it; the comparison on the how-it-works page shows it as Sarvam's thinking-on row, over the same 30 states as every other row. Alpie Core ignores the switch and thinks anyway, which is what its watch-only lane is there to show.
+
+Alpie Seed and Alpie Core are called on 169Pi's test endpoint; the rivals are called on their providers' public free-tier APIs. The two are not necessarily provisioned the same way, and the numbers here do not separate the model from the service in front of it.
+
 Recorded on 25 October 2026 from the deployed site, in a Vercel function in iad1 (Washington, D.C.), each model through its own API, 45 seconds per lane:
 
 | Lane | Decisions | Per second | Average | p95 | Returns |
 |---|---|---|---|---|---|
-| **Alpie Seed 9B** | **173** | **3.84** | **261 ms** | 260 ms | 22 |
-| Sarvam 105B | 116 | 2.57 | 389 ms | 514 ms | 14 |
-| Ministral 3 8B | 78 | 1.72 | 580 ms | 1,090 ms | 10 |
-| Qwen 3.8 27B | 75 | 1.65 | 607 ms | 1,617 ms | 9 |
-| Gemma 4 26B-A4B | 38 | 1.01 | 989 ms | 2,344 ms | 5 |
+| **Alpie Seed 9B** | **173** | **3.82** | **261 ms** | 260 ms | 22 |
+| Sarvam 105B | 116 | 2.56 | 389 ms | 514 ms | 14 |
+| Ministral 3 8B | 78 | 1.71 | 580 ms | 1,090 ms | 10 |
+| Qwen 3.8 27B | 75 | 1.64 | 607 ms | 1,617 ms | 9 |
+| Gemma 4 26B-A4B | 38 | 0.82 | 989 ms | 2,344 ms | 5 |
 | Alpie Core 32B | 4 | 0.07 | 14.5 s | 15.2 s | 0 |
 
 ![Decisions in 12 seconds: Alpie Seed 9B 45, Sarvam 105B 27, Ministral 3 8B 19, Qwen 3.8 27B 25, Gemma 4 26B-A4B 23, Alpie Core 32B 0.](public/media/clip-endcard-wide.png)

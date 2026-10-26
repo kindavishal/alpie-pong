@@ -28,7 +28,7 @@ export interface ComparisonSourceRow {
   correct: number;
   p50Ms: number;
   p95Ms: number;
-  /** States this row ran, when fewer than the file's `states` (a thinking lane). */
+  /** States this row ran; the file's `states` for every row since thinking lanes run in chunks. */
   states?: number;
   key?: string;
   latenciesMs?: number[];
