@@ -1,8 +1,8 @@
 /**
  * lib/decide/endpoints.ts — the models that are not on the Gateway.
  *
- * Alpie (169Pi), Mistral, Cloudflare Workers AI and Sarvam each serve an OpenAI-style
- * chat completions API, so a lane for them is asked through
+ * Alpie (169Pi), Mistral, Cloudflare Workers AI, Sarvam and the Hugging Face
+ * router each serve an OpenAI-style chat completions API, so a lane for them is asked through
  * `@ai-sdk/openai-compatible` pointed at that API instead of through a Gateway
  * model string. Everything else about the call is what every chat lane gets
  * (`generateObject`, the same schema, the same instruction, the same state),
@@ -10,7 +10,10 @@
  * and the comparison tool (../compare) both come through here.
  *
  * None of them needs a credit card to start: Alpie's test endpoint takes no
- * key at all, and the others hand out free keys on sign-up.
+ * key at all, and the others hand out free keys on sign-up. The Hugging Face
+ * router is the exception: it bills per call once a small monthly allowance is
+ * spent, so its lanes are in the comparison only, not the race. `HF_BILL_TO`
+ * names the organisation a call is billed to, when it is not the token's owner.
  *
  * Where these models live is never written in the repo. Base URLs, keys and
  * model ids are read from the environment when a lane runs, so a private test
@@ -21,7 +24,18 @@
  * json_schema` in Mistral's, Cloudflare's and Sarvam's docs), so
  * `supportsStructuredOutputs` is on: the model is constrained to `{ move }`,
  * exactly as the Gateway lanes are. Alpie Core's API is the exception that
- * ignores it; see the `answer: 'text'` lanes in ../compare.
+ * ignores it; see the `answer: 'text'` lanes in ../compare. On the Hugging Face
+ * router, Featherless enforces the schema too (Sarvam-M answered `{"move":…}`
+ * in 5 or 6 tokens, 2026-10-26).
+ *
+ * Some hosts put a model's whole reply in the message's `reasoning` field and
+ * leave `content` empty: Featherless does for Sarvam-M and Fathom-R1-14B, and
+ * Cloudflare did for Qwen 3 30B-A3B. The SDK reads `content` alone, so the
+ * reply would be scored as no answer. `replyFromReasoning` moves that text into
+ * `content`, for every endpoint, and only when `content` is empty and the reply
+ * finished, so a model that answers normally is untouched and thinking cut off
+ * at the token limit still counts as no answer. It runs after the response has arrived;
+ * the clock around the call is unchanged.
  *
  * Fields under `providerOptions[name]` are copied into the request body as
  * they are, which is how a lane sends Alpie's `chat_template_kwargs` thinking
@@ -38,7 +52,7 @@ interface EndpointConfig {
   /**
    * Provider name: the `providerOptions` key whose fields go into the body.
    * A lane on this endpoint keys its options by it ('alpie', 'mistral',
-   * 'cloudflare' or 'sarvam').
+   * 'cloudflare', 'sarvam' or 'huggingface').
    */
   name: string;
   baseUrl: string | undefined;
@@ -99,6 +113,19 @@ const ENDPOINTS: Record<EndpointKey, () => EndpointConfig> = {
       model: undefined,
     };
   },
+  huggingface: () => {
+    const billTo = env('HF_BILL_TO');
+    return {
+      name: 'huggingface',
+      baseUrl: env('HF_BASE_URL') ?? 'https://router.huggingface.co/v1',
+      baseUrlEnv: 'HF_BASE_URL',
+      apiKey: env('HF_TOKEN'),
+      keyRequired: 'HF_TOKEN',
+      headers: billTo === undefined ? undefined : { 'X-HF-Bill-To': billTo },
+      // Each lane names its host in its model id ("org/model:provider"), so there is no one-model override.
+      model: undefined,
+    };
+  },
   mistral: () => ({
     name: 'mistral',
     baseUrl: env('MISTRAL_BASE_URL') ?? 'https://api.mistral.ai/v1',
@@ -124,6 +151,41 @@ export function endpointModel(endpoint: EndpointKey, modelId: string): LanguageM
     apiKey: config.apiKey,
     headers: config.headers,
     supportsStructuredOutputs: true,
+    fetch: replyFromReasoning,
   });
   return provider.chatModel(config.model ?? modelId);
+}
+
+interface ChatMessage {
+  content?: string | null;
+  reasoning?: string | null;
+  reasoning_content?: string | null;
+}
+
+/**
+ * Moves a reply its host filed under `reasoning` into `content`, when
+ * `content` is empty (see the header). Anything that is not a JSON chat
+ * completion is passed through as it came.
+ */
+export async function replyFromReasoning(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  const res = await fetch(input, init);
+  if (!res.ok || !(res.headers.get('content-type') ?? '').includes('application/json')) return res;
+  const body = (await res.clone().json()) as { choices?: { message?: ChatMessage; finish_reason?: string }[] };
+  let moved = false;
+  for (const choice of body.choices ?? []) {
+    const message = choice.message;
+    const reasoning = message?.reasoning_content ?? message?.reasoning;
+    // Only a reply that finished: thinking cut off at the token limit is not an answer.
+    if (message && choice.finish_reason === 'stop' && !message.content && typeof reasoning === 'string' && reasoning.trim() !== '') {
+      message.content = reasoning;
+      delete message.reasoning;
+      delete message.reasoning_content;
+      moved = true;
+    }
+  }
+  if (!moved) return res;
+  const headers = new Headers(res.headers);
+  headers.delete('content-length');
+  headers.delete('content-encoding');
+  return new Response(JSON.stringify(body), { status: res.status, statusText: res.statusText, headers });
 }

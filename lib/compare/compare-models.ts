@@ -21,7 +21,7 @@
  * options, because the newest reasoning models refuse the generic "off" switch
  * and each takes a different lowest setting.
  *
- * Alpie and Sarvam are not on the Gateway. Their lanes name an `endpoint`
+ * Alpie, Sarvam and the models on the Hugging Face router are not on the Gateway. Their lanes name an `endpoint`
  * (./endpoints.ts) and are asked the same way through their own APIs.
  */
 
@@ -149,6 +149,21 @@ export const COMPARE_LANES: readonly CompareLane[] = [
   { key: 'ministral-14b-free', id: 'ministral-14b-2512', endpoint: 'mistral', model: 'Ministral 3 14B', provider: 'Mistral', setting: 'does not think' },
   { key: 'qwen-3.8-cf', id: '@cf/qwen/qwen3.8-27b', endpoint: 'cloudflare', model: 'Qwen 3.8 27B', provider: 'Cloudflare', setting: 'thinking off', providerOptions: { cloudflare: { chat_template_kwargs: { enable_thinking: false } } } },
   { key: 'gemma-4-cf', id: '@cf/google/gemma-4-26b-a4b-it', endpoint: 'cloudflare', model: 'Gemma 4 26B-A4B', provider: 'Cloudflare', setting: 'thinking off', providerOptions: { cloudflare: { chat_template_kwargs: { enable_thinking: false } } } },
+  // Dropped from the race for filing its reply under `reasoning` with none in `content`.
+  // That reply is now read (replyFromReasoning in ../decide/endpoints.ts), so it is
+  // measured again on the same terms as the Hugging Face lanes below.
+  { key: 'qwen-30b-a3b-cf', id: '@cf/qwen/qwen3-30b-a3b-fp8', endpoint: 'cloudflare', model: 'Qwen 3 30B-A3B', provider: 'Cloudflare', setting: 'thinking off', providerOptions: { cloudflare: { chat_template_kwargs: { enable_thinking: false } } } },
+
+  // The other Indian models still served anywhere (2026-10-26), both on Featherless
+  // through the Hugging Face router, which bills per call: comparison only, not the race.
+  // Sarvam-M is Sarvam's 24B post-training of Mistral Small. Featherless rejects the
+  // chat_template_kwargs thinking switch (HTTP 400), so none is sent; with the schema it
+  // answered in 5 or 6 tokens, so it did not think first.
+  { key: 'sarvam-m-hf', id: 'sarvamai/sarvam-m:featherless-ai', endpoint: 'huggingface', model: 'Sarvam-M 24B', provider: 'Featherless', setting: 'default, no thinking switch accepted' },
+  // Fathom-R1-14B is Fractal's 14B reasoning model, which always thinks. With the schema
+  // enforced it cannot, and answered in 8 or 9 tokens; the second lane lets it think.
+  { key: 'fathom-r1-14b-hf', id: 'FractalAIResearch/Fathom-R1-14B:featherless-ai', endpoint: 'huggingface', model: 'Fathom-R1-14B', provider: 'Featherless', setting: 'schema enforced, so no room to think' },
+  { key: 'fathom-r1-14b-hf-thinking', id: 'FractalAIResearch/Fathom-R1-14B:featherless-ai', endpoint: 'huggingface', model: 'Fathom-R1-14B', provider: 'Featherless', setting: 'thinking, move read from text', answer: 'text', maxOutputTokens: THINKING_OUTPUT_TOKENS, maxStates: THINKING_STATES },
 ];
 
 export const COMPARE_LANE_KEYS = COMPARE_LANES.map((l) => l.key);

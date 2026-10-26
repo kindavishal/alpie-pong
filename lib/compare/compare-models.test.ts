@@ -67,12 +67,12 @@ describe('runLane', () => {
     expect(new Set(keys).size).toBe(keys.length);
     for (const l of COMPARE_LANES) {
       if (l.endpoint === undefined) expect(l.id).toMatch(/^[a-z-]+\/[a-z0-9.-]+$/);
-      else expect(l.id).toMatch(/^@?[a-z0-9._/-]+$/);
+      else expect(l.id).toMatch(/^@?[A-Za-z0-9._/:-]+$/);
     }
   });
 
   it('keys an endpoint lane’s options by its provider name, so they reach the request body', () => {
-    const names: Record<string, string> = { 'alpie-seed': 'alpie', 'alpie-core': 'alpie', sarvam: 'sarvam', mistral: 'mistral', cloudflare: 'cloudflare' };
+    const names: Record<string, string> = { 'alpie-seed': 'alpie', 'alpie-core': 'alpie', sarvam: 'sarvam', mistral: 'mistral', cloudflare: 'cloudflare', huggingface: 'huggingface' };
     // A lane with nothing to switch (Ministral does not think) sends no options at all.
     for (const l of COMPARE_LANES.filter((x) => x.endpoint !== undefined && x.providerOptions !== undefined)) {
       expect(Object.keys(l.providerOptions!)).toEqual([names[l.endpoint!]]);
@@ -149,6 +149,12 @@ describe('callLane on an endpoint lane', () => {
     expect(r.error).toMatch(/SARVAM_API_KEY/);
   });
 
+  it('refuses a Hugging Face lane without a token', async () => {
+    delete process.env.HF_TOKEN;
+    const r = await callLane(compareLane('sarvam-m-hf')!, compareStates(1)[0]);
+    expect(r.error).toMatch(/HF_TOKEN/);
+  });
+
   it('posts the thinking switch, the schema and the model id to the configured endpoint', async () => {
     process.env.ALPIE_BASE_URL = 'https://alpie.example/v1';
     process.env.ALPIE_API_KEY = 'test-key';
@@ -177,5 +183,45 @@ describe('callLane on an endpoint lane', () => {
     expect(body.chat_template_kwargs).toEqual({ enable_thinking: false });
     expect(body.response_format.type).toBe('json_schema');
     expect(body.messages.at(-1).content).toBe(JSON.stringify(state));
+  });
+
+  function completion(message: Record<string, string>, finish_reason = 'stop') {
+    return vi.fn<(url: string, init: RequestInit) => Promise<Response>>(async () =>
+      Response.json({
+        id: 'x',
+        created: 0,
+        model: 'm',
+        choices: [{ index: 0, finish_reason, message: { role: 'assistant', ...message } }],
+        usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 },
+      }),
+    );
+  }
+
+  it('reads a finished reply its host filed under reasoning, and bills the named organisation', async () => {
+    process.env.HF_TOKEN = 'test-token';
+    process.env.HF_BILL_TO = 'some-org';
+    const fetchMock = completion({ content: '', reasoning: '{"move":"stay"}' });
+    vi.stubGlobal('fetch', fetchMock);
+    const r = await callLane(compareLane('sarvam-m-hf')!, compareStates(1)[0]);
+    expect(r.error).toBeUndefined();
+    expect(r.move).toBe('stay');
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe('https://router.huggingface.co/v1/chat/completions');
+    expect(new Headers(init.headers).get('x-hf-bill-to')).toBe('some-org');
+    expect(JSON.parse(String(init.body)).model).toBe('sarvamai/sarvam-m:featherless-ai');
+  });
+
+  it('does not score thinking cut off at the token limit as an answer', async () => {
+    process.env.HF_TOKEN = 'test-token';
+    vi.stubGlobal('fetch', completion({ content: '', reasoning: 'The ball is above, so maybe up' }, 'length'));
+    const r = await callLane(compareLane('fathom-r1-14b-hf-thinking')!, compareStates(1)[0]);
+    expect(r.move).toBeNull();
+  });
+
+  it('leaves a reply with content alone', async () => {
+    process.env.HF_TOKEN = 'test-token';
+    vi.stubGlobal('fetch', completion({ content: '{"move":"up"}', reasoning: '{"move":"down"}' }));
+    const r = await callLane(compareLane('sarvam-m-hf')!, compareStates(1)[0]);
+    expect(r.move).toBe('up');
   });
 });

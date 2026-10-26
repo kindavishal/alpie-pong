@@ -101,9 +101,10 @@ export type DecideKind = 'evaluate' | 'structured' | 'local';
 
 /**
  * An OpenAI-style API outside the Gateway, configured from the environment in
- * lib/decide/endpoints.ts. None of them needs a credit card to start.
+ * lib/decide/endpoints.ts. None of them needs a credit card to start, except the
+ * Hugging Face router, which bills per call and serves comparison lanes only.
  */
-export type EndpointKey = 'alpie-seed' | 'alpie-core' | 'mistral' | 'cloudflare' | 'sarvam';
+export type EndpointKey = 'alpie-seed' | 'alpie-core' | 'mistral' | 'cloudflare' | 'sarvam' | 'huggingface';
 
 export interface LaneConfig {
   id: ModelId;
