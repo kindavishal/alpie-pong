@@ -299,7 +299,11 @@ export const HERO: ModelId = 'alpie';
  *                    Cloudflare's other candidates were worse: Llama 3.1 8B cannot
  *                    return a JSON schema and took 3.5 to 4.6 s, Qwen 3 30B-A3B
  *                    returned its answer in the reasoning field and none in the
- *                    reply, and Granite 4.0 Micro got half its moves wrong.
+ *                    reply, and Granite 4.0 Micro got half its moves wrong. That
+ *                    reply is now read (replyFromReasoning in lib/decide/endpoints.ts);
+ *                    measured again, Qwen 3 30B-A3B got 22 of 30 right at a 435 ms
+ *                    median (2026-10-26, from a laptop). It is in the comparison,
+ *                    not the race, which nobody has re-decided since.
  *   Alpie Core       169Pi's 32B reasoning model. Its API ignores the JSON
  *                    schema and the thinking switch and writes about 400 tokens
  *                    before answering (~12 s), so it reads the move from its

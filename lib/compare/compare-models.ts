@@ -161,9 +161,10 @@ export const COMPARE_LANES: readonly CompareLane[] = [
   // answered in 5 or 6 tokens, so it did not think first.
   { key: 'sarvam-m-hf', id: 'sarvamai/sarvam-m:featherless-ai', endpoint: 'huggingface', model: 'Sarvam-M 24B', provider: 'Featherless', setting: 'default, no thinking switch accepted' },
   // Fathom-R1-14B is Fractal's 14B reasoning model, which always thinks. With the schema
-  // enforced it cannot, and answered in 8 or 9 tokens; the second lane lets it think.
+  // enforced it cannot, and answered in 8 or 9 tokens. Allowed to think, it ran to the
+  // 8,192-token limit without an answer on both states tried (about 81 s each,
+  // 2026-10-26), so it has no thinking lane: 30 states would be 40 minutes of no answers.
   { key: 'fathom-r1-14b-hf', id: 'FractalAIResearch/Fathom-R1-14B:featherless-ai', endpoint: 'huggingface', model: 'Fathom-R1-14B', provider: 'Featherless', setting: 'schema enforced, so no room to think' },
-  { key: 'fathom-r1-14b-hf-thinking', id: 'FractalAIResearch/Fathom-R1-14B:featherless-ai', endpoint: 'huggingface', model: 'Fathom-R1-14B', provider: 'Featherless', setting: 'thinking, move read from text', answer: 'text', maxOutputTokens: THINKING_OUTPUT_TOKENS, maxStates: THINKING_STATES },
 ];
 
 export const COMPARE_LANE_KEYS = COMPARE_LANES.map((l) => l.key);

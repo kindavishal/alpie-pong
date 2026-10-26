@@ -214,7 +214,7 @@ describe('callLane on an endpoint lane', () => {
   it('does not score thinking cut off at the token limit as an answer', async () => {
     process.env.HF_TOKEN = 'test-token';
     vi.stubGlobal('fetch', completion({ content: '', reasoning: 'The ball is above, so maybe up' }, 'length'));
-    const r = await callLane(compareLane('fathom-r1-14b-hf-thinking')!, compareStates(1)[0]);
+    const r = await callLane(compareLane('fathom-r1-14b-hf')!, compareStates(1)[0]);
     expect(r.move).toBeNull();
   });
 

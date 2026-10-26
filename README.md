@@ -48,7 +48,32 @@ Each latency is the round trip from that server to the model's own API, so it in
 - **Gemma 4 on Google AI Studio**: failed about one call in six. The same model on Cloudflare is reliable, so it races there.
 - **gpt-oss-20b**: its API cannot switch reasoning off, which would make the lane a test of thinking rather than of the model.
 - **Sarvam 105B** was left out at first for the same reason, wrongly: its documented `reasoning_effort` setting never goes below "low", but the API also accepts the chat template's `enable_thinking` switch, which turns thinking off. It now races.
-- **Llama 3.1 8B, Qwen 3 30B-A3B and Granite 4.0 Micro** on Cloudflare: Llama cannot return a JSON schema and took 3.5 to 4.6 s, Qwen returned empty replies, and Granite got half its moves wrong.
+- **Llama 3.1 8B, Qwen 3 30B-A3B and Granite 4.0 Micro** on Cloudflare: Llama cannot return a JSON schema and took 3.5 to 4.6 s, Qwen returned empty replies, and Granite got half its moves wrong. Qwen's replies were not empty: Cloudflare filed them under `reasoning` instead of `content`. Every lane now reads such a reply (`replyFromReasoning` in `lib/decide/endpoints.ts`), and Qwen 3 30B-A3B answered all 30 states, 22 right, at a 435 ms median in the run below. It has not been added to the race, because it was not part of the search for Indian rivals; it could be.
+
+### Other Indian models
+
+Alpie Seed's rivals were also searched for among Indian models (26 October 2026). Sarvam 105B is the only one served free on a provider's own API. What else exists:
+
+- **Sarvam 30B and Sarvam-M** are retired from Sarvam's API, which now serves Sarvam 105B as its only Sarvam chat model.
+- **Sarvam-M (24B)** and **Fractal's Fathom-R1-14B** are still served by Featherless through the Hugging Face router, which bills per call. Both are in the comparison tool, not the race. Featherless rejects the `enable_thinking` switch, so Sarvam-M runs with no switch; it answered the schema in 5 or 6 tokens, so it did not think first. Fathom always thinks unless the schema stops it: with the schema it answered in 8 or 9 tokens, and allowed to think it ran to the 8,192-token limit with no answer after about 81 s, twice.
+- **Krutrim-2 (12B)** is no longer served: Krutrim Cloud's catalogue now holds only other companies' models.
+- **BharatGen Param2 17B-A2.4B** and **Sarvam 30B** are open weights with no hosted API that we could find. Hosting them ourselves would time our own hardware rather than a provider's service, so they are not in either table.
+- **Zoho Zia LLM, Soket, Tech Mahindra (Indus), Genloop, CoRover (BharatGPT), Hanooman and Gnani**: no public chat API found.
+
+The same 30 states went to the free race lanes and the two Featherless models in one run, one call at a time. This run was made from a Mac on home broadband through `pnpm dev`, not from Vercel like every other number on this page, so the latencies include that connection and are not comparable with the race table above; they are comparable with each other.
+
+| Model | Served by | Answered | Correct | Median | p95 |
+|---|---|---|---|---|---|
+| Alpie Seed 9B | 169Pi | 30 | 30 | 399 ms | 403 ms |
+| Sarvam 105B | Sarvam | 30 | 20 | 235 ms | 566 ms |
+| Ministral 3 8B | Mistral | 30 | 26 | 484 ms | 730 ms |
+| Qwen 3.8 27B | Cloudflare | 30 | 30 | 828 ms | 36,241 ms |
+| Gemma 4 26B-A4B | Cloudflare | 30 | 30 | 583 ms | 2,288 ms |
+| Qwen 3 30B-A3B | Cloudflare | 30 | 22 | 435 ms | 882 ms |
+| Sarvam-M 24B | Featherless | 30 | 24 | 1,717 ms | 3,262 ms |
+| Fathom-R1-14B, schema | Featherless | 29 | 6 | 1,682 ms | 4,335 ms |
+
+Qwen 3.8's p95 comes from at least two calls that stalled for 36 s or more: its 30 calls took 203 s in all, against about 25 s at its median. Fathom's one unanswered state returned no response at all. Neither Featherless model is in the race: both are billed per call, and Sarvam-M's median is about four times Alpie Seed's.
 
 ## What counts as one decision
 
