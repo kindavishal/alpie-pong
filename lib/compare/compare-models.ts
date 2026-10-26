@@ -141,7 +141,7 @@ export const COMPARE_LANES: readonly CompareLane[] = [
   // does for Alpie, Qwen and Gemma; the "low" lane is Sarvam's thinking-on row.
   // sarvam-30b is retired from the API (deprecated on v1, not found on v2, 2026-10-25).
   { key: 'sarvam-105b-free', id: 'sarvam-105b', endpoint: 'sarvam', model: 'Sarvam 105B', provider: 'Sarvam', setting: 'thinking off', providerOptions: { sarvam: { chat_template_kwargs: { enable_thinking: false } } } },
-  { key: 'sarvam-105b', id: 'sarvam-105b', endpoint: 'sarvam', model: 'Sarvam 105B', provider: 'Sarvam', setting: 'thinking on, reasoning effort low (its lowest)', providerOptions: { sarvam: { reasoning_effort: 'low' } }, maxOutputTokens: THINKING_OUTPUT_TOKENS, maxStates: THINKING_STATES },
+  { key: 'sarvam-105b', id: 'sarvam-105b', endpoint: 'sarvam', model: 'Sarvam 105B', provider: 'Sarvam', setting: 'thinking on, reasoning effort low (its lowest)', providerOptions: { sarvam: { reasoningEffort: 'low' } }, maxOutputTokens: THINKING_OUTPUT_TOKENS, maxStates: THINKING_STATES },
   // The race rivals on their own free APIs, as the race asks them (lib/game/types.ts).
   // Ministral 3 does not think, so it has no switch to send.
   { key: 'ministral-3b-free', id: 'ministral-3b-2512', endpoint: 'mistral', model: 'Ministral 3 3B', provider: 'Mistral', setting: 'does not think' },
@@ -153,6 +153,12 @@ export const COMPARE_LANES: readonly CompareLane[] = [
   // That reply is now read (replyFromReasoning in ../decide/endpoints.ts), so it is
   // measured again on the same terms as the Hugging Face lanes below.
   { key: 'qwen-30b-a3b-cf', id: '@cf/qwen/qwen3-30b-a3b-fp8', endpoint: 'cloudflare', model: 'Qwen 3 30B-A3B', provider: 'Cloudflare', setting: 'thinking off', providerOptions: { cloudflare: { chat_template_kwargs: { enable_thinking: false } } } },
+
+  // Google's newest small Gemini (released 2026-07-21) on Google's own Gemini API, billed
+  // per call. It rejects reasoning_effort "none" and a zero thinking budget (HTTP 400), so
+  // it gets "minimal", the lowest level the API accepts; at that level Google's native API
+  // reported no thinking tokens (2026-10-26). The Gateway lane above sends a zero budget.
+  { key: 'gemini-3.5-flash-lite-google', id: 'gemini-3.5-flash-lite', endpoint: 'gemini', model: 'Gemini 3.5 Flash-Lite', provider: 'Google', setting: 'reasoning effort minimal (its lowest)', providerOptions: { gemini: { reasoningEffort: 'minimal' } } },
 
   // The other Indian models still served anywhere (2026-10-26), both on Featherless
   // through the Hugging Face router, which bills per call: comparison only, not the race.

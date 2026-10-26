@@ -72,7 +72,7 @@ describe('runLane', () => {
   });
 
   it('keys an endpoint lane’s options by its provider name, so they reach the request body', () => {
-    const names: Record<string, string> = { 'alpie-seed': 'alpie', 'alpie-core': 'alpie', sarvam: 'sarvam', mistral: 'mistral', cloudflare: 'cloudflare', huggingface: 'huggingface' };
+    const names: Record<string, string> = { 'alpie-seed': 'alpie', 'alpie-core': 'alpie', sarvam: 'sarvam', mistral: 'mistral', cloudflare: 'cloudflare', gemini: 'gemini', huggingface: 'huggingface' };
     // A lane with nothing to switch (Ministral does not think) sends no options at all.
     for (const l of COMPARE_LANES.filter((x) => x.endpoint !== undefined && x.providerOptions !== undefined)) {
       expect(Object.keys(l.providerOptions!)).toEqual([names[l.endpoint!]]);
@@ -109,7 +109,7 @@ describe('the Sarvam lanes', () => {
     expect(off.providerOptions).toEqual({ sarvam: { chat_template_kwargs: { enable_thinking: false } } });
     expect(off.maxStates).toBeUndefined();
     const on = lanes.find((l) => l.setting.startsWith('thinking on'))!;
-    expect(on.providerOptions).toEqual({ sarvam: { reasoning_effort: 'low' } });
+    expect(on.providerOptions).toEqual({ sarvam: { reasoningEffort: 'low' } });
     expect(on.setting).toContain('lowest');
   });
 });
@@ -147,6 +147,47 @@ describe('callLane on an endpoint lane', () => {
     delete process.env.SARVAM_API_KEY;
     const r = await callLane(compareLane('sarvam-105b')!, compareStates(1)[0]);
     expect(r.error).toMatch(/SARVAM_API_KEY/);
+  });
+
+  it('refuses a Gemini lane without a key, and sends it the lowest effort Google accepts', async () => {
+    delete process.env.GEMINI_API_KEY;
+    const missing = await callLane(compareLane('gemini-3.5-flash-lite-google')!, compareStates(1)[0]);
+    expect(missing.error).toMatch(/GEMINI_API_KEY/);
+
+    process.env.GEMINI_API_KEY = 'test-key';
+    const fetchMock = vi.fn<(url: string, init: RequestInit) => Promise<Response>>(async () =>
+      Response.json({
+        id: 'x',
+        created: 0,
+        model: 'gemini-3.5-flash-lite',
+        choices: [{ index: 0, finish_reason: 'stop', message: { role: 'assistant', content: '{"move":"stay"}' } }],
+        usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 },
+      }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    const r = await callLane(compareLane('gemini-3.5-flash-lite-google')!, compareStates(1)[0]);
+    expect(r.move).toBe('stay');
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions');
+    const body = JSON.parse(String(init.body));
+    expect(body.reasoning_effort).toBe('minimal');
+    expect(body.response_format.type).toBe('json_schema');
+  });
+
+  it('sends Sarvam\'s thinking-on lane its "low" effort in the request body', async () => {
+    process.env.SARVAM_API_KEY = 'test-key';
+    const fetchMock = vi.fn<(url: string, init: RequestInit) => Promise<Response>>(async () =>
+      Response.json({
+        id: 'x',
+        created: 0,
+        model: 'sarvam-105b',
+        choices: [{ index: 0, finish_reason: 'stop', message: { role: 'assistant', content: '{"move":"up"}' } }],
+        usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 },
+      }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    await callLane(compareLane('sarvam-105b')!, compareStates(1)[0]);
+    expect(JSON.parse(String(fetchMock.mock.calls[0][1].body)).reasoning_effort).toBe('low');
   });
 
   it('refuses a Hugging Face lane without a token', async () => {

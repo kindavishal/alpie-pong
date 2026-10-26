@@ -102,9 +102,10 @@ export type DecideKind = 'evaluate' | 'structured' | 'local';
 /**
  * An OpenAI-style API outside the Gateway, configured from the environment in
  * lib/decide/endpoints.ts. None of them needs a credit card to start, except the
- * Hugging Face router, which bills per call and serves comparison lanes only.
+ * Hugging Face router and Google's Gemini API, which bill per call and serve
+ * comparison lanes only.
  */
-export type EndpointKey = 'alpie-seed' | 'alpie-core' | 'mistral' | 'cloudflare' | 'sarvam' | 'huggingface';
+export type EndpointKey = 'alpie-seed' | 'alpie-core' | 'mistral' | 'cloudflare' | 'sarvam' | 'gemini' | 'huggingface';
 
 export interface LaneConfig {
   id: ModelId;

@@ -1,8 +1,8 @@
 /**
  * lib/decide/endpoints.ts — the models that are not on the Gateway.
  *
- * Alpie (169Pi), Mistral, Cloudflare Workers AI, Sarvam and the Hugging Face
- * router each serve an OpenAI-style chat completions API, so a lane for them is asked through
+ * Alpie (169Pi), Mistral, Cloudflare Workers AI, Sarvam, Google's Gemini API and
+ * the Hugging Face router each serve an OpenAI-style chat completions API, so a lane for them is asked through
  * `@ai-sdk/openai-compatible` pointed at that API instead of through a Gateway
  * model string. Everything else about the call is what every chat lane gets
  * (`generateObject`, the same schema, the same instruction, the same state),
@@ -14,7 +14,9 @@
  * router is the exception: every call is charged, against prepaid credits or
  * a PRO or organisation plan's monthly credits (a free account has none), so
  * its lanes are in the comparison only, not the race. `HF_BILL_TO` names the
- * organisation a call is billed to, when it is not the token's owner.
+ * organisation a call is billed to, when it is not the token's owner. Google's
+ * Gemini API is paid too once billing is on, which is what lifts the free tier's
+ * 15 requests a minute, so its lane is also in the comparison only.
  *
  * Where these models live is never written in the repo. Base URLs, keys and
  * model ids are read from the environment when a lane runs, so a private test
@@ -27,7 +29,8 @@
  * exactly as the Gateway lanes are. Alpie Core's API is the exception that
  * ignores it; see the `answer: 'text'` lanes in ../compare. On the Hugging Face
  * router, Featherless enforces the schema too (Sarvam-M answered `{"move":…}`
- * in 5 or 6 tokens, 2026-10-26).
+ * in 5 or 6 tokens, 2026-10-26), and so does the Gemini API's OpenAI-compatible
+ * endpoint (Gemini 3.5 Flash-Lite answered `{"move":…}` on every probe, 2026-10-26).
  *
  * Some hosts put a model's whole reply in the message's `reasoning` field and
  * leave `content` empty: Featherless does for Sarvam-M and Fathom-R1-14B, and
@@ -40,7 +43,10 @@
  *
  * Fields under `providerOptions[name]` are copied into the request body as
  * they are, which is how a lane sends Alpie's `chat_template_kwargs` thinking
- * switch, or the `reasoning_effort` the others take.
+ * switch. The one exception is the reasoning effort: the SDK writes its own
+ * `reasoning_effort` after the copied fields, so a lane must name it
+ * `reasoningEffort`. Spelt `reasoning_effort`, it is overwritten and never sent,
+ * which until 2026-10-26 was true of Sarvam 105B's thinking-on lane.
  */
 
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
@@ -53,7 +59,7 @@ interface EndpointConfig {
   /**
    * Provider name: the `providerOptions` key whose fields go into the body.
    * A lane on this endpoint keys its options by it ('alpie', 'mistral',
-   * 'cloudflare', 'sarvam' or 'huggingface').
+   * 'cloudflare', 'sarvam', 'gemini' or 'huggingface').
    */
   name: string;
   baseUrl: string | undefined;
@@ -114,6 +120,14 @@ const ENDPOINTS: Record<EndpointKey, () => EndpointConfig> = {
       model: undefined,
     };
   },
+  gemini: () => ({
+    name: 'gemini',
+    baseUrl: env('GEMINI_BASE_URL') ?? 'https://generativelanguage.googleapis.com/v1beta/openai',
+    baseUrlEnv: 'GEMINI_BASE_URL',
+    apiKey: env('GEMINI_API_KEY'),
+    keyRequired: 'GEMINI_API_KEY',
+    model: undefined,
+  }),
   huggingface: () => {
     const billTo = env('HF_BILL_TO');
     return {
