@@ -2,12 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { COMPARISON_STATES, accuracyPercent, comparisonRows, accuracySentence } from './comparison';
 
 describe('comparisonRows', () => {
-  it('puts the baseline first at exactly 1x and every other model at 1x or slower', () => {
+  // A rival may well be faster than the baseline; the table has to be able to say so.
+  it('puts the baseline first at exactly 1x and the rest fastest to slowest', () => {
     const rows = comparisonRows();
     expect(rows[0].model).toBe('Alpie Seed');
     expect(rows[0].setting).toBe('thinking off');
     expect(rows[0].timesHero).toBe(1);
-    for (const row of rows.slice(1)) expect(row.timesHero).toBeGreaterThanOrEqual(1);
+    const medians = rows.slice(1).map((r) => r.adjustedP50Ms);
+    expect(medians).toEqual([...medians].sort((a, b) => a - b));
   });
 
   it('removes the local floor from every median and never goes below zero', () => {
