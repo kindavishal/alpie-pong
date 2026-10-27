@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { LANES } from '../game/types';
-import { COMPARISON_STATES, accuracyPercent, comparisonRows, accuracySentence } from './comparison';
+import { COMPARISON_STATES, accuracyPercent, comparisonRows, accuracySentence, spreadSentence } from './comparison';
 
 describe('comparisonRows', () => {
   it('names the row and the first error when a model with two rows misses calls', () => {
@@ -104,6 +104,21 @@ describe('accuracySentence', () => {
   it('is empty without a second model', () => {
     expect(accuracySentence([])).toBe('');
     expect(accuracySentence([row('Alpie Seed', 30, 30)])).toBe('');
+  });
+});
+
+describe('spreadSentence', () => {
+  it('names a row whose p95 comes from a few slow calls, from its own latencies', () => {
+    const steady = { model: 'A', setting: 's', p50Ms: 500, p95Ms: 600, latenciesMs: [500, 500, 600] };
+    const spiky = { model: 'B', setting: 's', p50Ms: 1000, p95Ms: 17000, latenciesMs: [1000, 1000, 1000, 5000, 20000] };
+    expect(spreadSentence([steady])).toBe('');
+    expect(spreadSentence([steady, spiky])).toContain('(B: 2 of 5 calls took over three times its median, the longest 20.0 s)');
+  });
+
+  it('accounts for every row in the published run whose p95 is over three times its median', () => {
+    const rows = comparisonRows();
+    const sentence = spreadSentence(rows);
+    for (const r of rows.filter((r) => r.p95Ms > 3 * r.p50Ms)) expect(sentence).toContain(r.model);
   });
 });
 

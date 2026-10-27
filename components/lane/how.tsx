@@ -22,14 +22,16 @@ import { DECISION_INSTRUCTIONS, MOVE_CRITERIA, stateForModel } from '@/lib/decid
 import { createEngine, serve, toDecisionState } from '@/lib/game/engine';
 import {
   accuracySentence,
+  spreadSentence,
   COMPARISON_FLOOR_MS,
   COMPARISON_FROM,
   COMPARISON_MEASURED_AT,
+  COMPARISON_REGION,
   COMPARISON_STATES,
   comparisonRows,
   type ComparisonRow,
 } from '@/lib/ui/comparison';
-import { INDIAN_FROM, INDIAN_MEASURED_AT, INDIAN_STATES, UNMEASURED, indianRows } from '@/lib/ui/indian-models';
+import { INDIAN_FROM, INDIAN_MEASURED_AT, INDIAN_REGION, INDIAN_STATES, UNMEASURED, indianRows } from '@/lib/ui/indian-models';
 import {
   LANES,
   MODEL_PADDLE_STEP,
@@ -262,7 +264,27 @@ function OtherModels() {
           .map((r) => ` The ${r.model} row with ${r.setting} was ${r.note}.`)
           .join('')}
       </Body>
+      {COMPARISON_REGION === null ? <FromIndia /> : null}
+      <Body>{spreadSentence(rows)}</Body>
     </Section>
+  );
+}
+
+/**
+ * Where a run made off Vercel was made, and what that does to the order. Said
+ * only while the published run says it was not made on Vercel.
+ */
+function FromIndia() {
+  return (
+    <Body>
+      That machine is a Mac on home broadband in India, and each latency includes the trip from
+      there to wherever the provider serves the model. Sarvam&apos;s API is in Mumbai and the
+      endpoint {HERO_LABEL} is called on is in San Jose, so from here Sarvam 105B has much the
+      shorter trip, which is likely much of why it is faster than {HERO_LABEL} in this table. The race on the
+      home page is recorded from Vercel&apos;s iad1 region in Virginia, where {HERO_LABEL}&apos;s
+      trip is the shorter one. Neither order is the models alone. A run from Vercel is planned
+      to replace this one.
+    </Body>
   );
 }
 
@@ -333,6 +355,7 @@ function IndianModels() {
         Measured from {INDIAN_FROM}, so every latency includes that machine&apos;s network, and the
         rows are comparable with each other rather than with the race. {accuracySentence(rows, INDIAN_STATES)}
       </Body>
+      {INDIAN_REGION === null ? <FromIndia /> : null}
 
       <p className="text-fg-muted max-w-[700px] pt-1 text-[13px] leading-[1.6] lg:text-[14px]">
         Not in the table, because they could not be put the question:

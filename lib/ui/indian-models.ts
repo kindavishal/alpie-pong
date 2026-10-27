@@ -19,6 +19,8 @@ import { comparisonRows, type ComparisonRow } from './comparison';
 export const INDIAN_STATES: number = indian.states;
 export const INDIAN_MEASURED_AT: string = indian.measuredAt;
 export const INDIAN_FROM: string = indian.from;
+/** The Vercel region the run was made in; null when it was made off Vercel. */
+export const INDIAN_REGION: string | null = indian.region;
 
 /** The baseline first, then fastest to slowest, as the file lists them. */
 export function indianRows(): ComparisonRow[] {

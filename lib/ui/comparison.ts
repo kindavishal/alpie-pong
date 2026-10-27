@@ -50,6 +50,8 @@ export const COMPARISON_STATES: number = comparison.states;
 export const COMPARISON_FLOOR_MS: number = comparison.floorMs;
 export const COMPARISON_MEASURED_AT: string = comparison.measuredAt;
 export const COMPARISON_FROM: string = comparison.from;
+/** The Vercel region the run was made in; null when it was made off Vercel. */
+export const COMPARISON_REGION: string | null = comparison.region;
 
 /** Rows in the order the file lists them (the baseline first, then fastest to slowest). */
 export function comparisonRows(
@@ -114,6 +116,25 @@ export function accuracySentence(
         ? `${hero.model} missed one`
         : `${hero.model} missed ${missed}`;
   return [`${rest}; ${heroPart}.`, ...unanswered.map((u) => `${u}.`)].join(' ');
+}
+
+/**
+ * Which rows' p95 is set by a few slow calls rather than by the model's usual
+ * pace, built from each row's own latencies so it cannot drift from them: a
+ * row whose p95 is over three times its median, with how many calls took over
+ * three times the median and how long the longest took.
+ */
+export function spreadSentence(rows: readonly Pick<ComparisonRow, 'model' | 'setting' | 'p50Ms' | 'p95Ms' | 'latenciesMs'>[]): string {
+  const name = (r: (typeof rows)[number]) =>
+    rows.filter((o) => o.model === r.model).length > 1 ? `${r.model} with ${r.setting}` : r.model;
+  const parts = rows.flatMap((r) => {
+    if (r.latenciesMs === undefined || r.p95Ms <= 3 * r.p50Ms) return [];
+    const slow = r.latenciesMs.filter((ms) => ms > 3 * r.p50Ms);
+    const longest = (Math.max(...r.latenciesMs) / 1000).toFixed(1);
+    return [`${name(r)}: ${slow.length} of ${r.latenciesMs.length} calls took over three times its median, the longest ${longest} s`];
+  });
+  if (parts.length === 0) return '';
+  return `A few slow calls set the p95 of ${parts.length === 1 ? 'one row' : `${parts.length} rows`} (${parts.join('; ')}). Nothing is retried and calls go one at a time, so a slow or refused call is the provider's service as much as the model, and from outside we cannot tell which.`;
 }
 
 function plural(n: number, noun: string): string {
