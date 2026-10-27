@@ -68,6 +68,8 @@ export interface CompareLane {
    * the lane's `setting` says so.
    */
   answer?: 'text';
+  /** For an API that refuses any temperature at all: the field is left out, and `setting` says so. */
+  omitTemperature?: true;
 }
 
 /** Alpie Seed wrote about 1,800 tokens of thinking for one move (2026-10-25). */
@@ -162,6 +164,19 @@ export const COMPARE_LANES: readonly CompareLane[] = [
   // reported no thinking tokens (2026-10-26). The Gateway lane above sends a zero budget.
   { key: 'gemini-3.5-flash-lite-google', id: 'gemini-3.5-flash-lite', endpoint: 'gemini', model: 'Gemini 3.5 Flash-Lite', provider: 'Google', setting: 'reasoning effort minimal (its lowest)', providerOptions: { gemini: { reasoningEffort: 'minimal' } } },
 
+  // Amazon Bedrock, us-east-1, through its Converse API (../decide/endpoints.ts), billed per
+  // call. For a model that is not Anthropic's the SDK holds the answer to the schema with a
+  // tool call the model must make, so these rows say "forced tool call". Nova 2 Lite refuses
+  // Bedrock's JSON-schema output, and reasons only when asked to (2026-10-27).
+  { key: 'nova-2-lite-bedrock', id: 'us.amazon.nova-2-lite-v1:0', endpoint: 'bedrock', model: 'Nova 2 Lite', provider: 'Amazon Bedrock', setting: 'reasoning off (its default), forced tool call' },
+  // Ministral 3 8B as it races, but on Bedrock instead of Mistral's own API: the same weights
+  // on two services, so the two rows show what the service adds.
+  { key: 'ministral-8b-bedrock', id: 'mistral.ministral-3-8b-instruct', endpoint: 'bedrock', model: 'Ministral 3 8B', provider: 'Amazon Bedrock', setting: 'does not think, forced tool call' },
+  // xAI's Grok 4.7 cannot stop reasoning: "none" is refused, and "low" is its lowest effort.
+  // It also refuses any temperature, so none is sent. At "low" it took 4 to 10 s a call on
+  // three probes (2026-10-27), so it is a thinking row and runs in chunks like the others.
+  { key: 'grok-4.7-bedrock', id: 'us.xai.grok-4.7', endpoint: 'bedrock', model: 'Grok 4.7', provider: 'Amazon Bedrock', setting: 'reasoning effort low (its lowest), no temperature, forced tool call', providerOptions: { bedrock: { additionalModelRequestFields: { reasoning: { effort: 'low' } } } }, omitTemperature: true, maxOutputTokens: THINKING_OUTPUT_TOKENS, maxStates: THINKING_STATES },
+
   // The other Indian models still served anywhere (2026-10-26), both on Featherless
   // through the Hugging Face router, which bills per call: comparison only, not the race.
   // Sarvam-M is Sarvam's 24B post-training of Mistral Small. Featherless rejects the
@@ -235,7 +250,7 @@ export async function callLane(lane: CompareLane, state: DecisionState): Promise
         model,
         system: LLM_SYSTEM_PROMPT,
         prompt: JSON.stringify(stateForModel(state)),
-        temperature: 0,
+        temperature: lane.omitTemperature ? undefined : 0,
         maxOutputTokens: lane.maxOutputTokens ?? MAX_OUTPUT_TOKENS,
         maxRetries: 0,
         providerOptions: lane.providerOptions ?? reasoningOff(lane.id),
@@ -250,7 +265,7 @@ export async function callLane(lane: CompareLane, state: DecisionState): Promise
       schemaDescription: 'The move for the right paddle on this tick.',
       system: LLM_SYSTEM_PROMPT,
       prompt: JSON.stringify(stateForModel(state)),
-      temperature: 0,
+      temperature: lane.omitTemperature ? undefined : 0,
       maxOutputTokens: lane.maxOutputTokens ?? MAX_OUTPUT_TOKENS,
       maxRetries: 0,
       providerOptions: lane.providerOptions ?? reasoningOff(lane.id),

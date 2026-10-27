@@ -72,7 +72,7 @@ describe('runLane', () => {
   });
 
   it('keys an endpoint lane’s options by its provider name, so they reach the request body', () => {
-    const names: Record<string, string> = { 'alpie-seed': 'alpie', 'alpie-core': 'alpie', sarvam: 'sarvam', mistral: 'mistral', cloudflare: 'cloudflare', gemini: 'gemini', huggingface: 'huggingface' };
+    const names: Record<string, string> = { 'alpie-seed': 'alpie', 'alpie-core': 'alpie', sarvam: 'sarvam', mistral: 'mistral', cloudflare: 'cloudflare', gemini: 'gemini', huggingface: 'huggingface', bedrock: 'bedrock' };
     // A lane with nothing to switch (Ministral does not think) sends no options at all.
     for (const l of COMPARE_LANES.filter((x) => x.endpoint !== undefined && x.providerOptions !== undefined)) {
       expect(Object.keys(l.providerOptions!)).toEqual([names[l.endpoint!]]);
@@ -257,6 +257,53 @@ describe('callLane on an endpoint lane', () => {
     vi.stubGlobal('fetch', completion({ content: '', reasoning: 'The ball is above, so maybe up' }, 'length'));
     const r = await callLane(compareLane('fathom-r1-14b-hf')!, compareStates(1)[0]);
     expect(r.move).toBeNull();
+  });
+
+  function converse(content: Record<string, unknown>[]) {
+    return vi.fn<(url: string, init: RequestInit) => Promise<Response>>(async () =>
+      Response.json({
+        output: { message: { role: 'assistant', content } },
+        stopReason: 'tool_use',
+        usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 },
+      }),
+    );
+  }
+
+  it('refuses a Bedrock lane without a key', async () => {
+    delete process.env.BEDROCK_API_KEY;
+    const r = await callLane(compareLane('nova-2-lite-bedrock')!, compareStates(1)[0]);
+    expect(r.error).toMatch(/BEDROCK_API_KEY/);
+  });
+
+  it('asks Bedrock in us-east-1 by default, at temperature 0, for a forced tool call', async () => {
+    process.env.BEDROCK_API_KEY = 'test-key';
+    delete process.env.BEDROCK_REGION;
+    const fetchMock = converse([{ toolUse: { toolUseId: 't', name: 'json', input: { move: 'down' } } }]);
+    vi.stubGlobal('fetch', fetchMock);
+    const r = await callLane(compareLane('nova-2-lite-bedrock')!, compareStates(1)[0]);
+    expect(r.move).toBe('down');
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe('https://bedrock-runtime.us-east-1.amazonaws.com/model/us.amazon.nova-2-lite-v1%3A0/converse');
+    expect(new Headers(init.headers).get('authorization')).toBe('Bearer test-key');
+    const body = JSON.parse(String(init.body));
+    expect(body.inferenceConfig.temperature).toBe(0);
+    expect(body.toolConfig.tools[0].toolSpec.name).toBe('json');
+  });
+
+  it('sends Grok no temperature and its lowest effort, and reads the tool call when it also writes text', async () => {
+    process.env.BEDROCK_API_KEY = 'test-key';
+    const fetchMock = converse([
+      { reasoningContent: { redactedContent: 'eA==' } },
+      { text: '{"move":"stay"}' },
+      { toolUse: { toolUseId: 't', name: 'json', input: { move: 'stay' } } },
+    ]);
+    vi.stubGlobal('fetch', fetchMock);
+    const r = await callLane(compareLane('grok-4.7-bedrock')!, compareStates(1)[0]);
+    expect(r.error).toBeUndefined();
+    expect(r.move).toBe('stay');
+    const body = JSON.parse(String(fetchMock.mock.calls[0][1].body));
+    expect(body.inferenceConfig.temperature).toBeUndefined();
+    expect(body.additionalModelRequestFields.reasoning).toEqual({ effort: 'low' });
   });
 
   it('leaves a reply with content alone', async () => {

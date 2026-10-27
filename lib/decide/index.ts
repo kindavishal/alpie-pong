@@ -99,6 +99,7 @@ export async function decide(req: DecideRequest, opts: DecideOptions = {}): Prom
             providerOptions: lane.providerOptions,
             maxOutputTokens: lane.maxOutputTokens,
             answer: lane.answer,
+            omitTemperature: lane.omitTemperature,
           });
 
     return { ok: true, move: decision.move, latencyMs: Math.round(decision.latencyMs), model };

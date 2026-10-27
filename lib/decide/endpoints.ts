@@ -47,8 +47,28 @@
  * `reasoning_effort` after the copied fields, so a lane must name it
  * `reasoningEffort`. Spelt `reasoning_effort`, it is overwritten and never sent,
  * which until 2026-10-26 was true of Sarvam 105B's thinking-on lane.
+ *
+ * Amazon Bedrock is the one endpoint that is not OpenAI-style for every model:
+ * its Chat Completions route does not serve Claude Haiku 5.5 and wants another
+ * message shape for Nova 2 Lite (2026-10-27), so its lanes go through Bedrock's
+ * own Converse API with `@ai-sdk/amazon-bedrock`, still through `generateObject`
+ * with the same schema. Every call is billed to the AWS account behind
+ * `BEDROCK_API_KEY`. The region defaults to us-east-1, beside Vercel's iad1
+ * where the race is recorded, and the lanes use its `us.` inference profiles,
+ * which keep a call inside the United States. How each Bedrock model is held
+ * to the schema is the lane's `structuredOutputMode`: `outputFormat` is
+ * Bedrock's JSON-schema output, and `jsonTool` a tool call the model is made
+ * to use, for a model that refuses `outputFormat` (Nova 2 Lite).
+ *
+ * Grok 4.7 sometimes writes its move twice in one reply, as text and in that
+ * tool call (2 of 5 calls, 2026-10-27), and this SDK version joins the two into
+ * one string that no longer parses. `answerFromJsonTool` drops the text when the
+ * reply carries the tool call, for every Bedrock lane, so the move the model was
+ * made to give is the one read. Like `replyFromReasoning`, it runs after the
+ * response has arrived.
  */
 
+import { createAmazonBedrock } from '@ai-sdk/amazon-bedrock';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import type { LanguageModel } from 'ai';
 import type { EndpointKey } from '../game/types';
@@ -78,7 +98,7 @@ function env(name: string): string | undefined {
   return value === undefined || value === '' ? undefined : value;
 }
 
-const ENDPOINTS: Record<EndpointKey, () => EndpointConfig> = {
+const ENDPOINTS: Record<Exclude<EndpointKey, 'bedrock'>, () => EndpointConfig> = {
   'alpie-seed': () => ({
     name: 'alpie',
     baseUrl: env('ALPIE_SEED_BASE_URL') ?? env('ALPIE_BASE_URL'),
@@ -154,6 +174,11 @@ const ENDPOINTS: Record<EndpointKey, () => EndpointConfig> = {
 
 /** A language model for `modelId` on that endpoint, or a thrown reason it is not configured. */
 export function endpointModel(endpoint: EndpointKey, modelId: string): LanguageModel {
+  if (endpoint === 'bedrock') {
+    const apiKey = env('BEDROCK_API_KEY');
+    if (apiKey === undefined) throw new Error('BEDROCK_API_KEY is not set.');
+    return createAmazonBedrock({ region: env('BEDROCK_REGION') ?? 'us-east-1', apiKey, fetch: answerFromJsonTool })(modelId);
+  }
   const config = ENDPOINTS[endpoint]();
   if (config.baseUrl === undefined) throw new Error(`${config.baseUrlEnv} is not set.`);
   if (config.keyRequired !== null && config.apiKey === undefined) {
@@ -169,6 +194,29 @@ export function endpointModel(endpoint: EndpointKey, modelId: string): LanguageM
     fetch: replyFromReasoning,
   });
   return provider.chatModel(config.model ?? modelId);
+}
+
+interface ConverseBlock {
+  text?: string;
+  toolUse?: { name?: string };
+}
+
+/**
+ * Drops the text from a Converse reply that also carries the forced `json`
+ * tool call (see the header), so the tool call alone is read as the answer.
+ * Anything else is passed through as it came.
+ */
+export async function answerFromJsonTool(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  const res = await fetch(input, init);
+  if (!res.ok || !(res.headers.get('content-type') ?? '').includes('application/json')) return res;
+  const body = (await res.clone().json()) as { output?: { message?: { content?: ConverseBlock[] } } };
+  const content = body.output?.message?.content;
+  if (content === undefined || !content.some((b) => b.toolUse?.name === 'json') || !content.some((b) => b.text !== undefined)) return res;
+  body.output!.message!.content = content.filter((b) => b.text === undefined);
+  const headers = new Headers(res.headers);
+  headers.delete('content-length');
+  headers.delete('content-encoding');
+  return new Response(JSON.stringify(body), { status: res.status, statusText: res.statusText, headers });
 }
 
 interface ChatMessage {

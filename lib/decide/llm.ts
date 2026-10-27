@@ -40,6 +40,8 @@ export interface LlmOptions {
    * prompt, same clock; only the parsing differs.
    */
   answer?: 'text';
+  /** For an API that refuses any temperature at all (Grok on Bedrock): leave the field out. */
+  omitTemperature?: true;
 }
 
 /** Validates whatever came back and returns the move, or throws a short reason. */
@@ -107,7 +109,7 @@ export async function decideWithLlm(
       model,
       system: LLM_SYSTEM_PROMPT,
       prompt: JSON.stringify(stateForModel(state)),
-      temperature: 0,
+      temperature: opts.omitTemperature ? undefined : 0,
       maxOutputTokens: opts.maxOutputTokens ?? MAX_OUTPUT_TOKENS,
       maxRetries: 0,
       abortSignal: opts.signal,
@@ -125,7 +127,7 @@ export async function decideWithLlm(
     schemaDescription: 'The move for the right paddle on this tick.',
     system: LLM_SYSTEM_PROMPT,
     prompt: JSON.stringify(stateForModel(state)),
-    temperature: 0,
+    temperature: opts.omitTemperature ? undefined : 0,
     maxOutputTokens: opts.maxOutputTokens ?? MAX_OUTPUT_TOKENS,
     maxRetries: 0,
     abortSignal: opts.signal,

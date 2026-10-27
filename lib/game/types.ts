@@ -103,10 +103,11 @@ export type DecideKind = 'evaluate' | 'structured' | 'local';
 /**
  * An OpenAI-style API outside the Gateway, configured from the environment in
  * lib/decide/endpoints.ts. None of them needs a credit card to start, except the
- * Hugging Face router, which bills per call and serves comparison lanes only, and
- * Google's Gemini API, which bills per call for a billed race lane.
+ * Hugging Face router, which bills per call and serves comparison lanes only,
+ * Google's Gemini API, which bills per call for a billed race lane, and Amazon
+ * Bedrock, which bills per call (lib/decide/endpoints.ts says how it is called).
  */
-export type EndpointKey = 'alpie-seed' | 'alpie-core' | 'mistral' | 'cloudflare' | 'sarvam' | 'gemini' | 'huggingface';
+export type EndpointKey = 'alpie-seed' | 'alpie-core' | 'mistral' | 'cloudflare' | 'sarvam' | 'gemini' | 'huggingface' | 'bedrock';
 
 export interface LaneConfig {
   id: ModelId;
@@ -129,6 +130,8 @@ export interface LaneConfig {
   maxOutputTokens?: number;
   /** 'text' for an API that ignores the JSON schema and answers in prose (lib/decide/llm.ts). */
   answer?: 'text';
+  /** For an API that refuses any temperature at all: the field is left out rather than set to 0. */
+  omitTemperature?: true;
   /** A longer ceiling on one call than the default 20 s, for a model that reasons first. */
   timeoutMs?: number;
 }
