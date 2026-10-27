@@ -44,6 +44,13 @@ export interface LaneRunnerOptions {
    * always ends at once. Mirrors the game worker.
    */
   maxConsecutiveFailures?: number;
+  /**
+   * Keep serving after a score reaches POINTS_TO_WIN instead of ending the lane.
+   * A recording sets it: every lane must play the whole window, or a lane that
+   * concedes five points stops early and its decisions per second are counted
+   * over time it never played. A game anyone watches or plays ends at five.
+   */
+  playThrough?: boolean;
 }
 
 export const MAX_CONSECUTIVE_FAILURES = 3;
@@ -61,6 +68,7 @@ export function createLaneRunner(opts: LaneRunnerOptions): LaneRunner {
     startDelayMs = 0,
     serveDir = 1,
     maxConsecutiveFailures = MAX_CONSECUTIVE_FAILURES,
+    playThrough = false,
   } = opts;
 
   const listeners: Listeners = { snapshot: new Set(), end: new Set() };
@@ -150,6 +158,8 @@ export function createLaneRunner(opts: LaneRunnerOptions): LaneRunner {
       }
 
       state = applyTick(state, move, leftInput === 'auto' ? 'auto' : consumeManualMove());
+      // Played through, a fifth point is a point like any other, and the score keeps counting.
+      if (playThrough && state.status === 'over') state = { ...state, status: 'point' };
       const s = snapshot(message === undefined ? { latencyMs, move } : { latencyMs, move, message });
       emit(s);
 

@@ -141,6 +141,8 @@ export async function recordLanes(
       decider: laneDecider(config.id),
       seed,
       leftInput: 'auto',
+      // Every lane plays the whole window, however many points it concedes.
+      playThrough: true,
     });
     return { config, runner, recorder: createRecorder(runner) };
   });

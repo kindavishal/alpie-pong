@@ -11,7 +11,7 @@
  * see an exception, a stack, or a provider message that might carry credentials.
  */
 import { APICallError } from 'ai';
-import { ALL_LANES, PLAYABLE } from '../game/types';
+import { ALL_LANES, PLAYABLE, laneSource } from '../game/types';
 import type {
   DecideErrorCode,
   DecideRequest,
@@ -106,7 +106,8 @@ export async function decide(req: DecideRequest, opts: DecideOptions = {}): Prom
   } catch (err) {
     if (timedOut) return fail('model_error', `Timed out after ${timeoutMs}ms.`);
     if (opts.signal?.aborted) return fail('model_error', 'Cancelled.');
-    return mapDecideError(err);
+    // An endpoint lane is refused by its own provider, not by the Gateway; say which.
+    return mapDecideError(err, lane.endpoint === undefined ? undefined : (laneSource(lane) ?? undefined));
   } finally {
     clearTimeout(timer);
     opts.signal?.removeEventListener('abort', forwardAbort);
@@ -115,17 +116,18 @@ export async function decide(req: DecideRequest, opts: DecideOptions = {}): Prom
 
 /**
  * Turns anything thrown by the SDK into a typed failure.
- * 402 (or a quota_for_entity_exceeded payload) = the Gateway budget is spent.
+ * 402 (or a quota_for_entity_exceeded payload) = the budget is spent.
+ * `service` names who refused the call, for a lane outside the Gateway.
  */
-export function mapDecideError(err: unknown): DecideFailure {
+export function mapDecideError(err: unknown, service: string = 'AI Gateway'): DecideFailure {
   const status = statusCodeOf(err);
   const haystack = detectionText(err);
 
   if (status === 402 || /quota_for_entity_exceeded/i.test(haystack)) {
-    return fail('out_of_credits', 'AI Gateway budget exhausted for this project.');
+    return fail('out_of_credits', `${service} budget exhausted for this project.`);
   }
   if (status === 429) {
-    return fail('rate_limited', 'AI Gateway rate limit reached.');
+    return fail('rate_limited', `${service} rate limit reached.`);
   }
   return fail('model_error', safeText(messageOf(err)));
 }

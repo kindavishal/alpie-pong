@@ -164,6 +164,25 @@ describe('createLaneRunner', () => {
     expect(seen).toHaveLength(count);
   });
 
+  it('plays through five points when asked, so a recording keeps every lane running', async () => {
+    const runner = createLaneRunner({
+      model: 'mock',
+      decider: createMockDecider({ latencyMs: 0, accuracy: 0, seed: 3 }),
+      seed: 11,
+      leftInput: 'auto',
+      playThrough: true,
+    });
+    const seen: Snapshot[] = [];
+    runner.on('snapshot', (s) => seen.push(s));
+    runner.start();
+    while (!seen.some((s) => s.score[0] >= 7)) await new Promise((r) => setTimeout(r, 1));
+    runner.stop();
+    expect(seen.some((s) => s.status === 'over')).toBe(false);
+    const fifth = seen.findIndex((s) => s.score[0] === 5);
+    expect(seen[fifth].status).toBe('point');
+    expect(seen[fifth + 1].status).toBe('playing');
+  });
+
   it("maps out_of_credits to status 'credits' and ends", async () => {
     const runner = createLaneRunner({
       model: 'jev',

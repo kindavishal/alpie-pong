@@ -227,6 +227,11 @@ describe('mapDecideError', () => {
     expect(mapDecideError(apiError(429)).error).toBe('rate_limited');
   });
 
+  it('names the provider that refused, for a lane outside the Gateway', () => {
+    expect(mapDecideError(apiError(429), 'Sarvam').message).toBe('Sarvam rate limit reached.');
+    expect(mapDecideError(apiError(429)).message).toBe('AI Gateway rate limit reached.');
+  });
+
   it('maps a quota_for_entity_exceeded message', () => {
     expect(mapDecideError(new Error('quota_for_entity_exceeded')).error).toBe('out_of_credits');
   });
