@@ -1,8 +1,9 @@
 {
   "version": 1,
-  "recordedAt": "2026-10-25T19:52:14.761Z",
+  "recordedAt": "2026-10-27T04:42:10.884Z",
   "seed": 20260917,
   "seconds": 45,
+  "region": "iad1",
   "lanes": [
     {
       "model": "alpie",
@@ -22,11 +23,11 @@
     {
       "model": "sarvam",
       "label": "Sarvam 105B",
-      "ticks": 116,
-      "decisionsPerSec": 2.56,
-      "avgMs": 389,
-      "p95Ms": 514,
-      "returns": 14,
+      "ticks": 107,
+      "decisionsPerSec": 2.36,
+      "avgMs": 423,
+      "p95Ms": 599,
+      "returns": 13,
       "misses": 0,
       "finalScore": [
         0,
@@ -37,14 +38,14 @@
     {
       "model": "ministral-8b",
       "label": "Ministral 3 8B",
-      "ticks": 78,
-      "decisionsPerSec": 1.71,
-      "avgMs": 580,
-      "p95Ms": 1090,
-      "returns": 10,
-      "misses": 0,
+      "ticks": 95,
+      "decisionsPerSec": 2.09,
+      "avgMs": 475,
+      "p95Ms": 1191,
+      "returns": 11,
+      "misses": 1,
       "finalScore": [
-        0,
+        1,
         0
       ],
       "status": "playing"
@@ -52,11 +53,11 @@
     {
       "model": "qwen-cf",
       "label": "Qwen 3.8 27B",
-      "ticks": 75,
-      "decisionsPerSec": 1.64,
-      "avgMs": 607,
-      "p95Ms": 1617,
-      "returns": 9,
+      "ticks": 35,
+      "decisionsPerSec": 0.76,
+      "avgMs": 1316,
+      "p95Ms": 7217,
+      "returns": 4,
       "misses": 0,
       "finalScore": [
         0,
@@ -65,28 +66,13 @@
       "status": "playing"
     },
     {
-      "model": "gemma-cf",
-      "label": "Gemma 4 26B-A4B",
-      "ticks": 38,
-      "decisionsPerSec": 0.82,
-      "avgMs": 989,
-      "p95Ms": 2344,
-      "returns": 5,
-      "misses": 0,
-      "finalScore": [
-        0,
-        0
-      ],
-      "status": "playing"
-    },
-    {
-      "model": "alpie-core",
-      "label": "Alpie Core 32B",
-      "ticks": 4,
-      "decisionsPerSec": 0.07,
-      "avgMs": 14469,
-      "p95Ms": 15245,
-      "returns": 0,
+      "model": "gemini-flash-lite",
+      "label": "Gemini 3.5 Flash-Lite",
+      "ticks": 67,
+      "decisionsPerSec": 1.47,
+      "avgMs": 677,
+      "p95Ms": 766,
+      "returns": 8,
       "misses": 0,
       "finalScore": [
         0,

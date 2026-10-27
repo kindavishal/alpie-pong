@@ -28,18 +28,19 @@ Every lane that can think races with thinking off through the same switch, the c
 
 Alpie Seed and Alpie Core are called on 169Pi's test endpoint; the rivals are called on their providers' public APIs, free tiers for all but the billed lanes. The two are not necessarily provisioned the same way, and the numbers here do not separate the model from the service in front of it.
 
-Recorded on 25 October 2026 from the deployed site, in a Vercel function in iad1 (Washington, D.C.), each model through its own API, 45 seconds per lane:
+Recorded on 27 October 2026 from the deployed site, in a Vercel function in iad1 (Washington, D.C.), each model through its own API, 45 seconds per lane:
 
 | Lane | Decisions | Per second | Average | p95 | Returns |
 |---|---|---|---|---|---|
 | **Alpie Seed 9B** | **173** | **3.82** | **261 ms** | 260 ms | 22 |
-| Sarvam 105B | 116 | 2.56 | 389 ms | 514 ms | 14 |
-| Ministral 3 8B | 78 | 1.71 | 580 ms | 1,090 ms | 10 |
-| Qwen 3.8 27B | 75 | 1.64 | 607 ms | 1,617 ms | 9 |
-| Gemma 4 26B-A4B | 38 | 0.82 | 989 ms | 2,344 ms | 5 |
-| Alpie Core 32B | 4 | 0.07 | 14.5 s | 15.2 s | 0 |
+| Sarvam 105B | 107 | 2.36 | 423 ms | 599 ms | 13 |
+| Ministral 3 8B | 95 | 2.09 | 475 ms | 1,191 ms | 11 |
+| Gemini 3.5 Flash-Lite | 67 | 1.47 | 677 ms | 766 ms | 8 |
+| Qwen 3.8 27B | 35 | 0.76 | 1,316 ms | 7,217 ms | 4 |
 
-Gemma 4 and Alpie Core raced in this recording and have since been taken out, and Gemini 3.5 Flash-Lite joined after it. This table, the clip and the card below are re-recorded once the new line-up is deployed.
+Alpie Seed's row matches the 25 October recording to the decision. Its calls are new ones, but it answered in about 258 ms nearly every time on both days, so 45 seconds holds the same 173. Qwen 3.8 on Cloudflare had three slow calls, 3.3 s, 7.2 s and 20.0 s, the last at the 20-second ceiling a lane waits for an answer; its median call took 425 ms, and on 25 October it made 75 decisions at a 607 ms average. Nothing is retried, so a slow call is the service as much as the model.
+
+The clip and the end card below are still from the 25 October recording, with Gemma 4 and Alpie Core in it, until they are rendered again from this one.
 
 ![Decisions in 12 seconds: Alpie Seed 9B 45, Sarvam 105B 27, Ministral 3 8B 19, Qwen 3.8 27B 25, Gemma 4 26B-A4B 23, Alpie Core 32B 0.](public/media/clip-endcard-wide.png)
 
