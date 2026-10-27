@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "recordedAt": "2026-10-27T04:42:10.884Z",
+  "recordedAt": "2026-10-27T14:29:50.943Z",
   "seed": 20260917,
   "seconds": 45,
   "region": "iad1",
@@ -11,7 +11,7 @@
       "ticks": 173,
       "decisionsPerSec": 3.82,
       "avgMs": 261,
-      "p95Ms": 260,
+      "p95Ms": 262,
       "returns": 22,
       "misses": 0,
       "finalScore": [
@@ -23,25 +23,25 @@
     {
       "model": "sarvam",
       "label": "Sarvam 105B",
-      "ticks": 107,
-      "decisionsPerSec": 2.36,
-      "avgMs": 423,
-      "p95Ms": 599,
-      "returns": 13,
-      "misses": 0,
+      "ticks": 104,
+      "decisionsPerSec": 2.29,
+      "avgMs": 410,
+      "p95Ms": 582,
+      "returns": 10,
+      "misses": 5,
       "finalScore": [
-        0,
+        5,
         0
       ],
-      "status": "playing"
+      "status": "error"
     },
     {
       "model": "ministral-8b",
       "label": "Ministral 3 8B",
-      "ticks": 95,
-      "decisionsPerSec": 2.09,
-      "avgMs": 475,
-      "p95Ms": 1191,
+      "ticks": 96,
+      "decisionsPerSec": 2.11,
+      "avgMs": 471,
+      "p95Ms": 823,
       "returns": 11,
       "misses": 1,
       "finalScore": [
@@ -53,11 +53,11 @@
     {
       "model": "qwen-cf",
       "label": "Qwen 3.8 27B",
-      "ticks": 35,
-      "decisionsPerSec": 0.76,
-      "avgMs": 1316,
-      "p95Ms": 7217,
-      "returns": 4,
+      "ticks": 72,
+      "decisionsPerSec": 1.58,
+      "avgMs": 624,
+      "p95Ms": 891,
+      "returns": 9,
       "misses": 0,
       "finalScore": [
         0,
@@ -68,11 +68,26 @@
     {
       "model": "gemini-flash-lite",
       "label": "Gemini 3.5 Flash-Lite",
-      "ticks": 67,
-      "decisionsPerSec": 1.47,
-      "avgMs": 677,
-      "p95Ms": 766,
-      "returns": 8,
+      "ticks": 58,
+      "decisionsPerSec": 1.27,
+      "avgMs": 779,
+      "p95Ms": 1060,
+      "returns": 7,
+      "misses": 0,
+      "finalScore": [
+        0,
+        0
+      ],
+      "status": "playing"
+    },
+    {
+      "model": "nova-2-lite",
+      "label": "Nova 2 Lite",
+      "ticks": 53,
+      "decisionsPerSec": 1.16,
+      "avgMs": 805,
+      "p95Ms": 1277,
+      "returns": 7,
       "misses": 0,
       "finalScore": [
         0,

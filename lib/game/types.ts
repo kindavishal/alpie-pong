@@ -311,19 +311,17 @@ export const HERO: ModelId = 'alpie';
  *                    Gemini API, billed per call. It rejects every way of turning
  *                    thinking off, so it runs at reasoning effort "minimal", its
  *                    lowest, at which Google reported no thinking tokens; 30 of 30
- *                    right at a 1,172 ms median in the published comparison
+ *                    right at an 829 ms median in the published comparison
  *                    (public/model-comparison.json, 2026-10-27).
  *   Nova 2 Lite      Amazon's small Nova on Amazon Bedrock, its own API, billed per
  *                    call; Amazon does not publish its size. It reasons only when
  *                    asked to, and is not asked. It refuses Bedrock's JSON-schema
  *                    output, so it is held to the schema by a tool call it must
- *                    make (lib/decide/endpoints.ts): 24 of 30 right at a 1,003 ms
+ *                    make (lib/decide/endpoints.ts): 25 of 30 right at a 740 ms
  *                    median in the published comparison (2026-10-27). Ministral 3
  *                    8B is on Bedrock too but stays on Mistral's own API, as every
- *                    rival races on its own lab's. That run had it faster there (549
- *                    vs 764 ms, 25 vs 23 of 30 right), but it was made from India,
- *                    a long way from Bedrock's us-east-1, so it does not settle which
- *                    is faster from iad1.
+ *                    rival races on its own lab's; from iad1, beside us-east-1, that
+ *                    run had it faster there too (389 vs 488 ms, 25 vs 23 of 30 right).
  *
  * Google's free tier was tried and dropped: it allows Gemini 3.5 Flash-Lite 15
  * requests a minute and a lane makes about 60, which billing lifts. gpt-oss cannot

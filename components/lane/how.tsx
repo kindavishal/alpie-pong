@@ -213,8 +213,8 @@ function Lineup() {
         Bedrock&apos;s schema output, and Grok 4.7 refuses any temperature, so it is sent none. The number
         on a lane is the round trip of that one call, timed on the server, and nothing else. A
         recorded lane plays on past five points, so every lane plays the whole recording; it stops
-        only if its API refuses three calls in a row, as Sarvam&apos;s rate limit did once to a
-        recording made from India, at about four calls a second.
+        only if its API refuses three calls in a row, as Sarvam&apos;s rate limit has done in
+        recordings, more than once.
       </Body>
       <Body>
         The rivals are chosen to be fair to Alpie Seed: about its size or larger where the lab publishes a size (Google and Amazon do not, for Gemini 3.5 Flash-Lite and Nova 2 Lite), one per lab, and answering without
@@ -266,7 +266,7 @@ function OtherModels() {
       <ComparisonTable rows={rows} showProvider />
 
       <Body>
-        Measured from {COMPARISON_FROM}, so every latency includes that machine&apos;s network.
+        Measured from {COMPARISON_FROM}, so every latency includes the network from there.
         {COMPARISON_FLOOR_MS > 0
           ? ` Every row carries the same ${COMPARISON_FLOOR_MS} ms of request overhead from there, removed before the columns are shown.`
           : ''}{' '}
@@ -366,7 +366,7 @@ function IndianModels() {
       <ComparisonTable rows={rows} showProvider />
 
       <Body>
-        Measured from {INDIAN_FROM}, so every latency includes that machine&apos;s network, and the
+        Measured from {INDIAN_FROM}, so every latency includes the network from there, and the
         rows are comparable with each other rather than with the race. {accuracySentence(rows, INDIAN_STATES)}
       </Body>
       {INDIAN_REGION === null ? <FromIndia /> : null}
