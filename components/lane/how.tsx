@@ -366,8 +366,10 @@ function IndianModels() {
       <ComparisonTable rows={rows} showProvider />
 
       <Body>
-        Measured from {INDIAN_FROM}, so every latency includes the network from there, and the
-        rows are comparable with each other rather than with the race. {accuracySentence(rows, INDIAN_STATES)}
+        Measured from {INDIAN_FROM}, so every latency includes the network from there. The rows
+        are comparable with each other; the race and the table above are{' '}
+        {INDIAN_REGION === COMPARISON_REGION ? 'measured from the same place, in separate runs.' : 'measured from elsewhere, so not comparable with these.'}{' '}
+        {accuracySentence(rows, INDIAN_STATES)}
       </Body>
       {INDIAN_REGION === null ? <FromIndia /> : null}
 

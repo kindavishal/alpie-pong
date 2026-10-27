@@ -2,7 +2,7 @@
 
 Pong where the ball moves one step per model decision. Slow model, slow ball.
 
-![Six Pong lanes, one per model. Alpie Seed's blue ball crosses the court again and again while Alpie Core's has barely left the centre line.](public/media/clip-wide.gif)
+![Six Pong lanes, one per model. Alpie Seed's blue ball crosses the court again and again while the other models' balls move a step at a time behind it.](public/media/clip-wide.gif)
 
 Alpie Pong races **Alpie Seed**, 169Pi's 9B model, against other models in a game that will not wait. Every lane plays the same game, asked the same question, and every ball moves only when its model answers. The time beside each court is the round trip of that one model call and nothing else.
 
@@ -46,11 +46,11 @@ Alpie Seed made 173 decisions in this recording, as in the two before it from ia
 
 A lane plays on past five points in a recording, so every lane plays the whole 45 seconds. It still ends if its API refuses three calls in a row, and Sarvam's did: its API answered HTTP 429, a rate limit, after 104 calls, and its lane stopped at 42.3 s. Its decisions per second are still divided by the full 45 seconds, as every lane's are. The same happened after about 110 calls in a recording from a Mac in India, while the earlier recording from iad1 on 27 October made 107 calls without one. Sarvam sends no rate-limit headers, so its limit is not known.
 
-The clip and the end card below are still from the 25 October recording, with Gemma 4 and Alpie Core in it and without Gemini 3.5 Flash-Lite or Nova 2 Lite, until they are rendered again from this one.
+The clip at the top of this file and the end card below are rendered from this recording by `pnpm render:clip`.
 
-![Decisions in 12 seconds: Alpie Seed 9B 45, Sarvam 105B 27, Ministral 3 8B 19, Qwen 3.8 27B 25, Gemma 4 26B-A4B 23, Alpie Core 32B 0.](public/media/clip-endcard-wide.png)
+![Decisions in 12 seconds: Alpie Seed 9B 45, Sarvam 105B 25, Ministral 3 8B 24, Qwen 3.8 27B 7, Gemini 3.5 Flash-Lite 14, Nova 2 Lite 13.](public/media/clip-endcard-wide.png)
 
-Each latency is the round trip from that server to the model's own API, so it includes the network distance to wherever the provider serves the model. Sarvam's API is in Mumbai (an Amazon address there) and Bedrock's us-east-1 is in Ashburn, Virginia. Alpie's endpoint, Mistral's API and Cloudflare's and Google's APIs are reached through anycast networks, so where their models run cannot be seen from outside; Alpie's endpoint answers a trivial request from India about a quarter of a second past Cloudflare's local edge, as a server in the United States would. From iad1, Mumbai is the far trip; from a machine in India, as the Indian models table below shows, Sarvam 105B is faster than Alpie Seed. Every number on the site is read from `public/replay-stats.json`; nothing is typed in by hand.
+Each latency is the round trip from that server to the model's own API, so it includes the network distance to wherever the provider serves the model. Sarvam's API is in Mumbai (an Amazon address there) and Bedrock's us-east-1 is in Ashburn, Virginia. Alpie's endpoint, Mistral's API and Cloudflare's and Google's APIs are reached through anycast networks, so where their models run cannot be seen from outside; Alpie's endpoint answers a trivial request from India about a quarter of a second past Cloudflare's local edge, as a server in the United States would. From iad1, Mumbai is the far trip; from a machine in India it is the other way round: measured from a Mac there on 27 October 2026, in a comparison since replaced by this one from Vercel, Sarvam 105B answered at a 258 ms median and Alpie Seed at 418 ms. Every number on the site is read from `public/replay-stats.json`; nothing is typed in by hand.
 
 ### Models we tried and left out
 
@@ -72,16 +72,16 @@ Alpie Seed's rivals were also searched for among Indian models (26 October 2026)
 - **BharatGen Param2 17B-A2.4B** (under BharatGen's non-commercial licence) and **Sarvam 30B** are open weights with no hosted API that we could find. Hosting them ourselves would time our own hardware rather than a provider's service, so they are not in either table.
 - **Zoho Zia LLM** was announced in July 2025 at 1.3B, 2.6B and 7B; we found no public API for it. **Soket, Tech Mahindra (Indus), Genloop, CoRover (BharatGPT) and Hanooman**: no public chat API or hosted model found. **Gnani**'s Inya VoiceOS is a 5B voice-to-voice research preview, and its other released models are for speech, not text chat.
 
-The same 30 states went to Alpie Seed, Sarvam 105B and the two Featherless models in one run, one call at a time, recorded in `public/indian-comparison.json` and shown on the how-it-works page. This run was made from a Mac on home broadband in India through `pnpm dev`, so the latencies include that connection; it can be repeated from Vercel once the deployment has `HF_TOKEN`. The race table above and the wider comparison on the how-it-works page were measured from Vercel, so this table is not comparable with them; its rows are comparable with each other. From India, Sarvam's API in Mumbai is a far shorter trip than Alpie Seed's endpoint, which answers as a server in the United States would, and that is likely much of why Sarvam 105B is faster than Alpie Seed here and not from iad1.
+The same 30 states went to Alpie Seed, Sarvam 105B and the two Featherless models in one run, one call at a time, recorded in `public/indian-comparison.json` and shown on the how-it-works page. This run was made on 27 October 2026 from a Vercel function in iad1, as the race and the wider comparison were, so the three are measured from the same place, though in separate runs. The previous run, from a Mac in India on 26 October, had Sarvam 105B faster than Alpie Seed (226 against 401 ms), likely mostly because Sarvam's API is in Mumbai.
 
 | Model | Served by | Setting | Correct | Median | p95 |
 |---|---|---|---|---|---|
-| Alpie Seed 9B | 169Pi | thinking off | 30 / 30 | 401 ms | 403 ms |
-| Sarvam 105B | Sarvam | thinking off | 21 / 30 | 226 ms | 317 ms |
-| Fathom-R1-14B | Featherless | schema enforced, so no room to think | 7 / 30 | 1,605 ms | 3,649 ms |
-| Sarvam-M 24B | Featherless | default, no thinking switch accepted | 24 / 30 | 1,624 ms | 3,240 ms |
+| Alpie Seed 9B | 169Pi | thinking off | 30 / 30 | 262 ms | 266 ms |
+| Sarvam 105B | Sarvam | thinking off | 20 / 30 | 407 ms | 706 ms |
+| Sarvam-M 24B | Featherless | default, no thinking switch accepted | 25 / 30 | 1,806 ms | 3,865 ms |
+| Fathom-R1-14B | Featherless | schema enforced, so no room to think | 9 / 30 | 2,036 ms | 4,649 ms |
 
-Neither Featherless model is in the race: both are billed per call, and their medians are about four times Alpie Seed's. An earlier run the same day, with the free race lanes alongside, gave similar figures (Sarvam-M 24 right at 1,717 ms, Fathom 6 of 29 answered right at 1,682 ms, Sarvam 105B 20 right at 235 ms); its Qwen 3 30B-A3B result is the one quoted above. That run was not saved to a file.
+Neither Featherless model is in the race: both are billed per call, and their medians are about seven times Alpie Seed's.
 
 ## What counts as one decision
 
@@ -155,7 +155,7 @@ pnpm lint
 
 ## Re-recording
 
-`POST /api/record` records the race and returns the replay and its stats; drop them into `public/`. `scripts/compare-models.ts` puts the question to more models, one call at a time, and writes `public/model-comparison.json`, which the how-it-works page renders. Run both from a deployment, so the latencies are measured from a server rather than from somebody's broadband. `pnpm render:clip` renders the recording as a video clip (it needs `ffmpeg`); the GIF and end card at the top of this file come from the same frame renderer.
+`POST /api/record` records the race and returns the replay and its stats; drop them into `public/`. `scripts/compare-models.ts` puts the question to more models, one call at a time, and writes `public/model-comparison.json`, which the how-it-works page renders. Run both from a deployment, so the latencies are measured from a server rather than from somebody's broadband. `pnpm render:clip` renders the recording as a video clip (it needs `ffmpeg` on the path, or its path in `FFMPEG`); the GIF and end card at the top of this file come from the same frame renderer.
 
 ## Credits
 
