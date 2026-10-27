@@ -281,10 +281,10 @@ export const HERO: ModelId = 'alpie';
 
 /**
  * The race, in display order, never re-sorted live: Alpie Seed first, then
- * rivals of about its size that also answer without thinking first, then Alpie
- * Core to show what thinking costs. The first rivals run on free keys with no
- * credit card; the frontier labs' small models that follow are billed per call,
- * and their lanes say so.
+ * rivals of about its size that also answer without thinking first, each from a
+ * different lab. The first rivals run on free keys with no credit card; the
+ * frontier labs' small models that follow are billed per call, and their lanes
+ * say so.
  *
  *   Sarvam 105B      the other Indian model family, a mixture of experts with
  *                    about 10.3B parameters active per answer (Seed is 9B).
@@ -295,11 +295,6 @@ export const HERO: ModelId = 'alpie';
  *   Qwen 3.8 27B     on Cloudflare Workers AI, thinking off: 12 of 12 right at a
  *                    632 ms median when probed on 2026-10-26. Three times Seed's
  *                    size, so a bigger rival rather than a same-size one.
- *   Gemma 4 26B-A4B  on Cloudflare Workers AI, which allows 300 requests a minute
- *                    per text model on the free plan, enough for a live lane.
- *                    A mixture of experts with about 4B active per token, thinking
- *                    off through the same chat_template_kwargs switch Alpie uses:
- *                    10 of 12 right and no failed calls when probed (651 ms median).
  *                    Cloudflare's other candidates were worse: Llama 3.1 8B cannot
  *                    return a JSON schema and took 3.5 to 4.6 s, Qwen 3 30B-A3B
  *                    returned its answer in the reasoning field and none in the
@@ -308,10 +303,6 @@ export const HERO: ModelId = 'alpie';
  *                    measured again, Qwen 3 30B-A3B got 22 of 30 right at a 435 ms
  *                    median (2026-10-26, from a laptop). It is in the comparison,
  *                    not the race, which nobody has re-decided since.
- *   Alpie Core       169Pi's 32B reasoning model. Its API ignores the JSON
- *                    schema and the thinking switch and writes about 400 tokens
- *                    before answering (~12 s), so it reads the move from its
- *                    final answer. Watch-only: nobody can play a 12 s paddle.
  *   Gemini 3.5 Flash-Lite  Google's newest small Gemini (2026-07-21) on Google's own
  *                    Gemini API, billed per call. It rejects every way of turning
  *                    thinking off, so it runs at reasoning effort "minimal", its
@@ -319,9 +310,9 @@ export const HERO: ModelId = 'alpie';
  *                    right at a 1,184 ms median when compared on 2026-10-26.
  *
  * Google's free tier was tried and dropped: it allows Gemini 3.5 Flash-Lite 15
- * requests a minute and a lane makes about 60, which billing lifts; Gemma failed one
- * call in six on AI Studio and races on Cloudflare instead. gpt-oss cannot switch reasoning off. Those stay in the comparison
- * table (lib/compare), where that is said.
+ * requests a minute and a lane makes about 60, which billing lifts. gpt-oss cannot
+ * switch reasoning off. Those stay in the comparison table (lib/compare), where
+ * that is said.
  * Only the hero carries an accent; the others use the neutral ball colour (design tokens --ball).
  */
 export const LANES: LaneConfig[] = [
@@ -340,12 +331,30 @@ export const LANES: LaneConfig[] = [
     kind: 'structured', color: '#A1A1A6', providerOptions: { cloudflare: { chat_template_kwargs: { enable_thinking: false } } },
   },
   {
-    id: 'gemma-cf', label: 'Gemma 4 26B-A4B', gateway: null, endpoint: 'cloudflare', modelId: '@cf/google/gemma-4-26b-a4b-it', provider: 'Cloudflare',
-    kind: 'structured', color: '#A1A1A6', providerOptions: { cloudflare: { chat_template_kwargs: { enable_thinking: false } } },
-  },
-  {
     id: 'gemini-flash-lite', label: 'Gemini 3.5 Flash-Lite', gateway: null, endpoint: 'gemini', modelId: 'gemini-3.5-flash-lite', provider: 'Google',
     kind: 'structured', color: '#A1A1A6', providerOptions: { gemini: { reasoningEffort: 'minimal' } },
+  },
+];
+
+/**
+ * Lanes that raced until 2026-10-26 and were taken out, kept so the recordings
+ * and watch links that name them still resolve. Both are still measured in the
+ * comparison table (lib/compare).
+ *
+ *   Gemma 4 26B-A4B  on Cloudflare Workers AI, thinking off. Taken out once Gemini
+ *                    gave Google a lane on its own API: it made Google the one lab
+ *                    with two lanes, and it was the least steady (989 ms in the
+ *                    25 October recording, 1.6 s and 3 s on 26 October).
+ *   Alpie Core       169Pi's 32B reasoning model. Its API ignores the JSON
+ *                    schema and the thinking switch and writes about 400 tokens
+ *                    before answering (~12 s), so it reads the move from its
+ *                    final answer. It raced watch-only to show what thinking
+ *                    costs; the comparison table shows that with numbers.
+ */
+export const FORMER_LANES: LaneConfig[] = [
+  {
+    id: 'gemma-cf', label: 'Gemma 4 26B-A4B', gateway: null, endpoint: 'cloudflare', modelId: '@cf/google/gemma-4-26b-a4b-it', provider: 'Cloudflare',
+    kind: 'structured', color: '#A1A1A6', providerOptions: { cloudflare: { chat_template_kwargs: { enable_thinking: false } } },
   },
   {
     id: 'alpie-core', label: 'Alpie Core 32B', gateway: null, endpoint: 'alpie-core', modelId: 'alpie-32b', provider: '169Pi',
@@ -369,7 +378,7 @@ export const GATEWAY_LANES: LaneConfig[] = [
 ];
 
 /** Every lane that has a model behind it, race first. */
-export const ALL_LANES: LaneConfig[] = [...LANES, ...GATEWAY_LANES];
+export const ALL_LANES: LaneConfig[] = [...LANES, ...FORMER_LANES, ...GATEWAY_LANES];
 
 export const PLAYABLE: ModelId[] = [HERO];
 

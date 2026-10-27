@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { buildReplay, createRecorder, createReplayRunner } from './replay';
+import { buildReplay, createRecorder, createReplayRunner, inRace } from './replay';
 import { createLaneRunner } from './runner';
 import { createMockDecider } from './mock-decider';
 import type { LaneRunner, ModelId, Replay, Snapshot } from './types';
@@ -228,5 +228,20 @@ describe('createRecorder', () => {
 
     expect(played).toEqual(recorded);
     expect(final).toEqual(recorded[recorded.length - 1]);
+  });
+});
+
+describe('inRace', () => {
+  it('keeps only the lanes still in the race, in recorded order', () => {
+    const tape = buildReplay(
+      [
+        { model: 'alpie', label: 'Alpie Seed 9B', snapshots: [] },
+        { model: 'gemma-cf', label: 'Gemma 4 26B-A4B', snapshots: [] },
+        { model: 'sarvam', label: 'Sarvam 105B', snapshots: [] },
+      ],
+      1,
+    );
+    expect(inRace(tape, ['sarvam', 'alpie']).lanes.map((l) => l.model)).toEqual(['alpie', 'sarvam']);
+    expect(tape.lanes).toHaveLength(3);
   });
 });

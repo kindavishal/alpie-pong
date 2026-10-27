@@ -143,3 +143,12 @@ export function buildReplay(
     lanes: lanes.map((l) => ({ model: l.model, label: l.label, snapshots: l.snapshots.slice() })),
   };
 }
+
+/**
+ * The recording as the race stands: only the lanes still in `racing`, in the
+ * order they were recorded. A recording made before a lane was taken out keeps
+ * its tape, but the card and the clip drawn from it show only the race.
+ */
+export function inRace(replay: Replay, racing: readonly ModelId[]): Replay {
+  return { ...replay, lanes: replay.lanes.filter((lane) => racing.includes(lane.model)) };
+}

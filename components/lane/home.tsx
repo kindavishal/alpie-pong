@@ -233,9 +233,9 @@ function Story() {
         One game in every lane: same serve, same rules, same question, asked of a different model
         in each. One answer moves the ball one step, so every ball travels at its own model&apos;s
         answer time and nothing is skipped or sped up. Alpie Seed is a 9B model from 169Pi with its
-        thinking switched off, racing open models of about its size that also answer without
-        thinking first, all on free keys with no credit card. Alpie Core 32B, 169Pi&apos;s reasoning
-        model, races last to show what thinking first costs. Pong is the Atari game chat models{' '}
+        thinking switched off, racing models of about its size or larger that also answer without
+        thinking first, each from a different lab: open models on free keys with no credit card, and
+        Gemini 3.5 Flash-Lite on Google&apos;s own API, billed per call. Pong is the Atari game chat models{' '}
         <a href={ATARI_PAPER_URL} className="text-fg hover:underline">
           handle worst
         </a>
@@ -243,8 +243,9 @@ function Story() {
       </p>
 
       <p className="text-fg-muted text-[13px] leading-[1.6] text-pretty lg:text-[14px]">
-        Gemini 3.5 Flash-Lite was meant to race too. Google&apos;s free tier allows it 15 requests a
-        minute and a lane here makes about 60, so on a free key it stops within seconds.
+        Gemini 3.5 Flash-Lite races on a billed key: Google&apos;s free tier allows it 15 requests a
+        minute and a lane here makes about 60. Gemma 4 and Alpie Core 32B, 169Pi&apos;s reasoning
+        model, raced here until 26 October 2026 and are now measured in the comparison instead.
       </p>
 
       <p className="text-fg-muted text-[13px] leading-[1.6] text-pretty lg:text-[14px]">

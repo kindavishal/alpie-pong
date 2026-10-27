@@ -18,13 +18,13 @@ Created by Vishal Das. Inspired by [Jev Pong](https://github.com/ably-labs/jev-p
 | Sarvam 105B | `sarvam-105b`, thinking off | Sarvam | the other Indian model family; about 10.3B parameters active per answer |
 | Ministral 3 8B | `ministral-8b-2512` | Mistral | the Ministral 3 size closest to Seed's 9B; does not think |
 | Qwen 3.8 27B | `@cf/qwen/qwen3.8-27b`, thinking off | Cloudflare Workers AI | three times Seed's size, a bigger rival |
-| Gemma 4 26B-A4B | `@cf/google/gemma-4-26b-a4b-it`, thinking off | Cloudflare Workers AI | a mixture of experts with about 4B parameters active per answer |
 | Gemini 3.5 Flash-Lite | `gemini-3.5-flash-lite`, reasoning effort minimal (its lowest) | Google, billed per call | Google's newest small Gemini; it cannot turn thinking off, and at "minimal" Google reported no thinking tokens |
-| Alpie Core 32B | `alpie-32b` | 169Pi | 169Pi's reasoning model, which thinks before every answer; watch-only, to show what that costs |
+
+Gemma 4 26B-A4B and Alpie Core 32B raced until 26 October 2026 and are now measured in the comparison only: Gemma because Gemini gave Google a lane on its own API, so Google had two, and it was the least steady lane; Alpie Core because it raced watch-only, about three decisions in 45 seconds, to show what thinking costs, which the comparison table shows with numbers.
 
 The rivals are chosen to be fair to Alpie Seed: about its size or larger, and answering without thinking first, or at the lowest reasoning setting their API accepts. The first rivals are free to start on with no credit card, as Alpie is. The frontier labs' small models that follow are billed per call, and their lanes say so; Gemini 3.5 Flash-Lite is the first.
 
-Every lane that can think races with thinking off through the same switch, the chat template's `enable_thinking: false`, sent to Alpie Seed, Sarvam, Qwen and Gemma alike. Sarvam's `reasoning_effort` does not turn thinking off: "low" is its lowest named level, and its docs say setting it to null disables reasoning, but on 26 October 2026 null, "low", "medium", "high" and leaving it out all thought for about 160 to 540 tokens per answer, so the race does not use it. The comparison on the how-it-works page shows it as Sarvam's thinking-on row, over the same 30 states as every other row. Alpie Core ignores the switch and thinks anyway, which is what its watch-only lane is there to show.
+Every lane that can think races with thinking off through the same switch, the chat template's `enable_thinking: false`, sent to Alpie Seed, Sarvam and Qwen alike; Gemini cannot turn thinking off at all, so it runs at its lowest setting. Sarvam's `reasoning_effort` does not turn thinking off: "low" is its lowest named level, and its docs say setting it to null disables reasoning, but on 26 October 2026 null, "low", "medium", "high" and leaving it out all thought for about 160 to 540 tokens per answer, so the race does not use it. The comparison on the how-it-works page shows it as Sarvam's thinking-on row, over the same 30 states as every other row. Alpie Core, in the comparison only since 26 October 2026, ignores the switch and thinks anyway, which is what its rows there are to show.
 
 Alpie Seed and Alpie Core are called on 169Pi's test endpoint; the rivals are called on their providers' public APIs, free tiers for all but the billed lanes. The two are not necessarily provisioned the same way, and the numbers here do not separate the model from the service in front of it.
 
@@ -39,6 +39,8 @@ Recorded on 25 October 2026 from the deployed site, in a Vercel function in iad1
 | Gemma 4 26B-A4B | 38 | 0.82 | 989 ms | 2,344 ms | 5 |
 | Alpie Core 32B | 4 | 0.07 | 14.5 s | 15.2 s | 0 |
 
+Gemma 4 and Alpie Core raced in this recording and have since been taken out, and Gemini 3.5 Flash-Lite joined after it. This table, the clip and the card below are re-recorded once the new line-up is deployed.
+
 ![Decisions in 12 seconds: Alpie Seed 9B 45, Sarvam 105B 27, Ministral 3 8B 19, Qwen 3.8 27B 25, Gemma 4 26B-A4B 23, Alpie Core 32B 0.](public/media/clip-endcard-wide.png)
 
 Each latency is the round trip from that server to the model's own API, so it includes the network distance to wherever the provider serves the model. From iad1, Alpie's endpoint in San Jose is nearer than Sarvam's API in Mumbai, while Mistral and Cloudflare answer from their nearest edge; from a server in India the order between Alpie Seed and Sarvam could change. Every number on the site is read from `public/replay-stats.json`; nothing is typed in by hand.
@@ -46,7 +48,7 @@ Each latency is the round trip from that server to the model's own API, so it in
 ### Models we tried and left out
 
 - **Gemini 3.5 Flash-Lite on Google's free tier**: it allows 15 requests a minute, and a lane makes about 60, so a free lane stops within seconds. With billing on, the limit lifts, and it now races as a billed lane.
-- **Gemma 4 on Google AI Studio**: failed about one call in six. The same model on Cloudflare is reliable, so it races there.
+- **Gemma 4 on Google AI Studio**: failed about one call in six. The same model raced on Cloudflare until 26 October 2026, and is in the comparison now.
 - **gpt-oss-20b**: its API cannot switch reasoning off, which would make the lane a test of thinking rather than of the model.
 - **Sarvam 105B** was left out at first for the same reason, wrongly: its documented `reasoning_effort` setting never goes below "low", but the API also accepts the chat template's `enable_thinking` switch, which turns thinking off. It now races.
 - **Llama 3.1 8B, Qwen 3 30B-A3B and Granite 4.0 Micro** on Cloudflare: Llama cannot return a JSON schema and took 3.5 to 4.6 s, Qwen returned empty replies, and Granite got half its moves wrong. Qwen's replies were not empty: Cloudflare filed them under `reasoning` instead of `content`. Every lane now reads such a reply (`replyFromReasoning` in `lib/decide/endpoints.ts`), and Qwen 3 30B-A3B answered all 30 states, 22 right, at a 435 ms median in the run below. It has not been added to the race, because it was not part of the search for Indian rivals; it could be.
@@ -126,7 +128,7 @@ Every model in the race but the billed lanes starts free, with no credit card:
 | `GEMINI_API_KEY` | Gemini 3.5 Flash-Lite on Google's Gemini API, a billed lane: a key from Google AI Studio, with billing on for its project. |
 | `SARVAM_API_KEY` | Sarvam 105B, on Sarvam's free sign-up credits. |
 | `MISTRAL_API_KEY` | Ministral 3 8B, on Mistral's free Experiment plan. |
-| `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` | Qwen 3.8 and Gemma 4 on Cloudflare Workers AI's free plan (a token from the "Workers AI" template). |
+| `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` | Qwen 3.8 in the race, and Gemma 4 in the comparison, on Cloudflare Workers AI's free plan (a token from the "Workers AI" template). |
 | `ADMIN_TOKEN` | Guards anything that spends model credit with nobody playing: `/arena`, demo games, `/api/record`, `/api/compare`. |
 | `AI_GATEWAY_API_KEY` | Optional, for the original Vercel AI Gateway lanes in the comparison tool. |
 | `HF_TOKEN`, `HF_BILL_TO` | Optional, for the Sarvam-M and Fathom-R1-14B comparison lanes on the Hugging Face router, which charges for every call. A fine-grained token with "Make calls to Inference Providers"; `HF_BILL_TO` names an organisation to bill instead of the token's owner. |

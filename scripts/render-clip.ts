@@ -32,7 +32,8 @@ import { basename, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createCanvas, type Canvas, type SKRSContext2D } from '@napi-rs/canvas';
 import { CLIP_SECONDS } from '../lib/config/site';
-import type { Replay } from '../lib/game/types';
+import { inRace } from '../lib/game/replay';
+import { LANES, type Replay } from '../lib/game/types';
 import { loadAblyLogo, registerClipFonts } from '../lib/render/assets';
 import { clipDurationMs, drawFrame } from '../lib/render/frame';
 import { createReplayTimeline } from '../lib/render/timeline';
@@ -324,10 +325,11 @@ async function main(): Promise<void> {
 
   const raw = await readFile(resolve(root, opts.replay), 'utf8');
   const recorded = JSON.parse(raw) as Replay;
-  // `--lanes jev,haiku` draws those lanes, in that order, from the same tape.
+  // `--lanes jev,haiku` draws those lanes, in that order, from the same tape;
+  // without it, the lanes still in the race.
   const replay: Replay =
     opts.lanes.length === 0
-      ? recorded
+      ? inRace(recorded, LANES.map((lane) => lane.id))
       : {
           ...recorded,
           lanes: opts.lanes.map((id) => {

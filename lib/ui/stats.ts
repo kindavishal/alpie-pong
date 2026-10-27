@@ -69,8 +69,9 @@ export function heroAvgMs(rows: LaneStat[] = LANE_STATS): number {
 
 /**
  * The rivals: every lane that is neither the hero nor another model from the
- * hero's own provider. Alpie Core races to show what thinking costs, not as a
- * rival, so the headline does not count it against Alpie Seed.
+ * hero's own provider. A 169Pi lane such as Alpie Core, which raced until
+ * 2026-10-26 to show what thinking costs, is not a rival, so the headline does
+ * not count it against Alpie Seed.
  */
 export function rivalRows(rows: LaneStat[] = LANE_STATS): LaneStat[] {
   const hero = rows.find((row) => row.model === HERO);

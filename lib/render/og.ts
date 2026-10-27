@@ -14,12 +14,16 @@
 
 import replayJson from '../../public/replay.json';
 import { CLIP_SECONDS } from '../config/site';
-import type { Replay } from '../game/types';
+import { inRace } from '../game/replay';
+import { LANES, type Replay } from '../game/types';
 import { endCardRows, type EndCardRow } from './frame';
 import { createReplayTimeline } from './timeline';
 
-/** The recorded run: what `/` replays and what the clip is rendered from. */
-export const OG_REPLAY = replayJson as unknown as Replay;
+/**
+ * The recorded run: what `/` replays and what the clip is rendered from, with
+ * only the lanes still in the race.
+ */
+export const OG_REPLAY = inRace(replayJson as unknown as Replay, LANES.map((lane) => lane.id));
 
 /** The window the card measures, in replay time. The clip's play section. */
 const OG_FROM_MS = 0;

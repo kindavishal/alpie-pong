@@ -179,9 +179,7 @@ const WHY: Partial<Record<string, string>> = {
   sarvam: 'the other Indian model family, about 10B parameters active per answer, thinking off',
   'qwen-cf': 'three times Seed\'s size, thinking off',
   'ministral-8b': "the Ministral 3 size closest to Seed's 9B; does not think",
-  'gemma-cf': 'a mixture of experts with about 4B parameters active per answer, thinking off',
   'gemini-flash-lite': "Google's newest small Gemini, at its lowest reasoning setting; billed per call",
-  'alpie-core': "169Pi's reasoning model, which thinks before every answer; watch-only",
 };
 
 function Lineup() {
@@ -206,7 +204,7 @@ function Lineup() {
       <Body>
         Every lane is asked through its own provider&apos;s API with structured output, a JSON schema
         that allows only <Mono>up</Mono>, <Mono>down</Mono> or <Mono>stay</Mono>, at temperature 0 and
-        the lowest reasoning setting that API accepts. Nobody gets a retry. Alpie Core&apos;s API ignores
+        the lowest reasoning setting that API accepts. Nobody gets a retry. In the comparison table, Alpie Core&apos;s API ignores
         the schema and writes its reasoning out, so its move is read from its final answer. The number
         on a lane is the round trip of that one call, timed on the server, and nothing else.
       </Body>
@@ -220,16 +218,16 @@ function Lineup() {
       </Body>
       <Body>
         Every lane that can think races with thinking off through the same switch: the chat
-        template&apos;s <Mono>enable_thinking: false</Mono>, sent to Alpie Seed, Sarvam, Qwen and Gemma
-        alike. Sarvam&apos;s <Mono>reasoning_effort</Mono> setting cannot do that: its docs say null
+        template&apos;s <Mono>enable_thinking: false</Mono>, sent to Alpie Seed, Sarvam and Qwen
+        alike; Gemini cannot turn thinking off at all, so it runs at its lowest setting. Sarvam&apos;s <Mono>reasoning_effort</Mono> setting cannot turn thinking off either: its docs say null
         turns reasoning off, but null, &ldquo;low&rdquo; (its lowest named level) and leaving it out
         all thought before answering when tried, so the race does not use it; the table shows
-        &ldquo;low&rdquo; as Sarvam&apos;s thinking-on row. Alpie Core is the one exception: its API
-        ignores the switch and thinks anyway, which is what its watch-only lane is there to show.
+        &ldquo;low&rdquo; as Sarvam&apos;s thinking-on row. Alpie Core, in the table only since 26
+        October 2026, ignores the switch and thinks anyway, which is what its rows are there to show.
       </Body>
       <Body>
         Alpie Seed and Alpie Core are called on 169Pi&apos;s test endpoint; the rivals are called on
-        their providers&apos; public free-tier APIs. The two are not necessarily provisioned the same
+        their providers&apos; public APIs, free tiers for all but the billed lanes. The two are not necessarily provisioned the same
         way, and the numbers here do not separate the model from the service in front of it.
       </Body>
     </Section>
