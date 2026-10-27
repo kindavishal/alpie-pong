@@ -6,8 +6,8 @@ import { ADMIN_TOKEN_HEADER, ADMIN_TOKEN_PARAM, isAdminRequest } from '@/lib/con
  * `/arena` — the live comparison. Four demo games at once, one per model,
  * started server-side and watched over Ably.
  *
- * Gated, because each press of "Start arena" starts four workers that call four
- * models for up to thirteen minutes. On a laptop it is open; in production it
+ * Gated, because each press of "Start arena" starts one worker per race lane, each
+ * calling its model for up to 4 minutes 45 seconds. On a laptop it is open; in production it
  * needs `ADMIN_TOKEN`, as the `x-admin-token` header or `?token=`.
  *
  *   ?clean=1  hide everything except the lanes (for screen recording)

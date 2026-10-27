@@ -1,7 +1,7 @@
 /**
  * lib/compare/compare-models.ts — the same question, put to other models.
  *
- * The four lanes on the home page are a recording. This is the other half of
+ * The lanes on the home page are a recording. This is the other half of
  * the evidence: one model at a time is given the same real game states, the
  * same instruction and the same three answers, one call per state, sequential,
  * with reasoning switched to the lowest setting the provider accepts. What

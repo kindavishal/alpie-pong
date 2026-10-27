@@ -9,8 +9,8 @@
  * between the lanes is entirely the model's decision latency, which is the only
  * claim this demo makes.
  *
- * It is gated (see lib/config/admin.ts): four workers calling four models for
- * up to thirteen minutes is not something a stranger should be able to start.
+ * It is gated (see lib/config/admin.ts): a worker per lane, each calling its model for
+ * up to 4 minutes 45 seconds, is not something a stranger should be able to start.
  */
 
 import { useCallback, useEffect, useState } from 'react';
@@ -78,8 +78,8 @@ export function Arena({ allowed, clean, token }: ArenaProps) {
           Arena
         </h1>
         <p className="text-fg-muted max-w-[680px] pt-4 text-[17px] leading-[1.45] lg:text-[22px]">
-          The arena is off in production. It starts four live games at once, so it needs an
-          admin token. The front page plays a recording of the same four lanes.
+          The arena is off in production. It starts a live game for every lane at once, so it
+          needs an admin token. The front page plays a recording of the same lanes.
         </p>
         <div className="pt-10 lg:pt-14">
           <SiteFooter />

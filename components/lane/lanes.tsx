@@ -8,10 +8,10 @@
  * is not animated by the arrival of its snapshots — it is a pure function of
  * time (lib/render/timeline.ts), and every lane on the page is sampled at the
  * same instant from here. That is what "same serve, same rules" means on
- * screen: the four courts cannot drift apart, because there is nothing for them
+ * screen: the courts cannot drift apart, because there is nothing for them
  * to drift with. The clock starts when this set of runners starts, and the page
  * deals a fresh set once per pass (lib/ui/replay-loop.ts), so a loop restarts
- * the clock and the four lanes together.
+ * the clock and the lanes together.
  */
 
 import { useCallback, useEffect, useMemo, useRef } from 'react';

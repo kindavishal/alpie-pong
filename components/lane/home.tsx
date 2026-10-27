@@ -4,7 +4,7 @@
  * The front page. The claim, then the lanes, then the numbers behind both.
  *
  * Order matters more than anything else here. Somebody arriving from Hacker
- * News or X has about a second: the four courts have to be moving in it, so
+ * News or X has about a second: the courts have to be moving in it, so
  * they sit directly under a one-line headline and everything that explains them
  * comes after. The headline, the strip and the social card all read their
  * figures from public/replay-stats.json and the recording itself (lib/ui/stats.ts,
@@ -14,7 +14,7 @@
  * through the same renderer the live pages use. It costs nothing, it is
  * identical on every machine, and it is therefore what everyone sees.
  *
- * The four lanes are four independent runners, and the recordings do not end on
+ * The lanes are independent runners, and the recordings do not end on
  * the same millisecond, so nothing here loops on its own: the page restarts all
  * four together one period after they started (lib/ui/replay-loop.ts) and
  * resets the clock with them. Lanes that drift apart are not "same serve, same
@@ -63,9 +63,9 @@ export function Home({ clean, rows }: HomeProps) {
   const { replay } = useReplay(REPLAY_URL);
   const clock = useReplayClock();
 
-  // One clock for all four lanes. Each runner plays its own recording once; the
+  // One clock for every lane. Each runner plays its own recording once; the
   // page deals a fresh set every `period`, which is the only thing that makes
-  // the four restart on the same frame.
+  // the lanes restart on the same frame.
   const period = useMemo(() => replayPeriodMs(replay), [replay]);
   const [pass, setPass] = useState(0);
 
@@ -174,7 +174,7 @@ function cellText(row: ResultRow, key: (typeof COLUMNS)[number]['key']): string 
 }
 
 /**
- * The same four lanes as numbers: what the courts above just showed, in a form
+ * The same lanes as numbers: what the courts above just showed, in a form
  * you can quote. The hero's row is orange because the hero's ball is.
  */
 function Results({ rows }: { rows: ResultRow[] }) {
@@ -233,8 +233,8 @@ function Story() {
         One game in every lane: same serve, same rules, same question, asked of a different model
         in each. One answer moves the ball one step, so every ball travels at its own model&apos;s
         answer time and nothing is skipped or sped up. Alpie Seed is a 9B model from 169Pi with its
-        thinking switched off, racing models of about its size or larger that also answer without
-        thinking first, each from a different lab: open models on free keys with no credit card, and
+        thinking switched off, racing models of about its size or larger, where the lab publishes a
+        size, that also answer without thinking first, each from a different lab: open models on free keys with no credit card, and
         Gemini 3.5 Flash-Lite and Nova 2 Lite on Google&apos;s and Amazon&apos;s own APIs, billed per
         call. Pong is the Atari game chat models{' '}
         <a href={ATARI_PAPER_URL} className="text-fg hover:underline">
@@ -256,7 +256,7 @@ function Story() {
           Jev Pong
         </a>
         . The how-it-works page puts the same question to more models, including both Alpie models
-        with thinking on.{' '}
+        with thinking on and Grok 4.7, which cannot stop reasoning.{' '}
         <Link href="/how#other-models" className="text-fg hover:underline">
           See the numbers
         </Link>

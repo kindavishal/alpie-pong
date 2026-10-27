@@ -237,8 +237,8 @@ export interface ClipTokens {
 
 /**
  * wide   1200 x 675, the OG card and a desktop post.
- * square 1080 x 1080, four lanes stacked as on a phone.
- * social 1080 x 1350 (4:5), the same four lanes with room to breathe: taller
+ * square 1080 x 1080, the race lanes stacked as on a phone.
+ * social 1080 x 1350 (4:5), the same lanes with room to breathe: taller
  *        courts, a bigger ball and a number you can read in a feed at arm's
  *        length. This is the one for X and LinkedIn on a phone.
  * duel   1080 x 1350, two or three lanes only (`--lanes jev,haiku`), each court

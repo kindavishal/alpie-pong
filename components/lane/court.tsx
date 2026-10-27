@@ -15,8 +15,8 @@
  *             demonstration (motion note 02).
  *   recorded  lib/render/timeline.ts. Every frame and its time is known up
  *             front, so a lane is a pure function of one clock: linear inside a
- *             step, the scripted push-off on a serve (motion note 01). All four
- *             lanes read the SAME clock, from `<Lanes>` through
+ *             step, the scripted push-off on a serve (motion note 01). Every
+ *             lane reads the SAME clock, from `<Lanes>` through
  *             `RecordedLaneContext`, which is what keeps them in phase and
  *             restarts them together.
  *
@@ -81,7 +81,7 @@ function resolveSurface(surface: CourtSurfaceProp, widthPx: number): CourtSurfac
  *
  * `<Lanes>` provides it — it is the only thing that knows both the recording
  * and when the current pass started — and a recorded `<Court>` reads it. The
- * clock is shared deliberately: four lanes sampled at four slightly different
+ * clock is shared deliberately: lanes sampled at slightly different
  * instants are not "same serve, same rules", whatever the copy says.
  */
 export interface RecordedLaneSource {

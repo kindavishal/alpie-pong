@@ -1,11 +1,11 @@
 /**
  * When the recorded run starts again.
  *
- * Each lane is its own runner with its own timings, and the four recordings do
+ * Each lane is its own runner with its own timings, and the recordings do
  * not end on the same millisecond — one lane ran 45.0s, another 44.7s. Left to
  * themselves the lanes would each loop when they personally finished and drift
  * apart within a minute, which is exactly what "same serve, same rules" must
- * not look like. So none of them loops: the page restarts all four together,
+ * not look like. So none of them loops: the page restarts them all together,
  * one period after they started.
  *
  * The period is the longest lane plus a short hold on its final frame.

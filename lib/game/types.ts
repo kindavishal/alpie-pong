@@ -319,9 +319,11 @@ export const HERO: ModelId = 'alpie';
  *                    output, so it is held to the schema by a tool call it must
  *                    make (lib/decide/endpoints.ts): 24 of 30 right at a 1,003 ms
  *                    median in the published comparison (2026-10-27). Ministral 3
- *                    8B is on Bedrock too but stays on Mistral's own API, where the
- *                    same run had it faster (549 vs 764 ms) and righter (25 vs 23
- *                    of 30).
+ *                    8B is on Bedrock too but stays on Mistral's own API, as every
+ *                    rival races on its own lab's. That run had it faster there (549
+ *                    vs 764 ms, 25 vs 23 of 30 right), but it was made from India,
+ *                    a long way from Bedrock's us-east-1, so it does not settle which
+ *                    is faster from iad1.
  *
  * Google's free tier was tried and dropped: it allows Gemini 3.5 Flash-Lite 15
  * requests a minute and a lane makes about 60, which billing lifts. gpt-oss cannot

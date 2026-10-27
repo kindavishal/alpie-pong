@@ -124,7 +124,7 @@ export interface ResultRow extends LaneStat {
 }
 
 /**
- * The strip under the lanes: the same four lanes, measured.
+ * The strip under the lanes: the same lanes, measured.
  *
  * `windowDecisions` is `ogRows()` keyed by model — counted off the recording by
  * the clip's own counter, so the strip, the clip's end card and the social card

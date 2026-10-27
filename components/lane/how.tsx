@@ -211,21 +211,28 @@ function Lineup() {
         the schema and writes its reasoning out, so its move is read from its final answer. On Amazon
         Bedrock the schema is held by a tool call the model must make, since Nova 2 Lite refuses
         Bedrock&apos;s schema output, and Grok 4.7 refuses any temperature, so it is sent none. The number
-        on a lane is the round trip of that one call, timed on the server, and nothing else.
+        on a lane is the round trip of that one call, timed on the server, and nothing else. A
+        recorded lane plays on past five points, so every lane plays the whole recording; it stops
+        only if its API refuses three calls in a row, as Sarvam&apos;s rate limit did once to a
+        recording made from India, at about four calls a second.
       </Body>
       <Body>
-        The rivals are chosen to be fair to Alpie Seed: about its size or larger, and answering without
+        The rivals are chosen to be fair to Alpie Seed: about its size or larger where the lab publishes a size (Google and Amazon do not, for Gemini 3.5 Flash-Lite and Nova 2 Lite), one per lab, and answering without
         thinking first, or at the lowest reasoning setting their API accepts. The first rivals are free
         to start on with no credit card, as Alpie is; the frontier labs&apos; small models that follow
         are billed per call, beginning with Gemini 3.5 Flash-Lite, which Google&apos;s free tier held to
-        15 requests a minute when a lane makes about 60, then Amazon&apos;s Nova 2 Lite on Bedrock,
-        whose size Amazon does not publish. gpt-oss was dropped from the race because its API cannot switch reasoning off. Sarvam 105B
-        and both Alpie models also appear in the table below with thinking on.
+        15 requests a minute when a lane makes about 60, then Amazon&apos;s Nova 2 Lite on Bedrock.
+        gpt-oss was dropped from the race because its API cannot switch reasoning off, and Grok 4.7
+        cannot either, so it is in the table below rather than the race, as are Sarvam 105B and both
+        Alpie models with thinking on. Ministral 3 8B is served on Bedrock too, but races on
+        Mistral&apos;s own API, as each rival races on its own lab&apos;s; the table has both rows.
       </Body>
       <Body>
         Every lane that can think races with thinking off through the same switch: the chat
         template&apos;s <Mono>enable_thinking: false</Mono>, sent to Alpie Seed, Sarvam and Qwen
-        alike; Gemini cannot turn thinking off at all, so it runs at its lowest setting. Sarvam&apos;s <Mono>reasoning_effort</Mono> setting cannot turn thinking off either: its docs say null
+        alike. Gemini cannot turn thinking off at all, so it runs at its lowest setting, Nova 2
+        Lite reasons only when asked to, and Ministral 3 does not think at all, so neither is sent a
+        switch. Sarvam&apos;s <Mono>reasoning_effort</Mono> setting cannot turn thinking off either: its docs say null
         turns reasoning off, but null, &ldquo;low&rdquo; (its lowest named level) and leaving it out
         all thought before answering when tried, so the race does not use it; the table shows
         &ldquo;low&rdquo; as Sarvam&apos;s thinking-on row. Alpie Core, in the table only since 26
@@ -250,9 +257,10 @@ function OtherModels() {
         The race shows a few models at once. This is the wider check: on {COMPARISON_MEASURED_AT} the
         same question went to more models, one call per decision, sequential, {COMPARISON_STATES} real
         game states each, the same states in the same order for every row, including Sarvam 105B and
-        both Alpie models with thinking on as well as off. Models that reason first take about 15 s a
-        call, so they are run in several requests and the parts added up; they still answer the same{' '}
-        {COMPARISON_STATES}. The first row is the baseline.
+        both Alpie models with thinking on as well as off, and Grok 4.7, which cannot stop reasoning.
+        The rows that reason first are run a few states per request, because the Alpie ones take 12 to
+        15 s a call, and the parts are added up; they still answer the same {COMPARISON_STATES}. The
+        first row is the baseline.
       </Body>
 
       <ComparisonTable rows={rows} showProvider />
@@ -268,7 +276,7 @@ function OtherModels() {
           .map((r) => ` The ${r.model} row with ${r.setting} was ${r.note}.`)
           .join('')}
       </Body>
-      {COMPARISON_REGION === null ? <FromIndia /> : null}
+      {COMPARISON_REGION === null ? <FromIndia bedrock /> : null}
       <Body>{spreadSentence(rows)}</Body>
     </Section>
   );
@@ -278,16 +286,18 @@ function OtherModels() {
  * Where a run made off Vercel was made, and what that does to the order. Said
  * only while the published run says it was not made on Vercel.
  */
-function FromIndia() {
+function FromIndia({ bedrock = false }: { bedrock?: boolean }) {
   return (
     <Body>
       That machine is a Mac on home broadband in India, and each latency includes the trip from
-      there to wherever the provider serves the model. Sarvam&apos;s API is in Mumbai and the
-      endpoint {HERO_LABEL} is called on is in San Jose, so from here Sarvam 105B has much the
-      shorter trip, which is likely much of why it is faster than {HERO_LABEL} in this table. The race on the
-      home page is recorded from Vercel&apos;s iad1 region in Virginia, where {HERO_LABEL}&apos;s
-      trip is the shorter one. Neither order is the models alone. A run from Vercel is planned
-      to replace this one.
+      there to wherever the provider serves the model. Sarvam&apos;s API is in Mumbai. The endpoint{' '}
+      {HERO_LABEL} is called on sits behind Cloudflare, so its city is not visible, but a trivial
+      request to it from India waits about a quarter of a second or more past Cloudflare&apos;s local
+      edge, as a server in the United States would. So from here Sarvam 105B has much the shorter
+      trip, which is likely much of why it is faster than {HERO_LABEL} in this table.
+      {bedrock ? ' Every Bedrock call goes to us-east-1, in Virginia, and back.' : ''} The race on the home
+      page is recorded from Vercel&apos;s iad1 region in Virginia, where Mumbai is the far trip.
+      Neither order is the models alone. A run from Vercel is planned to replace this one.
     </Body>
   );
 }
