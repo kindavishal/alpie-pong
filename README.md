@@ -19,10 +19,13 @@ Created by Vishal Das. Inspired by [Jev Pong](https://github.com/ably-labs/jev-p
 | Ministral 3 8B | `ministral-8b-2512` | Mistral | the Ministral 3 size closest to Seed's 9B; does not think |
 | Qwen 3.8 27B | `@cf/qwen/qwen3.8-27b`, thinking off | Cloudflare Workers AI | three times Seed's size, a bigger rival |
 | Gemini 3.5 Flash-Lite | `gemini-3.5-flash-lite`, reasoning effort minimal (its lowest) | Google, billed per call | Google's newest small Gemini; it cannot turn thinking off, and at "minimal" Google reported no thinking tokens |
+| Nova 2 Lite | `us.amazon.nova-2-lite-v1:0`, reasoning off (its default) | Amazon Bedrock, billed per call | Amazon's small Nova; Amazon does not publish its size. It refuses Bedrock's JSON-schema output, so it answers through a tool call it is made to use |
 
 Gemma 4 26B-A4B and Alpie Core 32B raced until 26 October 2026 and are now measured in the comparison only: Gemma because Gemini gave Google a lane on its own API, so Google had two, and it was the least steady lane; Alpie Core because it raced watch-only, about three decisions in 45 seconds, to show what thinking costs, which the comparison table shows with numbers.
 
-The rivals are chosen to be fair to Alpie Seed: about its size or larger, and answering without thinking first, or at the lowest reasoning setting their API accepts. The first rivals are free to start on with no credit card, as Alpie is. The frontier labs' small models that follow are billed per call, and their lanes say so; Gemini 3.5 Flash-Lite is the first.
+The rivals are chosen to be fair to Alpie Seed: about its size or larger, and answering without thinking first, or at the lowest reasoning setting their API accepts. The first rivals are free to start on with no credit card, as Alpie is. The frontier labs' small models that follow are billed per call, and their lanes say so: Gemini 3.5 Flash-Lite, then Nova 2 Lite.
+
+Ministral 3 8B is also served on Bedrock, but it races on Mistral's own API, as every rival races on its own lab's API. In the published comparison (27 October 2026) the same weights were slower on Bedrock (764 ms median against 549 ms) and got two fewer of 30 right, so moving it would have handicapped a rival. Both rows are in the comparison.
 
 Every lane that can think races with thinking off through the same switch, the chat template's `enable_thinking: false`, sent to Alpie Seed, Sarvam and Qwen alike; Gemini cannot turn thinking off at all, so it runs at its lowest setting. Sarvam's `reasoning_effort` does not turn thinking off: "low" is its lowest named level, and its docs say setting it to null disables reasoning, but on 26 October 2026 null, "low", "medium", "high" and leaving it out all thought for about 160 to 540 tokens per answer, so the race does not use it. The comparison on the how-it-works page shows it as Sarvam's thinking-on row, over the same 30 states as every other row. Alpie Core, in the comparison only since 26 October 2026, ignores the switch and thinks anyway, which is what its rows there are to show.
 
@@ -127,6 +130,7 @@ Every model in the race but the billed lanes starts free, with no credit card:
 | `ABLY_API_KEY` | Realtime transport. Ably's free plan is enough; the key needs **publish**, **subscribe** and **presence**. |
 | `ALPIE_SEED_BASE_URL`, `ALPIE_CORE_BASE_URL`, `ALPIE_API_KEY` | Alpie Seed and Alpie Core on 169Pi's API (OpenAI-compatible, ending in `/v1`). |
 | `GEMINI_API_KEY` | Gemini 3.5 Flash-Lite on Google's Gemini API, a billed lane: a key from Google AI Studio, with billing on for its project. |
+| `BEDROCK_API_KEY`, `BEDROCK_REGION` | Nova 2 Lite in the race, and the Bedrock rows in the comparison, billed per call to the AWS account: a long-term Amazon Bedrock API key (it starts `ABSK`). The region defaults to `us-east-1`, beside Vercel's iad1. |
 | `SARVAM_API_KEY` | Sarvam 105B, on Sarvam's free sign-up credits. |
 | `MISTRAL_API_KEY` | Ministral 3 8B, on Mistral's free Experiment plan. |
 | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` | Qwen 3.8 in the race, and Gemma 4 in the comparison, on Cloudflare Workers AI's free plan (a token from the "Workers AI" template). |

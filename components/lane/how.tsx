@@ -182,6 +182,7 @@ const WHY: Partial<Record<string, string>> = {
   'qwen-cf': 'three times Seed\'s size, thinking off',
   'ministral-8b': "the Ministral 3 size closest to Seed's 9B; does not think",
   'gemini-flash-lite': "Google's newest small Gemini, at its lowest reasoning setting; billed per call",
+  'nova-2-lite': "Amazon's small Nova on Bedrock, which does not reason unless asked; size not published; billed per call",
 };
 
 function Lineup() {
@@ -217,7 +218,8 @@ function Lineup() {
         thinking first, or at the lowest reasoning setting their API accepts. The first rivals are free
         to start on with no credit card, as Alpie is; the frontier labs&apos; small models that follow
         are billed per call, beginning with Gemini 3.5 Flash-Lite, which Google&apos;s free tier held to
-        15 requests a minute when a lane makes about 60. gpt-oss was dropped from the race because its API cannot switch reasoning off. Sarvam 105B
+        15 requests a minute when a lane makes about 60, then Amazon&apos;s Nova 2 Lite on Bedrock,
+        whose size Amazon does not publish. gpt-oss was dropped from the race because its API cannot switch reasoning off. Sarvam 105B
         and both Alpie models also appear in the table below with thinking on.
       </Body>
       <Body>

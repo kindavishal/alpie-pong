@@ -235,7 +235,8 @@ function Story() {
         answer time and nothing is skipped or sped up. Alpie Seed is a 9B model from 169Pi with its
         thinking switched off, racing models of about its size or larger that also answer without
         thinking first, each from a different lab: open models on free keys with no credit card, and
-        Gemini 3.5 Flash-Lite on Google&apos;s own API, billed per call. Pong is the Atari game chat models{' '}
+        Gemini 3.5 Flash-Lite and Nova 2 Lite on Google&apos;s and Amazon&apos;s own APIs, billed per
+        call. Pong is the Atari game chat models{' '}
         <a href={ATARI_PAPER_URL} className="text-fg hover:underline">
           handle worst
         </a>
@@ -244,7 +245,8 @@ function Story() {
 
       <p className="text-fg-muted text-[13px] leading-[1.6] text-pretty lg:text-[14px]">
         Gemini 3.5 Flash-Lite races on a billed key: Google&apos;s free tier allows it 15 requests a
-        minute and a lane here makes about 60. Gemma 4 and Alpie Core 32B, 169Pi&apos;s reasoning
+        minute and a lane here makes about 60. Nova 2 Lite is billed per call on Amazon Bedrock;
+        Amazon does not publish its size. Gemma 4 and Alpie Core 32B, 169Pi&apos;s reasoning
         model, raced here until 26 October 2026 and are now measured in the comparison instead.
       </p>
 

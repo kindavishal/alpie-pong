@@ -89,6 +89,7 @@ export type ModelId =
   | 'qwen-cf'
   | 'gemma-cf'
   | 'gemini-flash-lite'
+  | 'nova-2-lite'
   | 'alpie-core'
   | 'jev'
   | 'haiku'
@@ -312,6 +313,15 @@ export const HERO: ModelId = 'alpie';
  *                    lowest, at which Google reported no thinking tokens; 30 of 30
  *                    right at a 1,172 ms median in the published comparison
  *                    (public/model-comparison.json, 2026-10-27).
+ *   Nova 2 Lite      Amazon's small Nova on Amazon Bedrock, its own API, billed per
+ *                    call; Amazon does not publish its size. It reasons only when
+ *                    asked to, and is not asked. It refuses Bedrock's JSON-schema
+ *                    output, so it is held to the schema by a tool call it must
+ *                    make (lib/decide/endpoints.ts): 24 of 30 right at a 1,003 ms
+ *                    median in the published comparison (2026-10-27). Ministral 3
+ *                    8B is on Bedrock too but stays on Mistral's own API, where the
+ *                    same run had it faster (549 vs 764 ms) and righter (25 vs 23
+ *                    of 30).
  *
  * Google's free tier was tried and dropped: it allows Gemini 3.5 Flash-Lite 15
  * requests a minute and a lane makes about 60, which billing lifts. gpt-oss cannot
@@ -338,6 +348,8 @@ export const LANES: LaneConfig[] = [
     id: 'gemini-flash-lite', label: 'Gemini 3.5 Flash-Lite', gateway: null, endpoint: 'gemini', modelId: 'gemini-3.5-flash-lite', provider: 'Google',
     kind: 'structured', color: '#A1A1A6', providerOptions: { gemini: { reasoningEffort: 'minimal' } },
   },
+  // Nova 2 Lite reasons only when asked to, so there is nothing to switch off.
+  { id: 'nova-2-lite', label: 'Nova 2 Lite', gateway: null, endpoint: 'bedrock', modelId: 'us.amazon.nova-2-lite-v1:0', provider: 'Amazon Bedrock', kind: 'structured', color: '#A1A1A6' },
 ];
 
 /**
