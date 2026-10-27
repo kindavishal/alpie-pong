@@ -207,7 +207,9 @@ function Lineup() {
         Every lane is asked through its own provider&apos;s API with structured output, a JSON schema
         that allows only <Mono>up</Mono>, <Mono>down</Mono> or <Mono>stay</Mono>, at temperature 0 and
         the lowest reasoning setting that API accepts. Nobody gets a retry. In the comparison table, Alpie Core&apos;s API ignores
-        the schema and writes its reasoning out, so its move is read from its final answer. The number
+        the schema and writes its reasoning out, so its move is read from its final answer. On Amazon
+        Bedrock the schema is held by a tool call the model must make, since Nova 2 Lite refuses
+        Bedrock&apos;s schema output, and Grok 4.7 refuses any temperature, so it is sent none. The number
         on a lane is the round trip of that one call, timed on the server, and nothing else.
       </Body>
       <Body>
@@ -251,7 +253,7 @@ function OtherModels() {
         {COMPARISON_STATES}. The first row is the baseline.
       </Body>
 
-      <ComparisonTable rows={rows} />
+      <ComparisonTable rows={rows} showProvider />
 
       <Body>
         Measured from {COMPARISON_FROM}, so every latency includes that machine&apos;s network.

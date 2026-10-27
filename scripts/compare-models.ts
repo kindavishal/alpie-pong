@@ -18,14 +18,15 @@ const BASE = (process.env.COMPARE_URL ?? 'http://localhost:3000').replace(/\/$/,
 /**
  * Alpie Seed first (the baseline), then every race rival as it races, the models
  * that raced before (Gemma 4, Alpie Core), the other Ministral sizes, and Sarvam
- * and both Alpies with thinking on. All are free to start on except Gemini 3.5
- * Flash-Lite, a billed race lane. The Gateway lanes need a card on the Gateway, so
+ * and both Alpies with thinking on, and the Bedrock rows (Nova 2 Lite, which races,
+ * Ministral 3 8B on Bedrock beside its own API, and Grok 4.7). All are free to start
+ * on except Gemini 3.5 Flash-Lite and the Bedrock lanes, which are billed per call. The Gateway lanes need a card on the Gateway, so
  * they are opt-in through LANES.
  */
 const PUBLISHED = [
   'alpie-seed',
-  'sarvam-105b-free', 'ministral-3b-free', 'ministral-8b-free', 'ministral-14b-free', 'qwen-3.8-cf', 'gemini-3.5-flash-lite-google', 'gemma-4-cf',
-  'sarvam-105b', 'alpie-seed-thinking', 'alpie-core', 'alpie-core-thinking',
+  'sarvam-105b-free', 'ministral-3b-free', 'ministral-8b-free', 'ministral-14b-free', 'qwen-3.8-cf', 'gemini-3.5-flash-lite-google', 'nova-2-lite-bedrock', 'gemma-4-cf', 'ministral-8b-bedrock',
+  'sarvam-105b', 'grok-4.7-bedrock', 'alpie-seed-thinking', 'alpie-core', 'alpie-core-thinking',
 ];
 const LANES = process.env.LANES?.split(',').map((s) => s.trim()).filter(Boolean) ?? PUBLISHED;
 const N = Number(process.env.N ?? DEFAULT_STATES);
