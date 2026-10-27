@@ -307,7 +307,8 @@ export const HERO: ModelId = 'alpie';
  *                    Gemini API, billed per call. It rejects every way of turning
  *                    thinking off, so it runs at reasoning effort "minimal", its
  *                    lowest, at which Google reported no thinking tokens; 30 of 30
- *                    right at a 1,184 ms median when compared on 2026-10-26.
+ *                    right at a 1,071 ms median in the published comparison
+ *                    (public/model-comparison.json, 2026-10-26).
  *
  * Google's free tier was tried and dropped: it allows Gemini 3.5 Flash-Lite 15
  * requests a minute and a lane makes about 60, which billing lifts. gpt-oss cannot

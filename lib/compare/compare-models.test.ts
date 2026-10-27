@@ -80,7 +80,7 @@ describe('runLane', () => {
   });
 
   it('runs every Alpie model with thinking off and on, and gives the thinking lanes room', () => {
-    for (const model of ['Alpie Seed', 'Alpie Core']) {
+    for (const model of ['Alpie Seed 9B', 'Alpie Core 32B']) {
       const lanes = COMPARE_LANES.filter((l) => l.model === model);
       const switches = lanes.map((l) => (l.providerOptions?.alpie as { chat_template_kwargs: { enable_thinking: boolean } }).chat_template_kwargs.enable_thinking);
       expect(switches.sort()).toEqual([false, true]);

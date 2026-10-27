@@ -4,7 +4,7 @@ import { INDIAN_STATES, UNMEASURED, indianRows } from './indian-models';
 describe('the Indian models table', () => {
   it('leads with Alpie Seed, the baseline, and puts every row over the same states', () => {
     const rows = indianRows();
-    expect(rows[0].model).toBe('Alpie Seed');
+    expect(rows[0].model).toBe('Alpie Seed 9B');
     expect(rows[0].timesHero).toBe(1);
     for (const r of rows) expect(r.states).toBe(INDIAN_STATES);
   });

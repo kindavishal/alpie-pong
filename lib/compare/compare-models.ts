@@ -111,14 +111,14 @@ export const COMPARE_LANES: readonly CompareLane[] = [
   // 32B reasoning model (alpie-32b on api.169pi.com, verified 2026-10-25). Both are
   // run with thinking off and on, because the switch is what decides whether a model
   // belongs in a game at all.
-  { key: 'alpie-seed', id: 'alpie_9b', endpoint: 'alpie-seed', model: 'Alpie Seed', provider: '169Pi', setting: 'thinking off', providerOptions: ALPIE_THINKING_OFF },
-  { key: 'alpie-seed-thinking', id: 'alpie_9b', endpoint: 'alpie-seed', model: 'Alpie Seed', provider: '169Pi', setting: 'thinking on', providerOptions: ALPIE_THINKING_ON, maxOutputTokens: THINKING_OUTPUT_TOKENS, maxStates: THINKING_STATES },
+  { key: 'alpie-seed', id: 'alpie_9b', endpoint: 'alpie-seed', model: 'Alpie Seed 9B', provider: '169Pi', setting: 'thinking off', providerOptions: ALPIE_THINKING_OFF },
+  { key: 'alpie-seed-thinking', id: 'alpie_9b', endpoint: 'alpie-seed', model: 'Alpie Seed 9B', provider: '169Pi', setting: 'thinking on', providerOptions: ALPIE_THINKING_ON, maxOutputTokens: THINKING_OUTPUT_TOKENS, maxStates: THINKING_STATES },
   // Core's API ignores both the JSON schema and the thinking switch (2026-10-25): it
   // reasons for about 400 tokens and ends "**Final Answer**: down", whichever is asked.
   // So both lanes read the move from that answer and get the thinking budget; the
   // switch is still sent, so the rows show whether it ever starts to matter.
-  { key: 'alpie-core', id: 'alpie-32b', endpoint: 'alpie-core', model: 'Alpie Core', provider: '169Pi', setting: 'thinking off (ignored), move read from text', providerOptions: ALPIE_THINKING_OFF, answer: 'text', maxOutputTokens: THINKING_OUTPUT_TOKENS, maxStates: THINKING_STATES },
-  { key: 'alpie-core-thinking', id: 'alpie-32b', endpoint: 'alpie-core', model: 'Alpie Core', provider: '169Pi', setting: 'thinking on, move read from text', providerOptions: ALPIE_THINKING_ON, answer: 'text', maxOutputTokens: THINKING_OUTPUT_TOKENS, maxStates: THINKING_STATES },
+  { key: 'alpie-core', id: 'alpie-32b', endpoint: 'alpie-core', model: 'Alpie Core 32B', provider: '169Pi', setting: 'thinking off (ignored), move read from text', providerOptions: ALPIE_THINKING_OFF, answer: 'text', maxOutputTokens: THINKING_OUTPUT_TOKENS, maxStates: THINKING_STATES },
+  { key: 'alpie-core-thinking', id: 'alpie-32b', endpoint: 'alpie-core', model: 'Alpie Core 32B', provider: '169Pi', setting: 'thinking on, move read from text', providerOptions: ALPIE_THINKING_ON, answer: 'text', maxOutputTokens: THINKING_OUTPUT_TOKENS, maxStates: THINKING_STATES },
 
   // Alpie Seed's weight class, 8 to 14B. Qwen 3 takes the same thinking switch Seed does.
   { key: 'qwen-14b', id: 'alibaba/qwen-3-14b', model: 'Qwen 3 14B', provider: 'Alibaba', setting: 'thinking off', providerOptions: { alibaba: { enableThinking: false } } },

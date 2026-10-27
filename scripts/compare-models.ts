@@ -16,14 +16,15 @@ import { COMPARE_LANE_KEYS, DEFAULT_STATES, mergeRows, type CompareRow } from '.
 
 const BASE = (process.env.COMPARE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
 /**
- * Alpie Seed first (the baseline), then the models a developer can reach with
- * no credit card: the race rivals, the other Ministral sizes, Sarvam, and both
- * Alpies with thinking on. The Gateway lanes need a card on the Gateway, so
+ * Alpie Seed first (the baseline), then every race rival as it races, the models
+ * that raced before (Gemma 4, Alpie Core), the other Ministral sizes, and Sarvam
+ * and both Alpies with thinking on. All are free to start on except Gemini 3.5
+ * Flash-Lite, a billed race lane. The Gateway lanes need a card on the Gateway, so
  * they are opt-in through LANES.
  */
 const PUBLISHED = [
   'alpie-seed',
-  'sarvam-105b-free', 'ministral-3b-free', 'ministral-8b-free', 'ministral-14b-free', 'qwen-3.8-cf', 'gemma-4-cf',
+  'sarvam-105b-free', 'ministral-3b-free', 'ministral-8b-free', 'ministral-14b-free', 'qwen-3.8-cf', 'gemini-3.5-flash-lite-google', 'gemma-4-cf',
   'sarvam-105b', 'alpie-seed-thinking', 'alpie-core', 'alpie-core-thinking',
 ];
 const LANES = process.env.LANES?.split(',').map((s) => s.trim()).filter(Boolean) ?? PUBLISHED;

@@ -1,11 +1,32 @@
 import { describe, expect, it } from 'vitest';
+import { LANES } from '../game/types';
 import { COMPARISON_STATES, accuracyPercent, comparisonRows, accuracySentence } from './comparison';
 
 describe('comparisonRows', () => {
+  it('names the row and the first error when a model with two rows misses calls', () => {
+    const base = { states: 30, correct: 28 };
+    const sentence = accuracySentence(
+      [
+        { model: 'Alpie Seed 9B', answered: 30, correct: 30, states: 30, setting: 'thinking off' },
+        { model: 'Sarvam 105B', answered: 30, ...base, setting: 'thinking off' },
+        { model: 'Sarvam 105B', answered: 29, ...base, setting: 'thinking on', error: 'Too Many Requests' },
+      ],
+      30,
+    );
+    expect(sentence).toContain('Sarvam 105B with thinking on got no answer to one call (first error: \u201cToo Many Requests\u201d), which is not counted.');
+  });
+
+  // Every lane that races is in the table, under the name the race gives it, and nothing is measured apart.
+  it('has a row for every race lane, by its race name, all from one run', () => {
+    const rows = comparisonRows();
+    for (const lane of LANES) expect(rows.map((r) => r.model)).toContain(lane.label);
+    expect(rows.filter((r) => r.note !== undefined)).toEqual([]);
+  });
+
   // A rival may well be faster than the baseline; the table has to be able to say so.
   it('puts the baseline first at exactly 1x and the rest fastest to slowest', () => {
     const rows = comparisonRows();
-    expect(rows[0].model).toBe('Alpie Seed');
+    expect(rows[0].model).toBe('Alpie Seed 9B');
     expect(rows[0].setting).toBe('thinking off');
     expect(rows[0].timesHero).toBe(1);
     const medians = rows.slice(1).map((r) => r.adjustedP50Ms);

@@ -81,16 +81,21 @@ export function accuracyPercent(row: Pick<ComparisonRow, 'answered' | 'correct'>
  * answers than states for it.
  */
 export function accuracySentence(
-  rows: readonly Pick<ComparisonRow, 'model' | 'answered' | 'correct' | 'states'>[],
+  rows: readonly (Pick<ComparisonRow, 'model' | 'answered' | 'correct' | 'states'> & Partial<Pick<ComparisonRow, 'setting' | 'error'>>)[],
   states: number = COMPARISON_STATES,
 ): string {
   const [hero, ...others] = rows;
   if (hero === undefined || others.length === 0) return '';
   // A row that ran fewer states (a thinking lane) is measured against its own count.
   const missing = (r: (typeof rows)[number]) => (r.states ?? states) - r.answered;
+  // A model with more than one row is named with its setting, so the reader knows which row.
+  const name = (r: (typeof rows)[number]) =>
+    r.setting !== undefined && rows.filter((o) => o.model === r.model).length > 1 ? `${r.model} with ${r.setting}` : r.model;
+  // The first error the row saw, so a provider's rate limit is not read as the model failing.
+  const why = (r: (typeof rows)[number]) => (r.error !== undefined ? ` (first error: “${r.error}”)` : '');
   const unanswered = rows
     .filter((r) => missing(r) > 0)
-    .map((r) => `${r.model} got no answer to ${plural(missing(r), 'call')}, which ${missing(r) === 1 ? 'is' : 'are'} not counted`);
+    .map((r) => `${name(r)} got no answer to ${plural(missing(r), 'call')}${why(r)}, which ${missing(r) === 1 ? 'is' : 'are'} not counted`);
   const allRight = others.every((r) => r.correct === r.answered);
   const sameCount = others.every((r) => r.answered === others[0].answered);
   const rest = allRight

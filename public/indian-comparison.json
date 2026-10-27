@@ -8,7 +8,7 @@
   "rows": [
     {
       "key": "alpie-seed",
-      "model": "Alpie Seed",
+      "model": "Alpie Seed 9B",
       "provider": "169Pi",
       "setting": "thinking off",
       "states": 30,
